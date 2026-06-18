@@ -8,7 +8,8 @@
 */
 
 import "./style.css";
-import { Project, Task } from "./task.js";
+import { Task } from "./task.js";
+import { Project } from "./project.js";
 
 // function printExampleTask() {
 //     const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true);
@@ -22,7 +23,7 @@ import { Project, Task } from "./task.js";
 //     console.log(exampleProject.name);
 // }
 
-const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true);
+const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", []);
 const exampleProject = new Project("Shopping");
 exampleProject.addTask(exampleTask);
 console.log(exampleProject.tasks);
@@ -30,5 +31,5 @@ console.log(exampleProject.tasks);
 exampleProject.removeTask(exampleTask);
 console.log(exampleProject.tasks);
 
-exampleTask.edit("priority", "High");
+exampleTask.editTask("priority", "High");
 console.log(exampleTask.details);
