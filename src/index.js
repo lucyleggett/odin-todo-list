@@ -8,6 +8,7 @@
 */
 
 import "./style.css";
-import { printExampleTask } from "./newTask.js";
+import { printExampleProject, printExampleTask } from "./task.js";
 
 printExampleTask();
+printExampleProject();
