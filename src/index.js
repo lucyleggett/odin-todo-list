@@ -29,3 +29,6 @@ console.log(exampleProject.tasks);
 
 exampleProject.removeTask(exampleTask);
 console.log(exampleProject.tasks);
+
+exampleTask.edit("priority", "High");
+console.log(exampleTask.details);

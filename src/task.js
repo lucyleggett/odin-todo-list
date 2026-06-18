@@ -50,7 +50,10 @@ export class Task {
         }
     }
 
-    editTask(property) {
-
+    editTask(key, value) {
+        if (key === "uuid") {
+            console.log("No can do!")
+            return;
+        } this[key] = value;
     }
 }
