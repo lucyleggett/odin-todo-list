@@ -11,30 +11,44 @@ import "./style.css";
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 
-// function printExampleTask() {
-//     const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true);
-//     console.log(exampleTask.details);
-// }
+function Form() {
 
-// function printExampleProject() {
-//     const exampleProject = new Project("Shopping");
-//     console.log(exampleProject.name);
-//     exampleProject.name = "Groceries";
-//     console.log(exampleProject.name);
-// }
+}
 
-const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", []);
-const exampleProject = new Project("Shopping");
-exampleProject.addTask(exampleTask);
-console.log(exampleProject.tasks);
+function Controller() { 
+    const form = document.querySelector("#newTaskForm");
+    if (!form) return;
 
-exampleProject.removeTask(exampleTask);
-console.log(exampleProject.tasks);
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
 
-exampleTask.editTask("priority", "High");
-console.log(exampleTask.details);
+        const submitButton = event.submitter || document.querySelector("button[type='submit']");
+        const targetProjName = submitButton.value;
 
-const moveTask = (task, currProj, nextProj) => {
-    currProj.removeTask(task);
-    nextProj.addTask(task);
+        const projectsList = Project.getAllProjects();
+        const targetProj = projectsList.find(proj => proj.name === targetProjName);
+        
+        if (targetProj) {
+            const taskData = logInput();
+            const newTask = new Task(taskData);
+            targetProj.addTask(newTask);
+        }
+
+        form.reset();
+    });
+
+    const logInput = () => {
+        return {
+            title: document.querySelector("#taskTitle").value,
+            desc: document.querySelector("#taskDesc").value,
+            dueDate: document.querySelector("#taskDueDate").value,
+            priority: document.querySelector("#taskPriority").value,
+            checklist: [],
+        };
+    };
+
+    const moveTask = (task, currProj, nextProj) => {
+        currProj.removeTask(task);
+        nextProj.addTask(task);
+    }
 }

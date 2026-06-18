@@ -1,10 +1,17 @@
 export class Project {
     #name;
     #tasks
+    static instances = [];
 
     constructor(name){
         this.name = name;
         this.#tasks = [];
+
+        Project.instances.push(this);
+    }
+
+    static getAllProjects() {
+        return Project.instances;
     }
 
     get name() {

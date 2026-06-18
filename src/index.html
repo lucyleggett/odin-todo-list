@@ -6,6 +6,40 @@
     <title>Todo List</title>
 </head>
 <body>
-    
+    <form id="newTaskForm" action="" method="get">
+        <div class="form-row">
+            <label for="taskTitle">Title</label>
+            <input id="taskTitle" name="taskTitle" type="text"/>
+        </div>
+        <div class="form-row">
+            <label for="taskDesc">Description</label>
+            <input id="taskDesc" name="taskDesc" type="text"/>
+        </div>
+        <div class="form-row">
+            <label for="taskDueDate">Due Date</label>
+            <input id="taskDueDate" name="taskDueDate" type="datetime"/>
+        </div>
+        <div class="form-row">
+        <label for="taskPriority">Priority:</label>
+        <select name="taskPriority" id="taskPriority">
+        <option value="Low">💆 Low</option>
+        <option value="Medium">🔔 Medium</option>
+        <option value="High">❗️ High</option>
+        </select>
+        </div>
+        <div class="form-row">
+            <input type="text" id="itemInput" placeholder="Add to checklist...">
+            <button id="addBtn">Add</button>
+        </div>
+        <ul id="checklist"></ul>
+        <div class="form-row">
+            <p>Add to...</p>
+            <div class="submit-buttons">
+                <button type="submit" name="action" value="groceries">Groceries</button>
+                <button type="submit" name="action" value="work">Work</button>
+                <button type="submit" name="action" value="gifts">Gifts</button>
+            </div>
+        </div>
+    </form>
 </body>
 </html>
