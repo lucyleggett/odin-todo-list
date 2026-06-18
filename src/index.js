@@ -8,7 +8,21 @@
 */
 
 import "./style.css";
-import { printExampleProject, printExampleTask } from "./task.js";
+import { Project, Task } from "./task.js";
 
-printExampleTask();
-printExampleProject();
+// function printExampleTask() {
+//     const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true);
+//     console.log(exampleTask.details);
+// }
+
+// function printExampleProject() {
+//     const exampleProject = new Project("Shopping");
+//     console.log(exampleProject.name);
+//     exampleProject.name = "Groceries";
+//     console.log(exampleProject.name);
+// }
+
+const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true);
+const exampleProject = new Project("Shopping");
+exampleProject.addTask(exampleTask);
+console.log(exampleProject.tasks);

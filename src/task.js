@@ -1,9 +1,12 @@
-export { printExampleTask, printExampleProject }
-class Project {
+export {  }
+
+export class Project {
     #name;
+    #tasks
 
     constructor(name){
         this.name = name;
+        this.#tasks = [];
     }
 
     get name() {
@@ -13,9 +16,17 @@ class Project {
     set name(newName) {
         this.#name = newName;
     }
+
+    get tasks() {
+        return this.#tasks;
+    }
+
+    addTask(project, task) {
+        this.#tasks.push(task);
+    }
 }
 
-class Task {
+export class Task {
     constructor(title, description, dueDate, priority, checklist) {
         this.title = title;
         this.description = description;
@@ -34,23 +45,7 @@ class Task {
         }
     }
 
-    addTask(task) {
-
-    }
-
     editTask(property) {
 
     }
-}
- 
-function printExampleTask() {
-    const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true);
-    console.log(exampleTask.details);
-}
-
-function printExampleProject() {
-    const exampleProject = new Project("Shopping");
-    console.log(exampleProject.name);
-    exampleProject.name = "Groceries";
-    console.log(exampleProject.name);
 }
