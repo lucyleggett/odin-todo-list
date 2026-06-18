@@ -26,3 +26,6 @@ const exampleTask = new Task("Buy milk", "Semi-skimmed", "Tomorrow", "Low", true
 const exampleProject = new Project("Shopping");
 exampleProject.addTask(exampleTask);
 console.log(exampleProject.tasks);
+
+exampleProject.removeTask(exampleTask);
+console.log(exampleProject.tasks);

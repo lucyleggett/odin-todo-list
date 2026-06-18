@@ -21,13 +21,18 @@ export class Project {
         return this.#tasks;
     }
 
-    addTask(project, task) {
+    addTask(task) {
         this.#tasks.push(task);
+    }
+
+    removeTask(task) {
+        this.#tasks = this.#tasks.filter(t => t.uuid !== task.uuid);
     }
 }
 
 export class Task {
     constructor(title, description, dueDate, priority, checklist) {
+        this.uuid = crypto.randomUUID(); 
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
