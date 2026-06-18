@@ -33,3 +33,8 @@ console.log(exampleProject.tasks);
 
 exampleTask.editTask("priority", "High");
 console.log(exampleTask.details);
+
+const moveTask = (task, currProj, nextProj) => {
+    currProj.removeTask(task);
+    nextProj.addTask(task);
+}
