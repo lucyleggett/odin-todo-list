@@ -1,15 +1,11 @@
 import "./style.css";
-import { loadApplicationState } from "./load.js";
+import { renderProjectBtns } from "./load.js";
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
 
-const groceries = new Project("Groceries");
-const work = new Project("Work");
-const gifts = new Project("Gifts");
-
-function Display() {
-    const createChecklistElement = (currChecklistData, itemInput) => {
+export function Display() {
+    const createChecklistElement = (currChecklistData, itemInput, onDelete) => {
         const checklist = document.getElementById("checklist");
         const li = document.createElement("li");
         li.dataset.id = currChecklistData.id;
@@ -19,12 +15,12 @@ function Display() {
         checkbox.type = "checkbox";
 
         const textSpan = document.createElement("span");
-        textSpan.textContent = textValue;
+        textSpan.textContent = currChecklistData.text;
 
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "X";
         deleteItemBtn.classList.add("checklist-delete");
-        deleteItemBtn.addEventListener("click", () => removeChecklistItem(currChecklistData.id, li));
+        deleteItemBtn.addEventListener("click", () => onDelete(currChecklistData.id,li));
  
         label.append(checkbox, textSpan);
         li.append(label, deleteItemBtn);
@@ -33,10 +29,22 @@ function Display() {
         itemInput.value = "";
         itemInput.focus();
     }
+
+    const createProjectBtn = (projName) => {
+        const submitBtnsDiv = document.querySelector(".submit-buttons");
+        const newBtn = document.createElement("button");
+        newBtn.type = "submit";
+        newBtn.name = "action";
+        newBtn.value = `${projName}`.toLowerCase();
+        newBtn.textContent = `${projName}`;
+        submitBtnsDiv.appendChild(newBtn);
+    } 
+
+    return { createChecklistElement, createProjectBtn, };
 }
 
 function Controller() {
-    loadApplicationState();
+    renderProjectBtns();
 
     const display = Display();
     const itemInput = document.getElementById("itemInput");
@@ -45,16 +53,15 @@ function Controller() {
 
     const addChecklistItem = () => {
         const textValue = itemInput.value.trim();
-        
         if (textValue === "") return;
+
         const currChecklistData = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2),
             text: textValue,
             status: "pending",
         }
-
         checklistData.push(currChecklistData);
-        display.createChecklistElement(currChecklistData, itemInput);
+        display.createChecklistElement(currChecklistData, itemInput, removeChecklistItem);
     }
 
     addBtn.addEventListener("click", (event) => {
@@ -68,13 +75,15 @@ function Controller() {
             addChecklistItem();
         }
     });
-
-    const newProjectBtn = document.querySelector("#newProjectBtn");
-    newProjectBtn.addEventListener("click", (event) => {
+    
+    document.querySelector("#newProjectBtn").addEventListener("click", (event) => {
         event.preventDefault()
         const newProject = document.querySelector("#projectName").value;
         if (!newProject) return;
         new Project(newProject);
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+        console.log(Project.getAllProjects())
+        display.createProjectBtn(newProject);
     })
     
     const newTaskForm = document.querySelector("#newTaskForm");
@@ -83,7 +92,8 @@ function Controller() {
         event.preventDefault();
         const submitBtn = event.submitter || document.querySelector("button[type='submit']");
         createNewTask(submitBtn);
-        checklist.replaceChildren();
+        document.getElementById("checklist").replaceChildren();
+        checklistData = [];
         newTaskForm.reset();
     });
 
@@ -106,12 +116,12 @@ function Controller() {
     const createNewTask = (submitBtn) => {
         const targetProjName = submitBtn.value;
         const projectsList = Project.getAllProjects();
+        console.log("Looking for:", targetProjName, "in:", projectsList.map(p => p.name));
         const targetProj = projectsList.find(proj => proj.name === targetProjName);
         
         if (targetProj) {
             const taskData = logInput();
-            const { title, description, dueDate, priority, checklist } = taskData;
-            const newTask = new Task(title, description, dueDate, priority, checklist);
+            const newTask = new Task(taskData);
             targetProj.addTask(newTask);
         };
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
