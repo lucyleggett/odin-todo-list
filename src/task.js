@@ -30,4 +30,14 @@ export class Task {
             return;
         } this[key] = value;
     }
+
+    toJSON() {
+        return {
+            title: this.title,
+            description: this.description,
+            dueDate: this.dueDate,
+            priority: this.priority,
+            checklist: this.checklist
+        };
+    }
 }

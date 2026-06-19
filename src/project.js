@@ -33,4 +33,11 @@ export class Project {
     removeTask(task) {
         this.#tasks = this.#tasks.filter(t => t.uuid !== task.uuid);
     }
+
+    toJSON() {
+        return {
+            name: this.#name,
+            tasks: this.#tasks
+        };
+    }
 }

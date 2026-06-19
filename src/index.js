@@ -1,14 +1,13 @@
 import "./style.css";
 import { Task } from "./task.js";
 import { Project } from "./project.js";
+import { StorageController } from "./storage.js";
 
 const groceries = new Project("Groceries");
 const work = new Project("Work");
 const gifts = new Project("Gifts");
 
-function Form() {
-
-}
+StorageController.clear();
 
 function Controller() { 
     const itemInput = document.getElementById("itemInput");
@@ -80,11 +79,13 @@ function Controller() {
             const { title, description, dueDate, priority, checklist } = taskData;
             const newTask = new Task(title, description, dueDate, priority, checklist);
             targetProj.addTask(newTask);
+            console.log("TargetProj", targetProj);
         } else {
             console.log("Project not found");
         }
 
         console.log(Project.getAllProjects());
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
         checklist.replaceChildren();
         form.reset();
     });
