@@ -14,7 +14,7 @@ function Controller() {
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
     const checklist = document.getElementById("checklist");
-    const checklistData = [];
+    let checklistData = [];
 
     const addChecklistItem = () => {
         const textValue = itemInput.value.trim();
@@ -28,14 +28,26 @@ function Controller() {
         checklistData.push(currChecklistData);
 
         const li = document.createElement("li");
+        li.dataset.id = currChecklistData.id;
+
         const label = document.createElement("label");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+
         const textSpan = document.createElement("span");
         textSpan.textContent = textValue;
 
+        const deleteItemBtn = document.createElement("button");
+        deleteItemBtn.textContent = "X";
+        deleteItemBtn.classList.add("checklist-delete");
+
+        deleteItemBtn.addEventListener("click", (event) => {
+        checklistData = checklistData.filter(item => item.id !== currChecklistData.id);
+        li.remove();
+    })
+ 
         label.append(checkbox, textSpan);
-        li.appendChild(label);
+        li.append(label, deleteItemBtn);
         checklist.appendChild(li);
 
         itemInput.value = "";
@@ -77,6 +89,7 @@ function Controller() {
         }
 
         console.log(Project.getAllProjects());
+        checklist.replaceChildren();
         form.reset();
     });
 
