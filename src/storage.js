@@ -1,4 +1,5 @@
 import { Project } from "./project.js";
+import { Task } from "./task.js";
 
 export class StorageController {
 
@@ -14,7 +15,6 @@ export class StorageController {
             return (
             e instanceof DOMException &&
             e.name === "QuotaExceededError" &&
-            // acknowledge QuotaExceededError only if there's something already stored
             storage &&
             storage.length !== 0
             );
@@ -24,6 +24,27 @@ export class StorageController {
     static addToStorage(key, value) {
         const stringified = JSON.stringify(value);
         localStorage.setItem(key, stringified);
+    }
+
+    static retrieveStorage() {
+        const keys = Object.keys(localStorage);
+        if (keys.length === 0) return;
+
+        const latestSaveKey = keys.reduce((max, current) => Math.max(max, current), -Infinity);
+        if (latestSaveKey === -Infinity) return;
+
+        const rawData = localStorage.getItem(latestSaveKey.toString());
+        if (!rawData) return;
+
+        const parsedProjects = JSON.parse(rawData);
+
+        parsedProjects.forEach(projData => {
+            const reconstructedProject = new Project(projData.name);
+            projData.tasks.forEach(taskData => {
+                const reconstructedTask = Task.fromJSON(taskData);
+                reconstructedProject.addTask(reconstructedTask);
+            });
+        });
     }
 
     static clear() {

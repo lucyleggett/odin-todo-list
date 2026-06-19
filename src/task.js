@@ -1,8 +1,8 @@
 export class Task {
     static instances = [];
 
-    constructor(title, description, dueDate, priority, checklist) {
-        this.uuid = crypto.randomUUID(); 
+    constructor(title, uuid, description, dueDate, priority, checklist) {
+        this.uuid = uuid || crypto.randomUUID(); 
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -31,13 +31,25 @@ export class Task {
         } this[key] = value;
     }
 
-    toJSON() {
+    static toJSON() {
         return {
+            uuid: this.uuid,
             title: this.title,
             description: this.description,
             dueDate: this.dueDate,
             priority: this.priority,
             checklist: this.checklist
         };
+    }
+
+    static fromJSON(jsonObj) {
+        return new Task(
+            jsonObj.title,
+            jsonObj.description,
+            jsonObj.dueDate,
+            jsonObj.priority,
+            jsonObj.checklist,
+            jsonObj.uuid,
+        );
     }
 }

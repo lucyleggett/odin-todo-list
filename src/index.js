@@ -1,4 +1,5 @@
 import "./style.css";
+import { loadApplicationState } from "./load.js";
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
@@ -34,7 +35,9 @@ function Display() {
     }
 }
 
-function Controller() { 
+function Controller() {
+    loadApplicationState();
+
     const display = Display();
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
@@ -66,14 +69,22 @@ function Controller() {
         }
     });
 
-    const form = document.querySelector("#newTaskForm");
-    if (!form) return;
-    form.addEventListener("submit", (event) => {
+    const newProjectBtn = document.querySelector("#newProjectBtn");
+    newProjectBtn.addEventListener("click", (event) => {
+        event.preventDefault()
+        const newProject = document.querySelector("#projectName").value;
+        if (!newProject) return;
+        new Project(newProject);
+    })
+    
+    const newTaskForm = document.querySelector("#newTaskForm");
+    if (!newTaskForm) return;
+    newTaskForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const submitBtn = event.submitter || document.querySelector("button[type='submit']");
         createNewTask(submitBtn);
         checklist.replaceChildren();
-        form.reset();
+        newTaskForm.reset();
     });
 
     const removeChecklistItem = (itemId, li) => {
