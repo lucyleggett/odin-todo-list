@@ -7,23 +7,9 @@ const groceries = new Project("Groceries");
 const work = new Project("Work");
 const gifts = new Project("Gifts");
 
-function Controller() { 
-    const itemInput = document.getElementById("itemInput");
-    const addBtn = document.getElementById("addBtn");
-    const checklist = document.getElementById("checklist");
-    let checklistData = [];
-
-    const addChecklistItem = () => {
-        const textValue = itemInput.value.trim();
-        
-        if (textValue === "") return;
-        const currChecklistData = {
-            id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-            text: textValue,
-            status: "pending",
-        }
-        checklistData.push(currChecklistData);
-
+function Display() {
+    const createChecklistElement = (currChecklistData, itemInput) => {
+        const checklist = document.getElementById("checklist");
         const li = document.createElement("li");
         li.dataset.id = currChecklistData.id;
 
@@ -46,6 +32,27 @@ function Controller() {
         itemInput.value = "";
         itemInput.focus();
     }
+}
+
+function Controller() { 
+    const display = Display();
+    const itemInput = document.getElementById("itemInput");
+    const addBtn = document.getElementById("addBtn");
+    let checklistData = [];
+
+    const addChecklistItem = () => {
+        const textValue = itemInput.value.trim();
+        
+        if (textValue === "") return;
+        const currChecklistData = {
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+            text: textValue,
+            status: "pending",
+        }
+
+        checklistData.push(currChecklistData);
+        display.createChecklistElement(currChecklistData, itemInput);
+    }
 
     addBtn.addEventListener("click", (event) => {
         event.preventDefault();
@@ -61,7 +68,6 @@ function Controller() {
 
     const form = document.querySelector("#newTaskForm");
     if (!form) return;
-
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const submitBtn = event.submitter || document.querySelector("button[type='submit']");
@@ -97,7 +103,6 @@ function Controller() {
             const newTask = new Task(title, description, dueDate, priority, checklist);
             targetProj.addTask(newTask);
         };
-
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
     }
 
