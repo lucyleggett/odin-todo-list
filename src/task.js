@@ -1,4 +1,6 @@
 export class Task {
+    static instances = [];
+
     constructor(title, description, dueDate, priority, checklist) {
         this.uuid = crypto.randomUUID(); 
         this.title = title;
@@ -16,6 +18,10 @@ export class Task {
             priority: this.priority,
             checklist: this.checklist,
         }
+    }
+
+    get getAllTasks() {
+        return Task.instances;
     }
 
     editTask(key, value) {

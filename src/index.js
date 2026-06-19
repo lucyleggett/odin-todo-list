@@ -40,11 +40,7 @@ function Controller() {
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "X";
         deleteItemBtn.classList.add("checklist-delete");
-
-        deleteItemBtn.addEventListener("click", (event) => {
-        checklistData = checklistData.filter(item => item.id !== currChecklistData.id);
-        li.remove();
-    })
+        deleteItemBtn.addEventListener("click", () => removeChecklistItem(currChecklistData.id, li));
  
         label.append(checkbox, textSpan);
         li.append(label, deleteItemBtn);
@@ -93,6 +89,11 @@ function Controller() {
         form.reset();
     });
 
+    const removeChecklistItem = (itemId, li) => {
+        checklistData = checklistData.filter(item => item.id !== itemId);
+        li.remove();
+    }
+            
     const logInput = () => {
         const taskObj = {
             title: document.querySelector("#taskTitle").value,
