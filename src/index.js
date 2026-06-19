@@ -7,8 +7,6 @@ const groceries = new Project("Groceries");
 const work = new Project("Work");
 const gifts = new Project("Gifts");
 
-StorageController.clear();
-
 function Controller() { 
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
@@ -66,26 +64,8 @@ function Controller() {
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-
         const submitBtn = event.submitter || document.querySelector("button[type='submit']");
-        const targetProjName = submitBtn.value;
-
-        const projectsList = Project.getAllProjects();
-        const targetProj = projectsList.find(proj => proj.name === targetProjName);
-        console.log(targetProj);
-        
-        if (targetProj) {
-            const taskData = logInput();
-            const { title, description, dueDate, priority, checklist } = taskData;
-            const newTask = new Task(title, description, dueDate, priority, checklist);
-            targetProj.addTask(newTask);
-            console.log("TargetProj", targetProj);
-        } else {
-            console.log("Project not found");
-        }
-
-        console.log(Project.getAllProjects());
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+        createNewTask(submitBtn);
         checklist.replaceChildren();
         form.reset();
     });
@@ -105,6 +85,21 @@ function Controller() {
         };
         return taskObj;
     };
+
+    const createNewTask = (submitBtn) => {
+        const targetProjName = submitBtn.value;
+        const projectsList = Project.getAllProjects();
+        const targetProj = projectsList.find(proj => proj.name === targetProjName);
+        
+        if (targetProj) {
+            const taskData = logInput();
+            const { title, description, dueDate, priority, checklist } = taskData;
+            const newTask = new Task(title, description, dueDate, priority, checklist);
+            targetProj.addTask(newTask);
+        };
+
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+    }
 
     const moveTask = (taskUUID, currProj, nextProj) => {
         const tasksList = currProj.getAllTasks();
