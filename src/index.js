@@ -20,8 +20,12 @@ function Controller() {
         const textValue = itemInput.value.trim();
         
         if (textValue === "") return;
-        checklistData.push(textValue);
-        console.log("Checklist array:", checklistData);
+        const currChecklistData = {
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+            text: textValue,
+            status: "pending",
+        }
+        checklistData.push(currChecklistData);
 
         const li = document.createElement("li");
         const label = document.createElement("label");
