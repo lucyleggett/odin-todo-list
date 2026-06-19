@@ -1,10 +1,10 @@
 export class Project {
     #name;
-    #tasks
+    #tasks;
     static instances = [];
 
     constructor(name){
-        this.name = name;
+        this.name = name.toLowerCase();
         this.#tasks = [];
 
         Project.instances.push(this);
