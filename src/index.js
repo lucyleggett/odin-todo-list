@@ -1,12 +1,3 @@
-/* Pseudocode
-
---Projects will hold tasks
---Each task will be an object with the following keys: title, description, dueDate, priority, checklist
---Task creation, task editing, task deletion and task assignment (to projects) will be separated
---DOM manipulation in a single module composed of factories
-
-*/
-
 import "./style.css";
 import { Task } from "./task.js";
 import { Project } from "./project.js";
@@ -20,6 +11,45 @@ function Form() {
 }
 
 function Controller() { 
+    const itemInput = document.getElementById("itemInput");
+    const addBtn = document.getElementById("addBtn");
+    const checklist = document.getElementById("checklist");
+    const checklistData = [];
+
+    const addChecklistItem = () => {
+        const textValue = itemInput.value.trim();
+        
+        if (textValue === "") return;
+        checklistData.push(textValue);
+        console.log("Checklist array:", checklistData);
+
+        const li = document.createElement("li");
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        const textSpan = document.createElement("span");
+        textSpan.textContent = textValue;
+
+        label.append(checkbox, textSpan);
+        li.appendChild(label);
+        checklist.appendChild(li);
+
+        itemInput.value = "";
+        itemInput.focus();
+    }
+
+    addBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        addChecklistItem();
+    });
+
+    itemInput.addEventListener("keypress", (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addChecklistItem();
+        }
+    });
+
     const form = document.querySelector("#newTaskForm");
     if (!form) return;
 
@@ -52,7 +82,7 @@ function Controller() {
             description: document.querySelector("#taskDesc").value,
             dueDate: document.querySelector("#taskDueDate").value,
             priority: document.querySelector("#taskPriority").value,
-            checklist: [],
+            checklist: checklistData,
         };
         return taskObj;
     };
