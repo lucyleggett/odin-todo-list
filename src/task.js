@@ -20,10 +20,6 @@ export class Task {
         }
     }
 
-    get getAllTasks() {
-        return Task.instances;
-    }
-
     editTask(key, value) {
         if (key === "uuid") {
             console.log("No can do!")

@@ -44,6 +44,10 @@ body {
     max-width: 360px;
 }
 
+.priority-icon {
+    width: 30px;
+}
+
 #newProjectForm {
     display: flex;
     width: 400px;

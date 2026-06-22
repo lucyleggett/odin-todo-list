@@ -1,10 +1,62 @@
 import "./style.css";
-import { renderProjectBtns } from "./load.js";
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
+import { loadApplicationState } from "./load.js";
+import highPriorityIcon from "./images/gui-high-priority-svgrepo-com.svg";
+import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
+import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
 
 export function Display() {
+    const renderTaskCards = () => {
+        const taskList = Project.getAllProjects().flatMap(proj => proj.tasks);
+        const tasksContainer = document.querySelector(".tasks-container");
+        
+        taskList.forEach(t => {
+            const title = document.createElement("h3");
+            title.textContent = t.title;
+            title.classList.add("task-title");
+            const description = document.createElement("p");
+            description.textContent = t.description;
+            description.classList.add("task-desc");
+            const dueDate = document.createElement("p");
+            dueDate.textContent = t.dueDate;
+            dueDate.classList.add("task-due");
+            const priorityIcon = document.createElement("img");
+            const priorityObj = renderPriorityIcon(t.priority);
+            priorityIcon.src = priorityObj.iconUrl;
+            priorityIcon.alt = priorityObj.iconAlt;
+            priorityIcon.classList.add("priority-icon");
+
+            const taskCard = document.createElement("div");
+            taskCard.classList.add("task-card");
+            taskCard.append(priorityIcon, title, description, dueDate);
+            tasksContainer.appendChild(taskCard);
+        })
+    }
+
+    const renderPriorityIcon = (priorityLevel) => {
+        if (!priorityLevel) return;
+        let iconUrl;
+        let iconAlt;
+        if (priorityLevel === "High") {
+            return { iconUrl: highPriorityIcon, iconAlt: "White exclamation mark inside a red diamond" };
+        } else if (priorityLevel === "Medium") {
+            return { iconUrl: mediumPriorityIcon, iconAlt: "Black ellipsis inside a yellow diamond" };
+        } else {
+            return { iconUrl: lowPriorityIcon, iconAlt: "White down arrow inside a green diamond" };
+        }
+    }
+
+    const renderProjectBtn = () => {
+        loadApplicationState();
+        const projList = Project.getAllProjects();
+        for (let i = 0; i < projList.length; i++) {
+            const projName = projList[i].name;
+            createProjectBtn(projName);
+        }
+    }
+
     const createChecklistElement = (currChecklistData, itemInput, onDelete) => {
         const checklist = document.getElementById("checklist");
         const li = document.createElement("li");
@@ -41,13 +93,15 @@ export function Display() {
         submitBtnsDiv.appendChild(newBtn);
     } 
 
-    return { createChecklistElement, createProjectBtn, };
+    return { renderProjectBtn, renderTaskCards, createChecklistElement, createProjectBtn, };
 }
 
 function Controller() {
-    renderProjectBtns();
-
     const display = Display();
+
+    display.renderProjectBtn();
+    display.renderTaskCards();
+
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
     let checklistData = [];
