@@ -11,44 +11,93 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import { determineFormat } from "./date.js";
 
 export function Display() {
-    const renderTaskCards = () => {
+    const renderTaskCards = (onDeleteChecklistItem) => {
         const taskList = Project.getAllProjects().flatMap(proj => proj.tasks);
         const tasksContainer = document.querySelector(".tasks-container");
-        
+
         taskList.forEach(t => {
             const taskCard = document.createElement("div");
             taskCard.classList.add("task-card");
-
-            const title = document.createElement("h3");
-            title.textContent = t.title;
-            title.classList.add("task-title");
-
-            const priorityIcon = document.createElement("img");
-            const priorityObj = renderPriorityIcon(t.priority);
-            priorityIcon.src = priorityObj.iconUrl;
-            priorityIcon.alt = priorityObj.iconAlt;
-            priorityIcon.classList.add("priority-icon");
+            
+            const taskForm = document.createElement("form");
+            taskForm.id = "existingTaskForm";
+            taskForm.method = "get";
+            
+            const titleInput = document.createElement("input");
+            titleInput.classList.add("title");
+            titleInput.value = t.title;
+            titleInput.dataset.uuid = t.uuid;
+            titleInput.classList.add("taskTitle");
+            titleInput.name = "taskTitle";
+            titleInput.type = "text";
+            
             const topDiv = document.createElement("div");
             topDiv.classList.add("top-div");
-            topDiv.append(title, priorityIcon);
 
-            taskCard.appendChild(topDiv)
-            const formattedDate = determineFormat(t.dueDate);
-            if (formattedDate == undefined) {
+            const priorityObj = renderPriorityIcon(t.priority);
+            if (priorityObj) {
+                const priorityIcon = document.createElement("img");
+                priorityIcon.src = priorityObj.iconUrl;
+                priorityIcon.alt = priorityObj.iconAlt;
+                priorityIcon.classList.add("priority-icon");
+                topDiv.append(titleInput, priorityIcon);
             } else {
-                const dueDateDiv = document.createElement("div");
-                const calendarImg = document.createElement("img");
-                calendarImg.src = calendarIcon;
-                calendarImg.alt = "Traditional ring-bound calendar";
-                calendarImg.classList.add("calendar-icon");
-                dueDateDiv.classList.add("task-due");
-                const dueDate = document.createElement("p");
-                dueDate.textContent = formattedDate;
-                dueDateDiv.append(calendarImg, dueDate);
-                taskCard.appendChild(dueDateDiv);
+                topDiv.append(titleInput);
             }
+
+            const descInput = document.createElement("textarea");
+            descInput.classList.add("description");
+            descInput.dataset.uuid = t.uuid;
+            descInput.value = t.description;
+            descInput.id = "taskDesc";
+            descInput.name = "taskDesc";
+
+            const checklistItems = t.checklist;
+            const currChecklistUl = document.createElement("ul");
+            currChecklistUl.classList.add("checklist");
+            checklistItems.forEach(item => {
+                createChecklistElement(currChecklistUl, item, (itemId, li) => onDeleteChecklistItem(itemId, li, t));
+            })
+            const addNewBtn = document.createElement("button");
+            addNewBtn.classList.add("addBtn");
+            addNewBtn.textContent = "+";
+            addNewBtn.type = "button";
+            
+            const formattedDate = determineFormat(t.dueDate);
+            const dueDateDiv = document.createElement("div");
+            const calendarImg = document.createElement("img");
+            calendarImg.src = calendarIcon;
+            calendarImg.alt = "Ring-bound calendar";
+            calendarImg.classList.add("calendar-icon");
+            dueDateDiv.classList.add("dueDate");
+            const dueDateInput = document.createElement("input");
+            dueDateInput.type = "date";
+            dueDateInput.name = "taskDueDate";
+            dueDateInput.dataset.uuid = t.uuid;
+            dueDateInput.value = t.dueDate;
+            const dueDateLabel = document.createElement("p");
+            dueDateLabel.textContent = formattedDate
+            dueDateDiv.append(calendarImg, dueDateInput, dueDateLabel);
+
+            taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv)
+            taskCard.appendChild(taskForm);
             tasksContainer.appendChild(taskCard);
+
+            const formInputs = [titleInput, descInput, dueDateInput];
+            formInputs.forEach(input => {
+                input.addEventListener("input", (event) => {
+                    const targetUuid = event.target.dataset.uuid;
+                    const editedTask = taskList.find(t => t.uuid === targetUuid);
+                    const taskKey = event.target.classList[0];
+                    editedTask.editTask(taskKey, event.target.value);
+                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+                })
+            })
         })
+        const taskCards = document.querySelectorAll(".task-card");
+        taskCards.forEach(card => card.addEventListener("click", (event) => {
+            event.target.classList.add("active");
+        }));
     }
 
     const renderPriorityIcon = (priorityLevel) => {
@@ -73,8 +122,7 @@ export function Display() {
         }
     }
 
-    const createChecklistElement = (currChecklistData, itemInput, onDelete) => {
-        const checklist = document.getElementById("checklist");
+    const createChecklistElement = (checklistUl, currChecklistData, onDelete) => {
         const li = document.createElement("li");
         li.dataset.id = currChecklistData.id;
 
@@ -93,10 +141,7 @@ export function Display() {
  
         label.append(checkbox, textSpan);
         li.append(label, deleteItemBtn);
-        checklist.appendChild(li);
-
-        itemInput.value = "";
-        itemInput.focus();
+        checklistUl.appendChild(li);
     }
 
     const createProjectBtn = (projName) => {
@@ -109,30 +154,47 @@ export function Display() {
         submitBtnsDiv.appendChild(newBtn);
     } 
 
+    const openTaskCard = () => {
+
+    }
+
     return { renderProjectBtn, renderTaskCards, createChecklistElement, createProjectBtn, };
 }
 
 function Controller() {
     const display = Display();
 
+    let checklistData = [];
+
+    const removeChecklistItem = (itemId, li) => {
+        checklistData = checklistData.filter(item => item.id !== itemId);
+        li.remove();
+    }
+
+    const removeExistingChecklistItem = (itemId, li, task) => {
+        task.checklist = task.checklist.filter(item => item.id !== itemId);        
+        li.remove();
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+    }
+
     display.renderProjectBtn();
-    display.renderTaskCards();
+    display.renderTaskCards(removeChecklistItem);
 
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
-    let checklistData = [];
 
     const addChecklistItem = () => {
         const textValue = itemInput.value.trim();
         if (textValue === "") return;
 
+        const newTaskChecklist = document.getElementById("checklist");
         const currChecklistData = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2),
             text: textValue,
             status: "pending",
         }
         checklistData.push(currChecklistData);
-        display.createChecklistElement(currChecklistData, itemInput, removeChecklistItem);
+        display.createChecklistElement(newTaskChecklist, currChecklistData, removeChecklistItem);
     }
 
     addBtn.addEventListener("click", (event) => {
@@ -168,12 +230,7 @@ function Controller() {
         newTaskForm.reset();
     });
 
-    const removeChecklistItem = (itemId, li) => {
-        checklistData = checklistData.filter(item => item.id !== itemId);
-        li.remove();
-    }
-            
-    const logInput = () => {
+    const logNewInput = () => {
         const taskObj = {
             title: document.querySelector("#taskTitle").value,
             description: document.querySelector("#taskDesc").value,
@@ -191,7 +248,7 @@ function Controller() {
         const targetProj = projectsList.find(proj => proj.name === targetProjName);
         
         if (targetProj) {
-            const taskData = logInput();
+            const taskData = logNewInput();
             const newTask = new Task(taskData);
             targetProj.addTask(newTask);
         };
