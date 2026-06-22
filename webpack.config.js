@@ -28,7 +28,6 @@ export default {
       },
       {
         test: /\.html$/i,
-        exclude: path.resolve(import.meta.dirname, "src/index.html"),
         use: [{
                 loader: "html-loader",
                 options: {

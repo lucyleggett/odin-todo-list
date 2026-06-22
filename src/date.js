@@ -7,7 +7,7 @@ export function determineFormat(date) {
     if (isToday(date)) formattedDate = "Today";
     else if (isTomorrow(date)) formattedDate = "Tomorrow";
     else if (isYesterday(date)) formattedDate = "Yesterday";
-    else formattedDate = format(date, "eeee dd/MM");
+    else formattedDate = format(date, "eee dd/MM");
 
     return formattedDate;
 }
