@@ -20,7 +20,6 @@ export function Display() {
             taskCard.classList.add("task-card");
             
             const taskForm = document.createElement("form");
-            taskForm.id = "existingTaskForm";
             taskForm.method = "get";
             
             const titleInput = document.createElement("input");
@@ -51,8 +50,9 @@ export function Display() {
             descInput.value = t.description;
             descInput.id = "taskDesc";
             descInput.name = "taskDesc";
+            descInput.rows = 1;
 
-            const checklistItems = t.checklist;
+            const checklistItems = t.checklist || [];
             const currChecklistUl = document.createElement("ul");
             currChecklistUl.classList.add("checklist");
             checklistItems.forEach(item => {
@@ -65,19 +65,19 @@ export function Display() {
             
             const formattedDate = determineFormat(t.dueDate);
             const dueDateDiv = document.createElement("div");
-            const calendarImg = document.createElement("img");
-            calendarImg.src = calendarIcon;
-            calendarImg.alt = "Ring-bound calendar";
-            calendarImg.classList.add("calendar-icon");
+            // const calendarImg = document.createElement("img");
+            // calendarImg.src = calendarIcon;
+            // calendarImg.alt = "Ring-bound calendar";
+            // calendarImg.classList.add("calendar-icon");
             dueDateDiv.classList.add("dueDate");
             const dueDateInput = document.createElement("input");
             dueDateInput.type = "date";
             dueDateInput.name = "taskDueDate";
             dueDateInput.dataset.uuid = t.uuid;
             dueDateInput.value = t.dueDate;
-            const dueDateLabel = document.createElement("p");
-            dueDateLabel.textContent = formattedDate
-            dueDateDiv.append(calendarImg, dueDateInput, dueDateLabel);
+            // const dueDateLabel = document.createElement("p");
+            // dueDateLabel.textContent = formattedDate
+            dueDateDiv.append(dueDateInput);
 
             taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv)
             taskCard.appendChild(taskForm);
@@ -178,7 +178,7 @@ function Controller() {
     }
 
     display.renderProjectBtn();
-    display.renderTaskCards(removeChecklistItem);
+    display.renderTaskCards(removeExistingChecklistItem);
 
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");

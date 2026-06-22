@@ -33,11 +33,13 @@ h1, h2, h3, h4, h5, h6 {
 
     --fs-body: 16px;
     --fs-h1: 30px;
-    --fs-h3: 26px;
+    --fs-h3: 22px;
+    --fw-bold: 700;
 }
 
 body {
     font-family: var(--ff-manrope);
+    font-size: var(--fs-body);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -124,6 +126,40 @@ img.priority-icon {
     width: 30px;
 }
 
+input, textarea {
+    outline: none;
+    border: none;
+}
+
+input.title {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+}
+
+textarea {
+  field-sizing: content;
+  min-height: 40px;
+  max-height: 300px;
+  resize: none;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    width: 100%;
+}
+
+li { 
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* 
 #newProjectForm {
     display: flex;
     width: 400px;
@@ -237,7 +273,7 @@ button.checklist-delete,
     background-color: transparent;
     font-size: 20px;
     font-weight: 200;
-}
+} */
 
 .disabled {
     display: none;
