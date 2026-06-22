@@ -27,11 +27,17 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
+
 * {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    --ff-manrope: "Manrope", Arial, sans-serif;
+
+    --fs-body: 16px;
+    --fs-h1: 30px;
+    --fs-h3: 26px;
 }
 
 body {
+    font-family: var(--ff-manrope);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -44,8 +50,44 @@ body {
     max-width: 360px;
 }
 
+h1 {
+    margin: 20px 0;
+}
+
 .priority-icon {
     width: 30px;
+    grid-area: 1 / 2 / 2 / 3;
+    margin-left: 10px;
+}
+
+.tasks-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.task-card {
+    display: flex;
+    flex-direction: column;
+    background-color: hotpink;
+    padding: 15px;
+    border-radius: 10px;
+    gap: 5px;
+}
+
+.top-div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    min-height: 30px;
+    align-items: center;
+}
+
+div.task-due {
+    background-color: white;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
 #newProjectForm {
@@ -161,4 +203,8 @@ button.checklist-delete,
     background-color: transparent;
     font-size: 20px;
     font-weight: 200;
+}
+
+.disabled {
+    display: none;
 }

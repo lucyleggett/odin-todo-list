@@ -4,53 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <div class="dashboard">
-            <h1>All tasks</h1>
+            <h1>Tasks</h1>
             <div class="tasks-container"></div>
         </div>
-        <form id="newProjectForm" action="" method="get">
-            <label for="projectName">Project name</label>
-            <input id="projectName" name="projectName" type="text" placeholder="New project">
-            <button id="newProjectBtn" type="submit">+</button>
-        </form>
-        <form id="newTaskForm" action="" method="get">
-            <div class="form-row">
-                <label for="taskTitle">Title</label>
-                <input id="taskTitle" name="taskTitle" type="text" placeholder="Title"/>
-            </div>
-            <div class="form-row">
-                <label for="taskDesc">Description</label>
-                <textarea id="taskDesc" name="taskDesc" rows="1" placeholder="Description"></textarea>
-            </div>
-            <div class="form-row">
-                <p>☑️</p>
-                <input type="text" id="itemInput" placeholder="Add checklist item...">
-                <button id="addBtn">+</button>
-            </div>
-            <ul id="checklist"></ul>
-            <div class="vertical-container">
+        <div class="project-form-container disabled">
+            <form id="newProjectForm" action="" method="get">
+                <label for="projectName">Project name</label>
+                <input id="projectName" name="projectName" type="text" placeholder="New project">
+                <button id="newProjectBtn" type="submit">+</button>
+            </form>
+        </div>
+        <div class="task-form-container disabled">
+            <form id="newTaskForm"  action="" method="get">
                 <div class="form-row">
-                    <label for="taskDueDate">Due Date</label>
-                    <input id="taskDueDate" name="taskDueDate" type="date"/>
+                    <label for="taskTitle">Title</label>
+                    <input id="taskTitle" name="taskTitle" type="text" placeholder="Title"/>
                 </div>
                 <div class="form-row">
-                <label for="taskPriority">Priority</label>
-                <select name="taskPriority" id="taskPriority">
-                    <option value="Low">💆 Low</option>
-                    <option value="Medium">🔔 Medium</option>
-                    <option value="High">❗️ High</option>
-                </select>
+                    <label for="taskDesc">Description</label>
+                    <textarea id="taskDesc" name="taskDesc" rows="1" placeholder="Description"></textarea>
                 </div>
-            </div>
-            <div class="submit-project form-row">
-                <p>Add task to...</p>
-                <div class="submit-buttons">
+                <div class="form-row">
+                    <p>☑️</p>
+                    <input type="text" id="itemInput" placeholder="Add checklist item...">
+                    <button id="addBtn">+</button>
                 </div>
-            </div>
-        </form>
+                <ul id="checklist"></ul>
+                <div class="vertical-container">
+                    <div class="form-row">
+                        <label for="taskDueDate">Due Date</label>
+                        <input id="taskDueDate" name="taskDueDate" type="date"/>
+                    </div>
+                    <div class="form-row">
+                    <label for="taskPriority">Priority</label>
+                    <select name="taskPriority" id="taskPriority">
+                        <option value="Low">💆 Low</option>
+                        <option value="Medium">🔔 Medium</option>
+                        <option value="High">❗️ High</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="submit-project form-row">
+                    <p>Add task to...</p>
+                    <div class="submit-buttons">
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

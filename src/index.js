@@ -6,6 +6,7 @@ import { loadApplicationState } from "./load.js";
 import highPriorityIcon from "./images/gui-high-priority-svgrepo-com.svg";
 import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
 import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
+import { format, isToday, isTomorrow, isYesterday } from "date-fns";
 
 export function Display() {
     const renderTaskCards = () => {
@@ -13,24 +14,40 @@ export function Display() {
         const tasksContainer = document.querySelector(".tasks-container");
         
         taskList.forEach(t => {
+            const taskCard = document.createElement("div");
+            taskCard.classList.add("task-card");
+
             const title = document.createElement("h3");
             title.textContent = t.title;
             title.classList.add("task-title");
-            const description = document.createElement("p");
-            description.textContent = t.description;
-            description.classList.add("task-desc");
-            const dueDate = document.createElement("p");
-            dueDate.textContent = t.dueDate;
-            dueDate.classList.add("task-due");
+
             const priorityIcon = document.createElement("img");
             const priorityObj = renderPriorityIcon(t.priority);
             priorityIcon.src = priorityObj.iconUrl;
             priorityIcon.alt = priorityObj.iconAlt;
             priorityIcon.classList.add("priority-icon");
+            const topDiv = document.createElement("div");
+            topDiv.classList.add("top-div");
+            topDiv.append(title, priorityIcon);
 
-            const taskCard = document.createElement("div");
-            taskCard.classList.add("task-card");
-            taskCard.append(priorityIcon, title, description, dueDate);
+            const dueDateDiv = document.createElement("div");
+            if (t.dueDate === "") {
+                taskCard.appendChild(topDiv);
+            } else {
+                const dueDate = document.createElement("p");
+                if (isToday(t.dueDate)) {
+                    dueDate.textContent = "Today";
+                } else if (isTomorrow(t.dueDate)) {
+                    dueDate.textContent = "Tomorrow";
+                } else if (isYesterday(t.dueDate)) {
+                    dueDate.textContent = "Yesterday";
+                } else {
+                    dueDate.textContent = format(t.dueDate, "eeee dd/MM");
+                }
+                dueDateDiv.classList.add("task-due");
+                dueDateDiv.appendChild(dueDate);
+                taskCard.append(topDiv, dueDateDiv);
+            }
             tasksContainer.appendChild(taskCard);
         })
     }
@@ -44,7 +61,7 @@ export function Display() {
         } else if (priorityLevel === "Medium") {
             return { iconUrl: mediumPriorityIcon, iconAlt: "Black ellipsis inside a yellow diamond" };
         } else {
-            return { iconUrl: lowPriorityIcon, iconAlt: "White down arrow inside a green diamond" };
+            return { iconUrl: lowPriorityIcon, iconAlt: "Yellow down arrow inside a green diamond" };
         }
     }
 
