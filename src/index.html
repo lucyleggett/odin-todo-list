@@ -6,42 +6,47 @@
     <title>Todo List</title>
 </head>
 <body>
-    <form id="newProjectForm" action="" method="get">
-        <label for="projectName">Name</label>
-        <input id="projectName" name="projectName" type="text">
-        <button id="newProjectBtn" type="submit">Add</button>
-    </form>
-    <form id="newTaskForm" action="" method="get">
-        <div class="form-row">
-            <label for="taskTitle">Title</label>
-            <input id="taskTitle" name="taskTitle" type="text"/>
-        </div>
-        <div class="form-row">
-            <label for="taskDesc">Description</label>
-            <input id="taskDesc" name="taskDesc" type="text"/>
-        </div>
-        <div class="form-row">
-            <label for="taskDueDate">Due Date</label>
-            <input id="taskDueDate" name="taskDueDate" type="datetime"/>
-        </div>
-        <div class="form-row">
-        <label for="taskPriority">Priority:</label>
-        <select name="taskPriority" id="taskPriority">
-        <option value="Low">💆 Low</option>
-        <option value="Medium">🔔 Medium</option>
-        <option value="High">❗️ High</option>
-        </select>
-        </div>
-        <div class="form-row">
-            <input type="text" id="itemInput" placeholder="Add to checklist...">
-            <button id="addBtn">Add</button>
-        </div>
-        <ul id="checklist"></ul>
-        <div class="form-row">
-            <p>Add task to...</p>
-            <div class="submit-buttons">
+    <div class="container">
+        <form id="newProjectForm" action="" method="get">
+            <label for="projectName">Project name</label>
+            <input id="projectName" name="projectName" type="text" placeholder="New project">
+            <button id="newProjectBtn" type="submit">+</button>
+        </form>
+        <form id="newTaskForm" action="" method="get">
+            <div class="form-row">
+                <label for="taskTitle">Title</label>
+                <input id="taskTitle" name="taskTitle" type="text" placeholder="Title"/>
             </div>
-        </div>
-    </form>
+            <div class="form-row">
+                <label for="taskDesc">Description</label>
+                <textarea id="taskDesc" name="taskDesc" rows="1" placeholder="Description"></textarea>
+            </div>
+            <div class="form-row">
+                <p>☑️</p>
+                <input type="text" id="itemInput" placeholder="Add checklist item...">
+                <button id="addBtn">+</button>
+            </div>
+            <ul id="checklist"></ul>
+            <div class="vertical-container">
+                <div class="form-row">
+                    <label for="taskDueDate">Due Date</label>
+                    <input id="taskDueDate" name="taskDueDate" type="date"/>
+                </div>
+                <div class="form-row">
+                <label for="taskPriority">Priority</label>
+                <select name="taskPriority" id="taskPriority">
+                    <option value="Low">💆 Low</option>
+                    <option value="Medium">🔔 Medium</option>
+                    <option value="High">❗️ High</option>
+                </select>
+                </div>
+            </div>
+            <div class="submit-project form-row">
+                <p>Add task to...</p>
+                <div class="submit-buttons">
+                </div>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

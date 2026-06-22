@@ -11,6 +11,7 @@ export function Display() {
         li.dataset.id = currChecklistData.id;
 
         const label = document.createElement("label");
+        label.classList.add("checkbox");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
 
@@ -18,7 +19,7 @@ export function Display() {
         textSpan.textContent = currChecklistData.text;
 
         const deleteItemBtn = document.createElement("button");
-        deleteItemBtn.textContent = "X";
+        deleteItemBtn.textContent = "x";
         deleteItemBtn.classList.add("checklist-delete");
         deleteItemBtn.addEventListener("click", () => onDelete(currChecklistData.id,li));
  
