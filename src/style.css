@@ -79,7 +79,6 @@ h1 {
 }
 
 .priority-icon {
-    width: 30px;
     grid-area: 1 / 2 / 2 / 3;
     margin-left: 10px;
 }
@@ -87,17 +86,17 @@ h1 {
 .tasks-container {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 10px;
 }
 
 .task-card {
     display: flex;
     flex-direction: column;
-    background-color: hotpink;
     padding: 15px;
+    border: 1px solid black;
     border-radius: 10px;
     gap: 5px;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
 }
 
 .top-div {
@@ -108,11 +107,21 @@ h1 {
 }
 
 div.task-due {
+    display: flex;
+    align-items: center;
     background-color: white;
     width: fit-content;
-    padding: 5px;
     border-radius: 5px;
     margin-top: 10px;
+}
+
+div.task-due > p {
+    margin-left: 5px;;
+}
+
+img.calendar-icon, 
+img.priority-icon {
+    width: 30px;
 }
 
 #newProjectForm {

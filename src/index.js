@@ -6,6 +6,8 @@ import { loadApplicationState } from "./load.js";
 import highPriorityIcon from "./images/gui-high-priority-svgrepo-com.svg";
 import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
 import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
+import calendarIcon from "./images/calendar-svgrepo-com.svg";
+import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import { determineFormat } from "./date.js";
 
 export function Display() {
@@ -35,10 +37,14 @@ export function Display() {
             if (formattedDate == undefined) {
             } else {
                 const dueDateDiv = document.createElement("div");
+                const calendarImg = document.createElement("img");
+                calendarImg.src = calendarIcon;
+                calendarImg.alt = "Traditional ring-bound calendar";
+                calendarImg.classList.add("calendar-icon");
                 dueDateDiv.classList.add("task-due");
                 const dueDate = document.createElement("p");
                 dueDate.textContent = formattedDate;
-                dueDateDiv.appendChild(dueDate);
+                dueDateDiv.append(calendarImg, dueDate);
                 taskCard.appendChild(dueDateDiv);
             }
             tasksContainer.appendChild(taskCard);
