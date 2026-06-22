@@ -6,7 +6,7 @@ import { loadApplicationState } from "./load.js";
 import highPriorityIcon from "./images/gui-high-priority-svgrepo-com.svg";
 import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
 import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
-import { format, isToday, isTomorrow, isYesterday } from "date-fns";
+import { determineFormat } from "./date.js";
 
 export function Display() {
     const renderTaskCards = () => {
@@ -30,23 +30,16 @@ export function Display() {
             topDiv.classList.add("top-div");
             topDiv.append(title, priorityIcon);
 
-            const dueDateDiv = document.createElement("div");
-            if (t.dueDate === "") {
-                taskCard.appendChild(topDiv);
+            taskCard.appendChild(topDiv)
+            const formattedDate = determineFormat(t.dueDate);
+            if (formattedDate == undefined) {
             } else {
-                const dueDate = document.createElement("p");
-                if (isToday(t.dueDate)) {
-                    dueDate.textContent = "Today";
-                } else if (isTomorrow(t.dueDate)) {
-                    dueDate.textContent = "Tomorrow";
-                } else if (isYesterday(t.dueDate)) {
-                    dueDate.textContent = "Yesterday";
-                } else {
-                    dueDate.textContent = format(t.dueDate, "eeee dd/MM");
-                }
+                const dueDateDiv = document.createElement("div");
                 dueDateDiv.classList.add("task-due");
+                const dueDate = document.createElement("p");
+                dueDate.textContent = formattedDate;
                 dueDateDiv.appendChild(dueDate);
-                taskCard.append(topDiv, dueDateDiv);
+                taskCard.appendChild(dueDateDiv);
             }
             tasksContainer.appendChild(taskCard);
         })
