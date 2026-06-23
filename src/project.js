@@ -37,6 +37,11 @@ export class Project {
         return this.#tasks;
     }
 
+    static deleteProject(uuid) {
+        const updatedProjects = Project.getAllProjects().filter((p) => p.uuid !== uuid);
+        Project.instances = updatedProjects;
+    }
+
     addTask(task) {
         this.#tasks.push(task);
     }

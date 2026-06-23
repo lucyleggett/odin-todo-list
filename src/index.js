@@ -9,6 +9,7 @@ import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
 import calendarIcon from "./images/calendar-svgrepo-com.svg";
 import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
+import binIcon from "./images/trash-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
 
 export function Display() {
@@ -46,8 +47,8 @@ export function Display() {
 
             const uniqueID = `color-picker-${proj.id}|| Math.random().toString(36).substr(2, 9)}`;
 
-            const colorPickerDiv = document.createElement("div");
-            colorPickerDiv.classList.add("color-picker-container");
+            const iconDiv = document.createElement("div");
+            iconDiv.classList.add("icon-container");
             const colorPicker = document.createElement("input");
             colorPicker.type = "color";
             colorPicker.id = uniqueID;
@@ -70,8 +71,22 @@ export function Display() {
                 datalist.appendChild(option);
             })
             colorPickerLabel.appendChild(colorPickerIcon);
-            colorPickerDiv.append(colorPickerLabel, colorPicker, datalist)
-            projForm.append(projTitle, colorPickerDiv);
+
+            const deleteProjBtn = document.createElement("button");
+            deleteProjBtn.classList.add("delete-btn");
+            deleteProjBtn.id = proj.uuid;
+            const deleteIcon = document.createElement("img");
+            deleteIcon.classList.add("delete", "icon");
+            deleteIcon.src = binIcon;
+            deleteProjBtn.appendChild(deleteIcon);
+            deleteProjBtn.addEventListener("click", (event) => {
+                Project.deleteProject(deleteProjBtn.id);
+                projCard.remove();
+                if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+            })
+            iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
+
+            projForm.append(projTitle, iconDiv);
             projCard.appendChild(projForm);
             projContainer.appendChild(projCard);
             document.querySelectorAll("input.proj-title").forEach(input => {

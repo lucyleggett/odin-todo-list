@@ -301,16 +301,11 @@ div.dueDate {
     color: white;
 }
 
-.color-picker {
-    appearance: none;
-}
-
 .color-picker-label {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
   border-radius: 50%;
   transition: background-color 0.2s ease;
 }
@@ -326,6 +321,17 @@ div.dueDate {
 .project-card .icon {
     width: 30px;
     filter: brightness(0) invert(1);
+}
+
+.project-card button {
+    width: fit-content;
+    padding: 0;
+    border: transparent;
+    background-color: transparent;
+}
+
+.icon-container {
+    display: flex;
 }
 
 /* 
