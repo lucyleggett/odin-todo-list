@@ -8,7 +8,7 @@ import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
 import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
 import calendarIcon from "./images/calendar-svgrepo-com.svg";
 import menuIcon from "./images/align-justify-svgrepo-com.svg";
-import { determineFormat } from "./date.js";
+import { addCalendarListener } from "./date.js";
 
 export function Display() {
     const renderTaskCards = (onDeleteChecklistItem) => {
@@ -22,13 +22,13 @@ export function Display() {
             const taskForm = document.createElement("form");
             taskForm.method = "get";
             
-            const titleInput = document.createElement("input");
+            const titleInput = document.createElement("textarea");
             titleInput.classList.add("title");
             titleInput.value = t.title;
             titleInput.dataset.uuid = t.uuid;
             titleInput.classList.add("taskTitle");
             titleInput.name = "taskTitle";
-            titleInput.type = "text";
+            titleInput.rows = 1;
             
             const topDiv = document.createElement("div");
             topDiv.classList.add("top-div");
@@ -63,20 +63,14 @@ export function Display() {
             addNewBtn.textContent = "+";
             addNewBtn.type = "button";
             
-            const formattedDate = determineFormat(t.dueDate);
             const dueDateDiv = document.createElement("div");
-            // const calendarImg = document.createElement("img");
-            // calendarImg.src = calendarIcon;
-            // calendarImg.alt = "Ring-bound calendar";
-            // calendarImg.classList.add("calendar-icon");
             dueDateDiv.classList.add("dueDate");
             const dueDateInput = document.createElement("input");
             dueDateInput.type = "date";
+            dueDateInput.classList.add("custom-date");
             dueDateInput.name = "taskDueDate";
             dueDateInput.dataset.uuid = t.uuid;
             dueDateInput.value = t.dueDate;
-            // const dueDateLabel = document.createElement("p");
-            // dueDateLabel.textContent = formattedDate
             dueDateDiv.append(dueDateInput);
 
             taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv)
@@ -179,6 +173,7 @@ function Controller() {
 
     display.renderProjectBtn();
     display.renderTaskCards(removeExistingChecklistItem);
+    addCalendarListener();
 
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
