@@ -117,6 +117,8 @@ export function Display() {
         taskList.forEach(({ task: t, project: parentProject }) => {
             const taskCard = document.createElement("div");
             taskCard.classList.add("task-card");
+            taskCard.id = parentProject.uuid;
+            setCardColor(taskCard);
             
             const taskForm = document.createElement("form");
             taskForm.method = "get";
@@ -199,9 +201,10 @@ export function Display() {
             formInputs.forEach(input => {
                 input.addEventListener("input", (event) => {
                     const targetUuid = event.target.dataset.uuid;
-                    const editedTask = taskList.find(t => t.uuid === targetUuid);
+                    const match = taskList.find(({ task }) => task.uuid === targetUuid);
+                    if (!match) return;
                     const taskKey = event.target.classList[0];
-                    editedTask.editTask(taskKey, event.target.value);
+                    match.task.editTask(taskKey, event.target.value);
                     if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
                 })
             })

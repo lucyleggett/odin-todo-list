@@ -51,6 +51,7 @@ body {
     flex-direction: column;
     align-items: center;
     max-width: 360px;
+    margin-bottom: 20px;
 }
 
 .tasks-dashboard,
@@ -103,10 +104,14 @@ h1 {
     display: flex;
     flex-direction: column;
     padding: 10px 15px 15px 15px;
-    border: 1px solid black;
     border-radius: 10px;
     gap: 5px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+}
+
+.task-card *,  
+.project-card * {
+    color: white;
 }
 
 .task-card {
@@ -140,6 +145,7 @@ img.priority-icon {
 input, textarea {
     outline: none;
     border: none;
+    background-color: transparent;
     overflow-wrap: break-word;
     white-space: pre-wrap;
     padding: 0;
@@ -286,6 +292,7 @@ div.dueDate {
 .project-card {
     display: flex;
     flex-grow: 1;
+    border: transparent;
 }
 
 .project-card > form {
