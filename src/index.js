@@ -74,16 +74,25 @@ export function Display() {
             dueDateInput.dataset.uuid = t.uuid;
             dueDateInput.value = t.dueDate;
 
-            const projectLabel = document.createElement("select");
-            projectLabel.classList.add("project-label");
+            const projectInput = document.createElement("select");
+            projectInput.classList.add("project-label");
+            projectInput.dataset.uuid = t.uuid;
             Project.getAllProjects().forEach(proj => {
                 const option = document.createElement("option");
                 option.value = proj.name;
                 option.textContent = proj.name;
-                projectLabel.appendChild(option);
+                projectInput.appendChild(option);
             })
-            projectLabel.value = parentProject.name;
-            dueDateDiv.append(dueDateInput, projectLabel);
+            projectInput.value = parentProject.name;
+            projectInput.addEventListener("change", (event) => {
+                const newProjName = event.target.value;
+                const nextProj = Project.getAllProjects().find(proj => proj.name === newProjName);
+                if (nextProj){
+                    Project.moveTask(projectInput.dataset.uuid, parentProject, nextProj);
+                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+                }
+            })
+            dueDateDiv.append(dueDateInput, projectInput);
 
             taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
             taskCard.appendChild(taskForm);
@@ -260,13 +269,6 @@ function Controller() {
             targetProj.addTask(newTask);
         };
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-    }
-
-    const moveTask = (taskUUID, currProj, nextProj) => {
-        const tasksList = currProj.getAllTasks();
-        const targetTask = tasksList.find(t => t.uuid === taskUUID);
-        currProj.removeTask(targetTask);
-        nextProj.addTask(targetTask);
     }
 }
 

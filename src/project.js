@@ -42,5 +42,10 @@ export class Project {
         };
     }
 
-
+    static moveTask(taskUUID, currProj, nextProj) {
+        const tasksList = currProj.tasks;
+        const targetTask = tasksList.find(t => t.uuid === taskUUID);
+        currProj.removeTask(targetTask);
+        nextProj.addTask(targetTask);
+    }
 }
