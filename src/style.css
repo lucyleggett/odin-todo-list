@@ -101,7 +101,7 @@ h1 {
     display: flex;
     flex-direction: column;
     width: 360px;
-    padding: 15px;
+    padding: 10px 15px 15px 15px;
     border: 1px solid black;
     border-radius: 10px;
     gap: 5px;
@@ -112,7 +112,6 @@ h1 {
     display: grid;
     grid-template-columns: 1fr auto;
     min-height: 30px;
-    align-items: center;
 }
 
 div.task-due {
@@ -128,9 +127,9 @@ div.task-due > p {
     margin-left: 5px;;
 }
 
-img.calendar-icon, 
 img.priority-icon {
     width: 30px;
+    padding-top: 5px;
 }
 
 input, textarea {
@@ -165,14 +164,14 @@ ul {
     flex-direction: column;
     align-items: stretch;
     list-style-type: none;
-    margin: 0;
+    margin-top: 10px;
     padding: 0;
     width: 100%;
 }
 
 li { 
     display: flex;
-    width: 100%;
+    width: calc(100% - 3px);
     font-size: var(--fs-checklist);
     margin-left: 3px;
 }
@@ -181,10 +180,6 @@ li > label {
     display: flex;
     align-items: center;
     flex: 1;
-}
-
-button.checklist-delete {
-    font-size: 12px;
 }
 
 button.checklist-delete,
@@ -210,7 +205,9 @@ button.addBtn:hover {
 }
 
 button.addBtn {
+    display: flex;
     justify-self: right;
+    font-size: 27px;
 }
 
 .custom-date {
@@ -267,6 +264,7 @@ div.dueDate {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 10px;
 }
 
 /* 
