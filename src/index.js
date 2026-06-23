@@ -8,6 +8,7 @@ import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
 import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
 import calendarIcon from "./images/calendar-svgrepo-com.svg";
 import menuIcon from "./images/align-justify-svgrepo-com.svg";
+import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
 
 export function Display() {
@@ -18,27 +19,48 @@ export function Display() {
         input.style.width = finalWidth + "px";
     }
 
+    const setCardColor = (card) => {
+        const currProj = Project.getAllProjects().find((p) => p.uuid === card.id);
+        if(!currProj || currProj.color === undefined) {
+            card.style.backgroundColor = "inherit";
+            return;
+        } else {
+            card.style.backgroundColor = currProj.color;
+        }
+    }
+
     const renderProjectCards = () => {
         const projContainer = document.querySelector(".projects-container");
-        const allProjects = Project.getAllProjects();
-        allProjects.forEach((proj) => {
-            console.log(Project.getAllProjects());
+        Project.getAllProjects().forEach((proj) => {
             const projCard = document.createElement("div");
             projCard.id = proj.uuid;
+            setCardColor(projCard);
             projCard.classList.add("project-card");
 
             const projForm = document.createElement("form");
+            projForm.classList = "new-project-form";
             const projTitle = document.createElement("input");
             projTitle.type = "text";
             projTitle.value = proj.name;
             projTitle.classList.add("proj-title");
 
+            const uniqueID = `color-picker-${proj.id}|| Math.random().toString(36).substr(2, 9)}`;
+
+            const colorPickerDiv = document.createElement("div");
+            colorPickerDiv.classList.add("color-picker-container");
             const colorPicker = document.createElement("input");
             colorPicker.type = "color";
+            colorPicker.id = uniqueID;
             colorPicker.name = "color";
             colorPicker.value = proj.color;
-            colorPicker.classList.add("color-picker");
+            colorPicker.classList.add("hidden-color-picker");
             colorPicker.setAttribute("list", "presetColors");
+            const colorPickerLabel = document.createElement("label");
+            colorPickerLabel.setAttribute("for", uniqueID);
+            colorPickerLabel.classList.add("color-picker-label");
+            const colorPickerIcon = document.createElement("img");
+            colorPickerIcon.src = brushIcon;
+            colorPickerIcon.classList.add("brush", "icon");
             const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
             const datalist = document.createElement("datalist");
             datalist.id = "presetColors";
@@ -47,7 +69,9 @@ export function Display() {
                 option.value = color;
                 datalist.appendChild(option);
             })
-            projForm.append(projTitle, colorPicker, datalist);
+            colorPickerLabel.appendChild(colorPickerIcon);
+            colorPickerDiv.append(colorPickerLabel, colorPicker, datalist)
+            projForm.append(projTitle, colorPickerDiv);
             projCard.appendChild(projForm);
             projContainer.appendChild(projCard);
             document.querySelectorAll("input.proj-title").forEach(input => {
@@ -56,7 +80,7 @@ export function Display() {
                     resizeInput(input);
                 });
             });
-            document.querySelectorAll(".project-card").forEach(card => {
+            document.querySelectorAll(".new-project-form").forEach(card => {
                 card.addEventListener("change", (event) => {
                     const currProj = allProjects.find((p) => p.uuid === card.id);
                     const nameInput = card.querySelector(".proj-title");
