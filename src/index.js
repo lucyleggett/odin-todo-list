@@ -12,10 +12,12 @@ import { addCalendarListener } from "./date.js";
 
 export function Display() {
     const renderTaskCards = (onDeleteChecklistItem) => {
-        const taskList = Project.getAllProjects().flatMap(proj => proj.tasks);
+        const taskList = Project.getAllProjects().flatMap(proj => 
+            proj.tasks.map(task => ({ task, project: proj }))
+        );        
         const tasksContainer = document.querySelector(".tasks-container");
 
-        taskList.forEach(t => {
+        taskList.forEach(({ task: t, project: parentProject }) => {
             const taskCard = document.createElement("div");
             taskCard.classList.add("task-card");
             
@@ -71,9 +73,19 @@ export function Display() {
             dueDateInput.name = "taskDueDate";
             dueDateInput.dataset.uuid = t.uuid;
             dueDateInput.value = t.dueDate;
-            dueDateDiv.append(dueDateInput);
 
-            taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv)
+            const projectLabel = document.createElement("select");
+            projectLabel.classList.add("project-label");
+            Project.getAllProjects().forEach(proj => {
+                const option = document.createElement("option");
+                option.value = proj.name;
+                option.textContent = proj.name;
+                projectLabel.appendChild(option);
+            })
+            projectLabel.value = parentProject.name;
+            dueDateDiv.append(dueDateInput, projectLabel);
+
+            taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
             taskCard.appendChild(taskForm);
             tasksContainer.appendChild(taskCard);
 

@@ -244,6 +244,26 @@ button.addBtn {
     display: none !important;
 }
 
+select.project-label {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: fit-content;
+    appearance: none;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: var(--fw-bold);
+    padding: 5px;
+    background-color: inherit;
+    border: none;
+}
+
+div.dueDate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 /* 
 #newProjectForm {
     display: flex;
