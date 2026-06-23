@@ -3,8 +3,9 @@ export class Project {
     #tasks;
     static instances = [];
 
-    constructor(name){
+    constructor(name, color){
         this.name = name.toLowerCase();
+        this.color = color;
         this.#tasks = [];
 
         Project.instances.push(this);
