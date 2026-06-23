@@ -10,22 +10,25 @@
 </head>
 <body>
     <div class="container">
-        <div class="dashboard">
+        <div class="tasks-dashboard">
             <div class="title-bar">
                 <h1>Tasks</h1>
                 <div class="buttons">
                     <button><img src="./images/filter-svgrepo-com.svg" alt="Three horizontal lines decreasing in width" class="filter"></button>
-                    <button><img src="./images/plus-svgrepo-com.svg" alt="Plus sign" class="newItem"></button>
+                    <button><img src="./images/plus-svgrepo-com.svg" alt="Plus sign" class="newTask"></button>
                 </div>
             </div>
             <div class="tasks-container"></div>
         </div>
-        <div class="project-form-container disabled">
-            <form id="newProjectForm" action="" method="get">
-                <label for="projectName">Project name</label>
-                <input id="projectName" name="projectName" type="text" placeholder="New project">
-                <button id="newProjectBtn" type="submit">+</button>
-            </form>
+        <div class="projects-dashboard">
+            <div class="title-bar">
+                <h1>Projects</h1>
+                <div class="buttons">
+                    <button><img src="./images/filter-svgrepo-com.svg" alt="Three horizontal lines decreasing in width" class="filter"></button>
+                    <button><img src="./images/plus-svgrepo-com.svg" alt="Plus sign" class="newProject"></button>
+                </div>
+            </div>
+            <div class="projects-container"></div>
         </div>
         <div class="task-form-container disabled">
             <form id="newTaskForm"  action="" method="get">

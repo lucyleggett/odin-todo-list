@@ -1,11 +1,13 @@
 export class Project {
     #name;
     #tasks;
+    #color;
     static instances = [];
 
-    constructor(name, color){
-        this.name = name.toLowerCase();
-        this.color = color;
+    constructor(uuid, name, color){
+        this.uuid = uuid || crypto.randomUUID(); 
+        this.#name = name.toLowerCase();
+        this.#color = color;
         this.#tasks = [];
 
         Project.instances.push(this);
@@ -23,6 +25,14 @@ export class Project {
         this.#name = newName;
     }
 
+    get color() {
+        return this.#color;
+    }
+
+    set color(newColor) {
+        this.#color = newColor;
+    }
+
     get tasks() {
         return this.#tasks;
     }
@@ -37,7 +47,9 @@ export class Project {
 
     toJSON() {
         return {
+            uuid: this.uuid,
             name: this.#name,
+            color: this.#color,
             tasks: this.#tasks
         };
     }

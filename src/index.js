@@ -11,6 +11,64 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
 
 export function Display() {
+    const resizeInput = (input) => {
+        const charCount = input.value.length || 1;
+        const estimatedCharWidth = 11 + 2;
+        const finalWidth = (charCount * estimatedCharWidth) + 8;
+        input.style.width = finalWidth + "px";
+    }
+
+    const renderProjectCards = () => {
+        const projContainer = document.querySelector(".projects-container");
+        const allProjects = Project.getAllProjects();
+        allProjects.forEach((proj) => {
+            console.log(Project.getAllProjects());
+            const projCard = document.createElement("div");
+            projCard.id = proj.uuid;
+            projCard.classList.add("project-card");
+
+            const projForm = document.createElement("form");
+            const projTitle = document.createElement("input");
+            projTitle.type = "text";
+            projTitle.value = proj.name;
+            projTitle.classList.add("proj-title");
+
+            const colorPicker = document.createElement("input");
+            colorPicker.type = "color";
+            colorPicker.name = "color";
+            colorPicker.value = proj.color;
+            colorPicker.classList.add("color-picker");
+            colorPicker.setAttribute("list", "presetColors");
+            const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
+            const datalist = document.createElement("datalist");
+            datalist.id = "presetColors";
+            colorPalette.forEach((color) => {
+                const option = document.createElement("option");
+                option.value = color;
+                datalist.appendChild(option);
+            })
+            projForm.append(projTitle, colorPicker, datalist);
+            projCard.appendChild(projForm);
+            projContainer.appendChild(projCard);
+            document.querySelectorAll("input.proj-title").forEach(input => {
+                resizeInput(input);
+                input.addEventListener("input", () => {
+                    resizeInput(input);
+                });
+            });
+            document.querySelectorAll(".project-card").forEach(card => {
+                card.addEventListener("change", (event) => {
+                    const currProj = allProjects.find((p) => p.uuid === card.id);
+                    const nameInput = card.querySelector(".proj-title");
+                    const colorInput = card.querySelector(".color-picker");
+                    if (nameInput.value !== "") currProj.name = nameInput.value;
+                    if (colorInput.value !== "") currProj.color = colorInput.value;
+                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+                })
+            });
+        })
+    }
+
     const renderTaskCards = (onDeleteChecklistItem) => {
         const taskList = Project.getAllProjects().flatMap(proj => 
             proj.tasks.map(task => ({ task, project: proj }))
@@ -28,8 +86,8 @@ export function Display() {
             titleInput.classList.add("title");
             titleInput.value = t.title;
             titleInput.dataset.uuid = t.uuid;
-            titleInput.classList.add("taskTitle");
-            titleInput.name = "taskTitle";
+            titleInput.classList.add("task-title");
+            titleInput.name = "task-title";
             titleInput.rows = 1;
             
             const topDiv = document.createElement("div");
@@ -169,11 +227,7 @@ export function Display() {
         submitBtnsDiv.appendChild(newBtn);
     } 
 
-    const openTaskCard = () => {
-
-    }
-
-    return { renderProjectBtn, renderTaskCards, createChecklistElement, createProjectBtn, };
+    return { renderProjectBtn, renderProjectCards, renderTaskCards, createChecklistElement, createProjectBtn, };
 }
 
 function Controller() {
@@ -193,6 +247,7 @@ function Controller() {
     }
 
     display.renderProjectBtn();
+    display.renderProjectCards();
     display.renderTaskCards(removeExistingChecklistItem);
     addCalendarListener();
 
@@ -225,15 +280,15 @@ function Controller() {
         }
     });
     
-    document.querySelector("#newProjectBtn").addEventListener("click", (event) => {
-        event.preventDefault()
-        const newProject = document.querySelector("#projectName").value;
-        if (!newProject) return;
-        new Project(newProject);
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-        console.log(Project.getAllProjects())
-        display.createProjectBtn(newProject);
-    })
+    // document.querySelector("#newProjectBtn").addEventListener("click", (event) => {
+    //     event.preventDefault()
+    //     const newProject = document.querySelector("#projectName").value;
+    //     if (!newProject) return;
+    //     new Project(newProject);
+    //     if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+    //     console.log(Project.getAllProjects())
+    //     display.createProjectBtn(newProject);
+    // })
     
     const newTaskForm = document.querySelector("#newTaskForm");
     if (!newTaskForm) return;

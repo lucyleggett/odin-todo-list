@@ -39,7 +39,7 @@ export class StorageController {
         const parsedProjects = JSON.parse(rawData);
 
         parsedProjects.forEach(projData => {
-            const reconstructedProject = new Project(projData.name);
+            const reconstructedProject = new Project(projData.uuid, projData.name, projData.color);
             projData.tasks.forEach(taskData => {
                 const reconstructedTask = Task.fromJSON(taskData);
                 reconstructedProject.addTask(reconstructedTask);
