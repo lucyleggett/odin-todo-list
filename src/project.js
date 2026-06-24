@@ -4,9 +4,10 @@ export class Project {
     #color;
     static instances = [];
 
-    constructor(uuid, name, color){
+    constructor({uuid, name, color}){
         this.uuid = uuid || crypto.randomUUID(); 
-        this.#name = name.toLowerCase();
+        const finalName = name || "";
+        this.#name = finalName.toLowerCase();
         this.#color = color;
         this.#tasks = [];
 

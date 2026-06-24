@@ -27,19 +27,17 @@ export class StorageController {
     }
 
     static retrieveStorage() {
-        const keys = Object.keys(localStorage);
-        if (keys.length === 0) return;
-
-        const latestSaveKey = keys.reduce((max, current) => Math.max(max, current), -Infinity);
-        if (latestSaveKey === -Infinity) return;
-
-        const rawData = localStorage.getItem(latestSaveKey.toString());
+        const rawData = localStorage.getItem("projects_list");
         if (!rawData) return;
 
         const parsedProjects = JSON.parse(rawData);
 
         parsedProjects.forEach(projData => {
-            const reconstructedProject = new Project(projData.uuid, projData.name, projData.color);
+            const reconstructedProject = new Project({
+                uuid: projData.uuid, 
+                name: projData.name, 
+                color: projData.color
+        });
             projData.tasks.forEach(taskData => {
                 const reconstructedTask = Task.fromJSON(taskData);
                 if (reconstructedTask) reconstructedProject.addTask(reconstructedTask);

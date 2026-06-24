@@ -11,7 +11,7 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
-import { addDeleteProjListener, addEditTaskListener, addMoveTaskListener, addResizeInputListener } from "./event.js";
+import { addDeleteProjListener, addEditProjListener, addEditTaskListener, addMoveTaskListener, addResizeInputListener } from "./event.js";
 
 export function Display() {
     const resizeInput = (input) => {
@@ -29,6 +29,64 @@ export function Display() {
         } else {
             card.style.backgroundColor = currProj.color;
         }
+    }
+
+    const renderBlankProjectCard = () => {
+        const projContainer = document.querySelector(".projects-container");
+        const projCard = document.createElement("div");
+        projCard.classList.add("project-card");
+
+        const projForm = document.createElement("form");
+        projForm.classList = "new-project-form";
+        const projTitle = document.createElement("input");
+        projTitle.type = "text";
+        projTitle.placeholder = "Title";
+        projTitle.classList.add("proj-title");
+
+        const uniqueID = `Math.random().toString(36).substr(2, 9)}`;
+
+        const iconDiv = document.createElement("div");
+        iconDiv.classList.add("icon-container");
+        const colorPicker = document.createElement("input");
+        colorPicker.type = "color";
+        colorPicker.id = uniqueID;
+        colorPicker.name = "color";
+        colorPicker.classList.add("hidden-color-picker");
+        colorPicker.setAttribute("list", "presetColors");
+        const colorPickerLabel = document.createElement("label");
+        colorPickerLabel.setAttribute("for", uniqueID);
+        colorPickerLabel.classList.add("color-picker-label");
+        const colorPickerIcon = document.createElement("img");
+        colorPickerIcon.src = brushIcon;
+        colorPickerIcon.classList.add("brush", "icon");
+        const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
+        const datalist = document.createElement("datalist");
+        datalist.id = "presetColors";
+        colorPalette.forEach((color) => {
+            const option = document.createElement("option");
+            option.value = color;
+            datalist.appendChild(option);
+        })
+        colorPickerLabel.appendChild(colorPickerIcon);
+
+        const deleteProjBtn = document.createElement("button");
+        deleteProjBtn.classList.add("delete-btn");
+        // deleteProjBtn.id = proj.uuid;
+        const deleteIcon = document.createElement("img");
+        deleteIcon.classList.add("delete", "icon");
+        deleteIcon.src = binIcon;
+        deleteProjBtn.appendChild(deleteIcon);
+        addDeleteProjListener(deleteProjBtn);
+        iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
+
+        projForm.append(projTitle, iconDiv);
+        projCard.appendChild(projForm);
+        addEditProjListener(projCard);
+        projContainer.appendChild(projCard);
+        document.querySelectorAll("input.proj-title").forEach(input => {
+            resizeInput(input);
+            addResizeInputListener(input);
+        });
     }
 
     const renderProjectCards = () => {
@@ -80,7 +138,7 @@ export function Display() {
             deleteIcon.classList.add("delete", "icon");
             deleteIcon.src = binIcon;
             deleteProjBtn.appendChild(deleteIcon);
-            Event.addDeleteProjListener(deleteProjBtn);
+            addDeleteProjListener(deleteProjBtn);
             iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
 
             projForm.append(projTitle, iconDiv);
@@ -88,12 +146,10 @@ export function Display() {
             projContainer.appendChild(projCard);
             document.querySelectorAll("input.proj-title").forEach(input => {
                 resizeInput(input);
-                Event.addResizeInputListener(input);
+                addResizeInputListener(input);
             });
             document.querySelectorAll(".new-project-form").forEach(card => {
-                const nameInput = card.querySelector(".proj-title");
-                const colorInput = card.querySelector(".color-picker");
-                Event.addEditProjListener(card, nameInput, colorInput);
+                addEditProjListener(card);
             });
         })
     }
@@ -105,24 +161,43 @@ export function Display() {
 
         const taskForm = document.createElement("form");
         taskForm.method = "get";
+        const topDiv = document.createElement("div");
+        topDiv.classList.add("top-div");
         
         const titleInput = document.createElement("textarea");
         titleInput.classList.add("task-title");
         titleInput.name = "task-title";
         titleInput.rows = 1;
         titleInput.placeholder = "Title";
+        titleInput.required = true;
         
-        const topDiv = document.createElement("div");
-        topDiv.classList.add("top-div");
-
-        const priorityIcon = document.createElement("img");
-        priorityIcon.src = lowPriorityIcon;
-        // Alt text needed;
-        priorityIcon.classList.add("priority-icon");
-        topDiv.append(titleInput, priorityIcon);
+        const priorityInput = document.createElement("select");
+        priorityInput.classList.add("priority-input");
+        priorityInput.required = true;
+        const priorityOptions = [
+            {
+                level: "low",
+                emoji: "⬇",
+            },
+            {
+                level: "medium",
+                emoji: "⚠️",
+            },
+            {
+                level: "high",
+                emoji: "🚩",
+            }
+        ]
+        priorityOptions.forEach(option => {
+            const priorityOption = document.createElement("option");
+            priorityOption.value = option.level;
+            priorityOption.textContent = option.emoji;
+            priorityInput.appendChild(priorityOption);
+        })
+        topDiv.append(titleInput, priorityInput);
 
         const descInput = document.createElement("textarea");
-        descInput.classList.add("description");
+        descInput.classList.add("task-description");
         descInput.name = "taskDesc";
         descInput.rows = 1;
         descInput.placeholder = "Description";
@@ -137,7 +212,7 @@ export function Display() {
         addNewBtn.type = "button";
             
         const dueDateDiv = document.createElement("div");
-        dueDateDiv.classList.add("dueDate");
+        dueDateDiv.classList.add("due-date");
         const dueDateInput = document.createElement("input");
         dueDateInput.type = "date";
         dueDateInput.classList.add("custom-date");
@@ -146,6 +221,7 @@ export function Display() {
 
         const projectInput = document.createElement("select");
         projectInput.classList.add("project-label");
+        projectInput.required = true;
         const initValue = Project.getAllProjects()[0];
         projectInput.value = initValue;
         setCardColor(taskCard);
@@ -310,7 +386,7 @@ export function Display() {
         submitBtnsDiv.appendChild(newBtn);
     } 
 
-    return { renderProjectBtn, renderProjectCards, renderBlankTaskCard, renderTaskCards, createChecklistElement, createProjectBtn, };
+    return { setCardColor, resizeInput, renderProjectBtn, renderProjectCards, renderBlankTaskCard, renderTaskCards, createChecklistElement, createProjectBtn, renderBlankProjectCard };
 }
 
 function Controller() {
@@ -326,7 +402,7 @@ function Controller() {
     const removeExistingChecklistItem = (itemId, li, task) => {
         task.checklist = task.checklist.filter(item => item.id !== itemId);        
         li.remove();
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     }
 
     display.renderProjectBtn();
@@ -363,20 +439,25 @@ function Controller() {
         }
     });
     
-    document.querySelector(".new-project").addEventListener("click", (event) => {
-        event.preventDefault();
+    // document.querySelector(".new-project").addEventListener("click", (event) => {
+    //     event.preventDefault();
 
-        const newProject = document.querySelector("#projectName").value;
-        if (!newProject) return;
-        new Project(newProject);
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-        console.log(Project.getAllProjects())
-        display.createProjectBtn(newProject);
-    })
+    //     const newProject = document.querySelector("#projectName").value;
+    //     if (!newProject) return;
+    //     new Project(newProject);
+    //     console.log(Project.getAllProjects())
+    //     display.createProjectBtn(newProject);
+    // })
 
     document.querySelector("button .new-task").addEventListener("click", (event) => {
         event.preventDefault();
         display.renderBlankTaskCard(removeExistingChecklistItem);
+    })
+
+    document.querySelector("button .new-project").addEventListener("click", (event) => {
+        event.preventDefault();
+        display.renderBlankProjectCard();
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     })
     
     const newTaskForm = document.querySelector("#newTaskForm");
@@ -390,31 +471,27 @@ function Controller() {
         newTaskForm.reset();
     });
 
-    const logNewInput = () => {
-        const form = document.querySelector("#newTaskForm");
+    const logNewTaskInput = (card) => {
+        const form = card.querySelector("form");
         const taskObj = {
-            title: form.querySelector("#taskTitle").value,
-            description: form.querySelector("#taskDesc").value,
-            dueDate: form.querySelector("#taskDueDate").value,
-            priority: form.querySelector("#taskPriority").value,
+            title: form.querySelector(".task-title").value,
+            description: form.querySelector(".task-description").value,
+            dueDate: form.querySelector(".due-date").value,
+            priority: form.querySelector(".priority-input").value,
             checklist: checklistData,
         };
         return taskObj;
     };
 
-    const createNewTask = (submitBtn) => {
-        const targetProjName = submitBtn.value;
-        const projectsList = Project.getAllProjects();
-        console.log("Looking for:", targetProjName, "in:", projectsList.map(p => p.name));
-        const targetProj = projectsList.find(proj => proj.name === targetProjName);
+    const createNewTask = (card) => {
+        const targetProjName = card.querySelector(".project-label").value;
+        const targetProj = Project.getAllProjects().find(proj => proj.name === targetProjName);
         
         if (targetProj) {
             const taskData = logNewInput();
-            console.log("taskData", taskData);
             const newTask = new Task(taskData);
             targetProj.addTask(newTask);
         };
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
     }
 }
 

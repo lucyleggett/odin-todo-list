@@ -273,7 +273,7 @@ select.project-label,
     padding: 5px;
 }
 
-div.dueDate {
+div.due-date {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -301,6 +301,7 @@ div.dueDate {
 
 .proj-title {
     display: flex;
+    min-width: 80px;
     width: fit-content;
     background-color: transparent;
     color: white;
