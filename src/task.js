@@ -39,6 +39,7 @@ export class Task {
     }
 
     static fromJSON(jsonObj) {
+        if (!jasonObj) return null;
         return new Task(jsonObj);
     }
 }

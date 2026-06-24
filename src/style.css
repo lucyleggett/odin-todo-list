@@ -152,7 +152,7 @@ input, textarea {
     align-content: center;
 }
 
-textarea.title {
+textarea.task-title {
     font-size: var(--fs-h3);
     font-weight: var(--fw-bold);
 }
@@ -225,9 +225,10 @@ button.addBtn {
     position: relative;
     color: transparent;
     right: 8px;
-    min-width: 130px;
+    width: fit-content;
     margin: 0;
     padding: 0;
+    min-width: 135px;
 }
 
 .custom-date::before {
@@ -236,12 +237,8 @@ button.addBtn {
     top: 50%;
     transform: translateY(-50%);
     content: attr(data-date);
-    color: #000000;
     white-space: nowrap;
-    width: 200px;
-    max-width: calc(100% - 40px);
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: white;
 }
 
 .custom-date::-webkit-calendar-picker-indicator {
@@ -250,6 +247,7 @@ button.addBtn {
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
+    filter: invert(1);
 }
 
 .custom-date:placeholder-shown::-webkit-datetime-edit {

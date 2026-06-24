@@ -11,6 +11,7 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
+import { addDeleteProjListener, addEditTaskListener, addMoveTaskListener, addResizeInputListener } from "./event.js";
 
 export function Display() {
     const resizeInput = (input) => {
@@ -79,11 +80,7 @@ export function Display() {
             deleteIcon.classList.add("delete", "icon");
             deleteIcon.src = binIcon;
             deleteProjBtn.appendChild(deleteIcon);
-            deleteProjBtn.addEventListener("click", (event) => {
-                Project.deleteProject(deleteProjBtn.id);
-                projCard.remove();
-                if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-            })
+            Event.addDeleteProjListener(deleteProjBtn);
             iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
 
             projForm.append(projTitle, iconDiv);
@@ -91,21 +88,82 @@ export function Display() {
             projContainer.appendChild(projCard);
             document.querySelectorAll("input.proj-title").forEach(input => {
                 resizeInput(input);
-                input.addEventListener("input", () => {
-                    resizeInput(input);
-                });
+                Event.addResizeInputListener(input);
             });
             document.querySelectorAll(".new-project-form").forEach(card => {
-                card.addEventListener("change", (event) => {
-                    const currProj = allProjects.find((p) => p.uuid === card.id);
-                    const nameInput = card.querySelector(".proj-title");
-                    const colorInput = card.querySelector(".color-picker");
-                    if (nameInput.value !== "") currProj.name = nameInput.value;
-                    if (colorInput.value !== "") currProj.color = colorInput.value;
-                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-                })
+                const nameInput = card.querySelector(".proj-title");
+                const colorInput = card.querySelector(".color-picker");
+                Event.addEditProjListener(card, nameInput, colorInput);
             });
         })
+    }
+
+    const renderBlankTaskCard = (onDeleteChecklistItem) => {
+        const tasksContainer = document.querySelector(".tasks-container");
+        const taskCard = document.createElement("div");
+        taskCard.classList.add("task-card");
+
+        const taskForm = document.createElement("form");
+        taskForm.method = "get";
+        
+        const titleInput = document.createElement("textarea");
+        titleInput.classList.add("task-title");
+        titleInput.name = "task-title";
+        titleInput.rows = 1;
+        titleInput.placeholder = "Title";
+        
+        const topDiv = document.createElement("div");
+        topDiv.classList.add("top-div");
+
+        const priorityIcon = document.createElement("img");
+        priorityIcon.src = lowPriorityIcon;
+        // Alt text needed;
+        priorityIcon.classList.add("priority-icon");
+        topDiv.append(titleInput, priorityIcon);
+
+        const descInput = document.createElement("textarea");
+        descInput.classList.add("description");
+        descInput.name = "taskDesc";
+        descInput.rows = 1;
+        descInput.placeholder = "Description";
+
+        const currChecklistUl = document.createElement("ul");
+        currChecklistUl.classList.add("checklist");
+        const firstItem = createChecklistElement(currChecklistUl, {});
+
+        const addNewBtn = document.createElement("button");
+        addNewBtn.classList.add("addBtn");
+        addNewBtn.textContent = "+";
+        addNewBtn.type = "button";
+            
+        const dueDateDiv = document.createElement("div");
+        dueDateDiv.classList.add("dueDate");
+        const dueDateInput = document.createElement("input");
+        dueDateInput.type = "date";
+        dueDateInput.classList.add("custom-date");
+        dueDateInput.name = "taskDueDate";
+        dueDateInput.placeholder = "No deadline";
+
+        const projectInput = document.createElement("select");
+        projectInput.classList.add("project-label");
+        const initValue = Project.getAllProjects()[0];
+        projectInput.value = initValue;
+        setCardColor(taskCard);
+        Project.getAllProjects().forEach(proj => {
+            const option = document.createElement("option");
+            option.value = proj.name;
+            option.textContent = proj.name;
+            projectInput.appendChild(option);
+        })
+        addMoveTaskListener(projectInput, initValue);
+        dueDateDiv.append(dueDateInput, projectInput);
+
+        taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
+        taskCard.appendChild(taskForm);
+        tasksContainer.appendChild(taskCard);
+
+        const formInputs = [titleInput, descInput, dueDateInput];
+        addEditTaskListener(formInputs);
     }
 
     const renderTaskCards = (onDeleteChecklistItem) => {
@@ -124,7 +182,6 @@ export function Display() {
             taskForm.method = "get";
             
             const titleInput = document.createElement("textarea");
-            titleInput.classList.add("title");
             titleInput.value = t.title;
             titleInput.dataset.uuid = t.uuid;
             titleInput.classList.add("task-title");
@@ -149,7 +206,6 @@ export function Display() {
             descInput.classList.add("description");
             descInput.dataset.uuid = t.uuid;
             descInput.value = t.description;
-            descInput.id = "taskDesc";
             descInput.name = "taskDesc";
             descInput.rows = 1;
 
@@ -183,14 +239,8 @@ export function Display() {
                 projectInput.appendChild(option);
             })
             projectInput.value = parentProject.name;
-            projectInput.addEventListener("change", (event) => {
-                const newProjName = event.target.value;
-                const nextProj = Project.getAllProjects().find(proj => proj.name === newProjName);
-                if (nextProj){
-                    Project.moveTask(projectInput.dataset.uuid, parentProject, nextProj);
-                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-                }
-            })
+            addMoveTaskListener(projectInput, parentProject);
+
             dueDateDiv.append(dueDateInput, projectInput);
 
             taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
@@ -198,21 +248,8 @@ export function Display() {
             tasksContainer.appendChild(taskCard);
 
             const formInputs = [titleInput, descInput, dueDateInput];
-            formInputs.forEach(input => {
-                input.addEventListener("input", (event) => {
-                    const targetUuid = event.target.dataset.uuid;
-                    const match = taskList.find(({ task }) => task.uuid === targetUuid);
-                    if (!match) return;
-                    const taskKey = event.target.classList[0];
-                    match.task.editTask(taskKey, event.target.value);
-                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-                })
-            })
+            addEditTaskListener(formInputs);
         })
-        const taskCards = document.querySelectorAll(".task-card");
-        taskCards.forEach(card => card.addEventListener("click", (event) => {
-            event.target.classList.add("active");
-        }));
     }
 
     const renderPriorityIcon = (priorityLevel) => {
@@ -247,7 +284,11 @@ export function Display() {
         checkbox.type = "checkbox";
 
         const textSpan = document.createElement("span");
-        textSpan.textContent = currChecklistData.text;
+        if (currChecklistData.text = "") {
+            textSpan.textContent = "";
+        } else {
+            textSpan.textContent = currChecklistData.text;
+        }
 
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";
@@ -269,7 +310,7 @@ export function Display() {
         submitBtnsDiv.appendChild(newBtn);
     } 
 
-    return { renderProjectBtn, renderProjectCards, renderTaskCards, createChecklistElement, createProjectBtn, };
+    return { renderProjectBtn, renderProjectCards, renderBlankTaskCard, renderTaskCards, createChecklistElement, createProjectBtn, };
 }
 
 function Controller() {
@@ -322,15 +363,21 @@ function Controller() {
         }
     });
     
-    // document.querySelector("#newProjectBtn").addEventListener("click", (event) => {
-    //     event.preventDefault()
-    //     const newProject = document.querySelector("#projectName").value;
-    //     if (!newProject) return;
-    //     new Project(newProject);
-    //     if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
-    //     console.log(Project.getAllProjects())
-    //     display.createProjectBtn(newProject);
-    // })
+    document.querySelector(".new-project").addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const newProject = document.querySelector("#projectName").value;
+        if (!newProject) return;
+        new Project(newProject);
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage(Date.now(), Project.getAllProjects());
+        console.log(Project.getAllProjects())
+        display.createProjectBtn(newProject);
+    })
+
+    document.querySelector("button .new-task").addEventListener("click", (event) => {
+        event.preventDefault();
+        display.renderBlankTaskCard(removeExistingChecklistItem);
+    })
     
     const newTaskForm = document.querySelector("#newTaskForm");
     if (!newTaskForm) return;
@@ -344,11 +391,12 @@ function Controller() {
     });
 
     const logNewInput = () => {
+        const form = document.querySelector("#newTaskForm");
         const taskObj = {
-            title: document.querySelector("#taskTitle").value,
-            description: document.querySelector("#taskDesc").value,
-            dueDate: document.querySelector("#taskDueDate").value,
-            priority: document.querySelector("#taskPriority").value,
+            title: form.querySelector("#taskTitle").value,
+            description: form.querySelector("#taskDesc").value,
+            dueDate: form.querySelector("#taskDueDate").value,
+            priority: form.querySelector("#taskPriority").value,
             checklist: checklistData,
         };
         return taskObj;
@@ -362,6 +410,7 @@ function Controller() {
         
         if (targetProj) {
             const taskData = logNewInput();
+            console.log("taskData", taskData);
             const newTask = new Task(taskData);
             targetProj.addTask(newTask);
         };
