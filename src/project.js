@@ -38,8 +38,8 @@ export class Project {
         return this.#tasks;
     }
 
-    static deleteProject(uuid) {
-        const index = Project.instances.findIndex((p) => p.uuid === uuid);
+    static deleteProject(projectUuid) {
+        const index = Project.instances.findIndex((p) => p.uuid === projectUuid);
         if (index !== -1) {
             Project.instances.splice(index, 1);
         }
@@ -51,6 +51,13 @@ export class Project {
 
     static findProjectOfTask(taskId) {
         return Project.getAllProjects().find(proj => proj.tasks.some(task => task.uuid === taskId));
+    }
+
+    static findTask(taskUuid){
+        for (const proj of Project.getAllProjects()) {
+            const foundTask = proj.tasks.find(task => task.uuid === taskUuid);
+            if (foundTask) return foundTask;
+        }
     }
 
     addTask(task) {

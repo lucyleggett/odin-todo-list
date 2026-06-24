@@ -18,14 +18,25 @@ export class Task {
         }
     }
 
-    editTask(key, value) {
-        if (key === "uuid") {
-            console.log("No can do!")
-            return;
-        } this[key] = value;
+    addChecklistItem(textValue) {        
+        const checklistItem = {
+            parentTask: this.uuid,
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+            text: textValue,
+            status: "pending",
+        }
+        this.checklist.push(checklistItem);
+        return checklistItem;
     }
 
-    removeChecklistItem(itemId, li) {
+    editChecklistItem(itemId, newValue) {
+        const itemToEdit = this.checklist.find(item => item.id === itemId);
+        if (itemToEdit) {
+            itemToEdit.text = newValue
+        };
+    }
+
+    removeChecklistItem(itemId) {
         this.checklist = this.checklist.filter(item => item.id !== itemId);        
     }
 

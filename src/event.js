@@ -17,12 +17,12 @@ export function addEditTaskListener(card) {
             dueDate: card.querySelector(".due-date")?.value ?? "",
             priority: card.querySelector(".priority-input")?.value ?? "",
         };
-        const targetUuid = card.dataset.id;
+        const targetUuid = card.dataset.uuid;
 
         if (!targetUuid) {
             const newTask = new Task(taskObj);
             targetProj.addTask(newTask);
-            card.dataset.id = newTask.uuid;
+            card.dataset.uuid = newTask.uuid;
         } else {
             const currentProjOfTask = Project.findProjectOfTask(targetUuid);
             const taskToEdit = currentProjOfTask.tasks.find(t => t.uuid === targetUuid);
@@ -35,6 +35,26 @@ export function addEditTaskListener(card) {
             }
         }
         display.setCardColor(card);
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+    });
+}
+
+export function addEditChecklistListener(card, inputElement) {
+    inputElement.addEventListener("change", () => {
+        const currTask = Project.findTask(card.uuid);
+        const liveValue = inputElement.value.trim();
+        if (!currTask || !liveValue) return;
+
+        const parentLi = inputElement.closest("li");
+        const checklistItemId = parentLi ? parentLi.dataset.id : null;
+
+        if (!checklistItemId) {
+            const newItem = currTask.addChecklistItem(liveValue);
+            if (parentLi) parentLi.dataset.id = newItem.id;
+        } else {
+            currTask.editChecklistItem(checklistItemId, liveValue);
+        }
+
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }

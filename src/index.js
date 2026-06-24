@@ -11,7 +11,7 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
-import { addDeleteProjListener, addEditProjListener, addEditTaskListener, addResizeInputListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener } from "./event.js";
 
 export function Display() {
     const resizeInput = (input) => {
@@ -112,7 +112,7 @@ export function Display() {
         });
     }
 
-    const renderTaskCard = (taskData = null, parentProject = null, onDeleteChecklistItem) => {
+    const renderTaskCard = (taskData = null, parentProject = null) => {
         const tasksContainer = document.querySelector(".tasks-container");
         const taskCard = document.createElement("div");
         taskCard.classList.add("task-card");
@@ -173,21 +173,28 @@ export function Display() {
         }
 
         const currChecklistUl = document.createElement("ul");
-        currChecklistUl.dataset.uuid = taskData.uuid;
+        if (taskData) {
+            currChecklistUl.dataset.uuid = taskData.uuid;
+        }
         currChecklistUl.classList.add("checklist");
 
         if (taskData && taskData.checklist) {
             taskData.checklist.forEach(item => {
-                createChecklistElement(currChecklistUl, item, (itemId, li) => onDeleteChecklistItem(itemId, li, taskData));
+                createChecklistElement(currChecklistUl, item);
             })
         } else {
             createChecklistElement(currChecklistUl, {});
         }
 
         const addNewBtn = document.createElement("button");
-        addNewBtn.classList.add("addBtn");
+        addNewBtn.classList.add("add-btn");
         addNewBtn.textContent = "+";
         addNewBtn.type = "button";
+
+        addNewBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            createChecklistElement(currChecklistUl, {});
+        });
             
         const dueDateDiv = document.createElement("div");
         dueDateDiv.classList.add("due-date");
@@ -236,7 +243,7 @@ export function Display() {
         addEditTaskListener(taskCard);
     }
 
-    const createChecklistElement = (checklistUl, currChecklistData, onDelete) => {
+    const createChecklistElement = (checklistUl, currChecklistData) => {
         const li = document.createElement("li");
         li.dataset.id = currChecklistData.id;
 
@@ -244,20 +251,29 @@ export function Display() {
         label.classList.add("checkbox");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        checkbox.checked = currChecklistData.status === "completed";
 
-        const textSpan = document.createElement("span");
-        if (currChecklistData.text === "") {
-            textSpan.textContent = "";
-        } else {
-            textSpan.textContent = currChecklistData.text;
-        }
+        const checklistInput = document.createElement("input");
+        checklistInput.type = "text";
+        checklistInput.classList.add("checklist-input");
+        checklistInput.placeholder = "Add to checklist...";
+        checklistInput.value = currChecklistData.text || "";
+
+        //Eventlistener
 
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";
         deleteItemBtn.classList.add("checklist-delete");
-        deleteItemBtn.addEventListener("click", () => onDelete(currChecklistData.id,li));
+        deleteItemBtn.addEventListener("click", () => {
+            const taskInstance = Project.findTask(checklistUl.dataset.uuid);
+            if (taskInstance) {
+                taskInstance.removeChecklistItem(currChecklistData.id);
+                li.remove();
+                if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+            }
+        });
  
-        label.append(checkbox, textSpan);
+        label.append(checkbox, checklistInput);
         li.append(label, deleteItemBtn);
         checklistUl.appendChild(li);
     }
@@ -271,7 +287,7 @@ export function Display() {
     const initializeProjects = () => {
         Project.getAllProjects().forEach(proj => {
             proj.tasks.forEach(task => {
-                renderTaskCard(task, proj, removeExistingChecklistItem);
+                renderTaskCard(task, proj);
             });
         });
     }
@@ -283,11 +299,10 @@ function Controller() {
     loadApplicationState();
 
     const display = Display();
-    let checklistData = [];
 
     document.querySelector("button.new-task").addEventListener("click", (event) => {
         event.preventDefault();
-        display.renderTaskCard(null, null, removeExistingChecklistItem);
+        display.renderTaskCard(null, null);
     })
 
     document.querySelector("button.new-project").addEventListener("click", (event) => {
@@ -299,23 +314,7 @@ function Controller() {
     display.initializeTasks();
     display.initializeProjects();
 
-    const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
-
-    const addChecklistItem = () => {
-        if (!itemInput) return;
-        const textValue = itemInput.value.trim();
-        if (textValue === "") return;
-
-        const newTaskChecklist = document.getElementById("checklist-one");
-        const currChecklistData = {
-            id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-            text: textValue,
-            status: "pending",
-        }
-        checklistData.push(currChecklistData);
-        display.createChecklistElement(newTaskChecklist, currChecklistData, removeChecklistItem);
-    }
 
     if (addBtn) {
         addBtn.addEventListener("click", (event) => {

@@ -194,7 +194,7 @@ li > label {
 }
 
 button.checklist-delete,
-button.addBtn {
+button.add-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -211,11 +211,11 @@ button.addBtn {
 }
 
 button.checklist-delete:hover,
-button.addBtn:hover {
+button.add-btn:hover {
     background-color: rgb(223, 221, 221);
 }
 
-button.addBtn {
+button.add-btn {
     display: flex;
     justify-self: right;
     font-size: 27px;
