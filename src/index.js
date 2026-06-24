@@ -173,6 +173,7 @@ export function Display() {
         }
 
         const currChecklistUl = document.createElement("ul");
+        currChecklistUl.dataset.uuid = taskData.uuid;
         currChecklistUl.classList.add("checklist");
 
         if (taskData && taskData.checklist) {
@@ -261,7 +262,21 @@ export function Display() {
         checklistUl.appendChild(li);
     }
 
-    return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement, };
+    const initializeTasks = () => {
+        Project.getAllProjects().forEach(proj => {
+                renderProjectCard(proj);
+            });
+    }
+
+    const initializeProjects = () => {
+        Project.getAllProjects().forEach(proj => {
+            proj.tasks.forEach(task => {
+                renderTaskCard(task, proj, removeExistingChecklistItem);
+            });
+        });
+    }
+
+    return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement, initializeTasks, initializeProjects };
 }
 
 function Controller() {
@@ -269,17 +284,6 @@ function Controller() {
 
     const display = Display();
     let checklistData = [];
-
-    const removeChecklistItem = (itemId, li) => {
-        checklistData = checklistData.filter(item => item.id !== itemId);
-        li.remove();
-    }
-
-    const removeExistingChecklistItem = (itemId, li, task) => {
-        task.checklist = task.checklist.filter(item => item.id !== itemId);        
-        li.remove();
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
-    }
 
     document.querySelector("button.new-task").addEventListener("click", (event) => {
         event.preventDefault();
@@ -292,15 +296,8 @@ function Controller() {
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     })
 
-    Project.getAllProjects().forEach(proj => {
-            display.renderProjectCard(proj);
-        });
-
-    Project.getAllProjects().forEach(proj => {
-        proj.tasks.forEach(task => {
-            display.renderTaskCard(task, proj, removeExistingChecklistItem);
-        });
-    });
+    display.initializeTasks();
+    display.initializeProjects();
 
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");

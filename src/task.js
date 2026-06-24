@@ -1,6 +1,4 @@
 export class Task {
-    static instances = [];
-
     constructor({ title, uuid, description, dueDate, priority, checklist }) {
         this.uuid = uuid || crypto.randomUUID(); 
         this.title = title;
@@ -25,6 +23,10 @@ export class Task {
             console.log("No can do!")
             return;
         } this[key] = value;
+    }
+
+    removeChecklistItem(itemId, li) {
+        this.checklist = this.checklist.filter(item => item.id !== itemId);        
     }
 
     toJSON() {
