@@ -43,6 +43,14 @@ export class Project {
         Project.instances = updatedProjects;
     }
 
+    static findProject(projectName) {
+        return Project.getAllProjects().find(proj => proj.name === projectName);
+    }
+
+    static findProjectOfTask(taskId) {
+        return Project.getAllProjects().find(proj => proj.tasks.some(task => task.uuid === taskId));
+    }
+
     addTask(task) {
         this.#tasks.push(task);
     }
