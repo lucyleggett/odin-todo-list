@@ -31,6 +31,7 @@ export class StorageController {
         if (!rawData) return;
 
         const parsedProjects = JSON.parse(rawData);
+        Project.instances = [];
 
         parsedProjects.forEach(projData => {
             const reconstructedProject = new Project({

@@ -39,8 +39,10 @@ export class Project {
     }
 
     static deleteProject(uuid) {
-        const updatedProjects = Project.getAllProjects().filter((p) => p.uuid !== uuid);
-        Project.instances = updatedProjects;
+        const index = Project.instances.findIndex((p) => p.uuid === uuid);
+        if (index !== -1) {
+            Project.instances.splice(index, 1);
+        }
     }
 
     static findProject(projectName) {

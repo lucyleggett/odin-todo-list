@@ -31,10 +31,14 @@ export function Display() {
         }
     }
 
-    const renderBlankProjectCard = () => {
+    const renderProjectCard = (projectData = null) => {
         const projContainer = document.querySelector(".projects-container");
         const projCard = document.createElement("div");
         projCard.classList.add("project-card");
+
+        if (projectData) {
+            projCard.id = projectData.uuid;
+        }
 
         const projForm = document.createElement("form");
         projForm.classList = "new-project-form";
@@ -43,22 +47,31 @@ export function Display() {
         projTitle.placeholder = "Title";
         projTitle.classList.add("proj-title");
 
-        const uniqueID = `Math.random().toString(36).substr(2, 9)}`;
+        if (projectData) {
+            projTitle.value = projectData.name;
+        }
+
+        const projectIdentifier = projectData ? projectData.uuid : Math.random().toString(36).substr(2, 9);
+        const uniqueID = `color-picker-${projectIdentifier}`;
 
         const iconDiv = document.createElement("div");
         iconDiv.classList.add("icon-container");
+
         const colorPicker = document.createElement("input");
         colorPicker.type = "color";
         colorPicker.id = uniqueID;
         colorPicker.name = "color";
         colorPicker.classList.add("hidden-color-picker");
         colorPicker.setAttribute("list", "presetColors");
+
         const colorPickerLabel = document.createElement("label");
         colorPickerLabel.setAttribute("for", uniqueID);
         colorPickerLabel.classList.add("color-picker-label");
+
         const colorPickerIcon = document.createElement("img");
         colorPickerIcon.src = brushIcon;
         colorPickerIcon.classList.add("brush", "icon");
+
         const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
         const datalist = document.createElement("datalist");
         datalist.id = "presetColors";
@@ -67,18 +80,28 @@ export function Display() {
             option.value = color;
             datalist.appendChild(option);
         })
+
+        if (projectData) {
+            colorPicker.value = projectData.color;
+        }
+        setCardColor(projCard);
+
         colorPickerLabel.appendChild(colorPickerIcon);
 
         const deleteProjBtn = document.createElement("button");
         deleteProjBtn.classList.add("delete-btn");
-        // deleteProjBtn.id = proj.uuid;
         const deleteIcon = document.createElement("img");
         deleteIcon.classList.add("delete", "icon");
         deleteIcon.src = binIcon;
+
+        if (projectData) {
+            deleteProjBtn.uuid = projectData.uuid;
+        }
+        
         deleteProjBtn.appendChild(deleteIcon);
         addDeleteProjListener(deleteProjBtn);
-        iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
 
+        iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
         projForm.append(projTitle, iconDiv);
         projCard.appendChild(projForm);
         addEditProjListener(projCard);
@@ -87,71 +110,6 @@ export function Display() {
             resizeInput(input);
             addResizeInputListener(input);
         });
-    }
-
-    const renderProjectCards = () => {
-        const projContainer = document.querySelector(".projects-container");
-        Project.getAllProjects().forEach((proj) => {
-            const projCard = document.createElement("div");
-            projCard.id = proj.uuid;
-            setCardColor(projCard);
-            projCard.classList.add("project-card");
-
-            const projForm = document.createElement("form");
-            projForm.classList = "new-project-form";
-            const projTitle = document.createElement("input");
-            projTitle.type = "text";
-            projTitle.value = proj.name;
-            projTitle.classList.add("proj-title");
-
-            const uniqueID = `color-picker-${proj.id}|| Math.random().toString(36).substr(2, 9)}`;
-
-            const iconDiv = document.createElement("div");
-            iconDiv.classList.add("icon-container");
-            const colorPicker = document.createElement("input");
-            colorPicker.type = "color";
-            colorPicker.id = uniqueID;
-            colorPicker.name = "color";
-            colorPicker.value = proj.color;
-            colorPicker.classList.add("hidden-color-picker");
-            colorPicker.setAttribute("list", "presetColors");
-            const colorPickerLabel = document.createElement("label");
-            colorPickerLabel.setAttribute("for", uniqueID);
-            colorPickerLabel.classList.add("color-picker-label");
-            const colorPickerIcon = document.createElement("img");
-            colorPickerIcon.src = brushIcon;
-            colorPickerIcon.classList.add("brush", "icon");
-            const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
-            const datalist = document.createElement("datalist");
-            datalist.id = "presetColors";
-            colorPalette.forEach((color) => {
-                const option = document.createElement("option");
-                option.value = color;
-                datalist.appendChild(option);
-            })
-            colorPickerLabel.appendChild(colorPickerIcon);
-
-            const deleteProjBtn = document.createElement("button");
-            deleteProjBtn.classList.add("delete-btn");
-            deleteProjBtn.id = proj.uuid;
-            const deleteIcon = document.createElement("img");
-            deleteIcon.classList.add("delete", "icon");
-            deleteIcon.src = binIcon;
-            deleteProjBtn.appendChild(deleteIcon);
-            addDeleteProjListener(deleteProjBtn);
-            iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
-
-            projForm.append(projTitle, iconDiv);
-            projCard.appendChild(projForm);
-            projContainer.appendChild(projCard);
-            document.querySelectorAll("input.proj-title").forEach(input => {
-                resizeInput(input);
-                addResizeInputListener(input);
-            });
-            document.querySelectorAll(".new-project-form").forEach(card => {
-                addEditProjListener(card);
-            });
-        })
     }
 
     const renderTaskCard = (taskData = null, parentProject = null, onDeleteChecklistItem) => {
@@ -243,7 +201,7 @@ export function Display() {
             dueDateInput.dataset.uuid = taskData.uuid;
         } else {
             dueDateInput.placeholder = "No deadline";
-        }
+        };
 
         const projectInput = document.createElement("select");
         projectInput.classList.add("project-label");
@@ -254,7 +212,7 @@ export function Display() {
             option.value = proj.name;
             option.textContent = proj.name;
             projectInput.appendChild(option);
-        })
+        });
 
         if (parentProject) {
             projectInput.value = parentProject.name;
@@ -277,15 +235,6 @@ export function Display() {
         addEditTaskListener(taskCard);
     }
 
-    const renderProjectBtn = () => {
-        loadApplicationState();
-        const projList = Project.getAllProjects();
-        for (let i = 0; i < projList.length; i++) {
-            const projName = projList[i].name;
-            createProjectBtn(projName);
-        }
-    }
-
     const createChecklistElement = (checklistUl, currChecklistData, onDelete) => {
         const li = document.createElement("li");
         li.dataset.id = currChecklistData.id;
@@ -296,7 +245,7 @@ export function Display() {
         checkbox.type = "checkbox";
 
         const textSpan = document.createElement("span");
-        if (currChecklistData.text = "") {
+        if (currChecklistData.text === "") {
             textSpan.textContent = "";
         } else {
             textSpan.textContent = currChecklistData.text;
@@ -312,22 +261,13 @@ export function Display() {
         checklistUl.appendChild(li);
     }
 
-    const createProjectBtn = (projName) => {
-        const submitBtnsDiv = document.querySelector(".submit-buttons");
-        const newBtn = document.createElement("button");
-        newBtn.type = "submit";
-        newBtn.name = "action";
-        newBtn.value = `${projName}`.toLowerCase();
-        newBtn.textContent = `${projName}`;
-        submitBtnsDiv.appendChild(newBtn);
-    } 
-
-    return { setCardColor, resizeInput, renderProjectBtn, renderProjectCards, renderTaskCard, createChecklistElement, createProjectBtn, renderBlankProjectCard };
+    return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement, };
 }
 
 function Controller() {
-    const display = Display();
+    loadApplicationState();
 
+    const display = Display();
     let checklistData = [];
 
     const removeChecklistItem = (itemId, li) => {
@@ -341,23 +281,36 @@ function Controller() {
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     }
 
-    display.renderProjectBtn();
-    display.renderProjectCards();
+    document.querySelector("button.new-task").addEventListener("click", (event) => {
+        event.preventDefault();
+        display.renderTaskCard(null, null, removeExistingChecklistItem);
+    })
+
+    document.querySelector("button.new-project").addEventListener("click", (event) => {
+        event.preventDefault();
+        display.renderProjectCard(null);
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+    })
+
+    Project.getAllProjects().forEach(proj => {
+            display.renderProjectCard(proj);
+        });
+
     Project.getAllProjects().forEach(proj => {
         proj.tasks.forEach(task => {
             display.renderTaskCard(task, proj, removeExistingChecklistItem);
         });
     });
-    addCalendarListener();
 
     const itemInput = document.getElementById("itemInput");
     const addBtn = document.getElementById("addBtn");
 
     const addChecklistItem = () => {
+        if (!itemInput) return;
         const textValue = itemInput.value.trim();
         if (textValue === "") return;
 
-        const newTaskChecklist = document.getElementById("checklist");
+        const newTaskChecklist = document.getElementById("checklist-one");
         const currChecklistData = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2),
             text: textValue,
@@ -367,28 +320,21 @@ function Controller() {
         display.createChecklistElement(newTaskChecklist, currChecklistData, removeChecklistItem);
     }
 
-    addBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        addChecklistItem();
-    });
-
-    itemInput.addEventListener("keypress", (event) => {
-        if (event.key === 'Enter') {
+    if (addBtn) {
+        addBtn.addEventListener("click", (event) => {
             event.preventDefault();
             addChecklistItem();
-        }
-    });
+        });
+    }
 
-    document.querySelector("button .new-task").addEventListener("click", (event) => {
-        event.preventDefault();
-        display.renderTaskCard(null, null, removeExistingChecklistItem);
-    })
-
-    document.querySelector("button .new-project").addEventListener("click", (event) => {
-        event.preventDefault();
-        display.renderBlankProjectCard();
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
-    })
+    if (itemInput) {
+        itemInput.addEventListener("keypress", (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addChecklistItem();
+            }
+        });
+    }
     
     const createNewTask = (card) => {
         const targetProjName = card.querySelector(".project-label").value;
@@ -405,6 +351,8 @@ function Controller() {
             targetProj.addTask(new Task(taskObj));
         };
     }
+
+    addCalendarListener();
 }
 
 const controller = Controller();
