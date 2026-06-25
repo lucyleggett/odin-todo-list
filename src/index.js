@@ -99,7 +99,7 @@ export function Display() {
         }
         
         deleteProjBtn.appendChild(deleteIcon);
-        addDeleteProjListener(deleteProjBtn);
+        addDeleteProjListener(deleteProjBtn, projCard);
 
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
         projForm.append(projTitle, iconDiv);

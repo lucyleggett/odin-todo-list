@@ -65,9 +65,9 @@ export function addResizeInputListener(inputElement) {
     });
 }
 
-export function addDeleteProjListener(deleteProjBtn) {
+export function addDeleteProjListener(deleteProjBtn, projCard) {
     deleteProjBtn.addEventListener("click", () => {
-        Project.deleteProject(deleteProjBtn.id);
+        Project.deleteProject(deleteProjBtn.uuid);
         projCard.remove();
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
