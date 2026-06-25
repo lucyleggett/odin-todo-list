@@ -23,7 +23,7 @@ export function Display() {
     }
 
     const setCardColor = (card) => {
-        const currProj = Project.getAllProjects().find((p) => p.uuid === card.id);
+        const currProj = Project.getAllProjects().find((p) => p.uuid === card.dataset.id);
         if(!currProj || !currProj.color) {
             card.style.backgroundColor = "inherit";
             return;
@@ -38,7 +38,7 @@ export function Display() {
         projCard.classList.add("project-card");
 
         if (projectData) {
-            projCard.id = projectData.uuid;
+            projCard.dataset.id = projectData.uuid;
         }
 
         const projForm = document.createElement("form");
@@ -75,7 +75,7 @@ export function Display() {
 
         const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
         const datalist = document.createElement("datalist");
-        datalist.id = "presetColors";
+        datalist.id = "presetColors" + `${uniqueID}`;
         colorPalette.forEach((color) => {
             const option = document.createElement("option");
             option.value = color;
@@ -96,7 +96,7 @@ export function Display() {
         deleteIcon.src = binIcon;
 
         if (projectData) {
-            deleteProjBtn.uuid = projectData.uuid;
+            deleteProjBtn.dataset.uuid = projectData.uuid;
         }
         
         deleteProjBtn.appendChild(deleteIcon);
@@ -229,12 +229,12 @@ export function Display() {
 
         if (parentProject) {
             projectInput.value = parentProject.name;
-            taskCard.id = parentProject.uuid;
+            taskCard.dataset.id = parentProject.uuid;
             setCardColor(taskCard);
         } else {
             const defaultProj = Project.getAllProjects().find(proj => proj.name === projectInput.value);
             if (defaultProj) {
-                taskCard.id = defaultProj.uuid;
+                taskCard.dataset.id = defaultProj.uuid;
                 setCardColor(taskCard);
             }
         }
@@ -250,31 +250,31 @@ export function Display() {
 
     const createChecklistElement = (checklistUl, currChecklistData) => {
         const li = document.createElement("li");
-        li.dataset.id = currChecklistData.id;
+        if (currChecklistData.id) li.dataset.id = currChecklistData.id;
 
         const label = document.createElement("label");
         label.classList.add("checkbox");
-        label.dataset.id = currChecklistData.id;
+
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        checkbox.classList.add("checklist-checkbox");
         if (currChecklistData.status === "completed") checkbox.checked = true;
-        addEditChecklistListener(checklistUl, checkbox)
 
         const checklistInput = document.createElement("input");
         checklistInput.type = "text";
         checklistInput.classList.add("checklist-input");
         checklistInput.placeholder = "Add to checklist...";
         checklistInput.value = currChecklistData.text || "";
-        addEditChecklistListener(checklistUl, checklistInput);
 
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";
         deleteItemBtn.classList.add("checklist-delete");
-        addDeleteChecklistItemListener(deleteItemBtn, checklistUl, currChecklistData);
  
         label.append(checkbox, checklistInput);
         li.append(label, deleteItemBtn);
         checklistUl.appendChild(li);
+        addEditChecklistListener(checklistUl);
+        addDeleteChecklistItemListener(checklistUl);
     }
 
     return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement };

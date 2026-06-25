@@ -55,39 +55,49 @@ export function addEditTaskListener(card) {
     });
 }
 
-export function addEditChecklistListener(checklistUl, inputElement) {
-    inputElement.addEventListener("change", () => {
+export function addEditChecklistListener(checklistUl) {
+    checklistUl.addEventListener("change", (event) => {
+        const target = event.target;
+        const li = target.closest("li");
+        const itemId = li?.dataset.id;
         const currTask = Project.findTask(checklistUl.dataset.uuid);
-        if (!currTask) return;
-        
-        const li = inputElement.closest("li");
-        const itemId = li.dataset.id;
+
+        if (!currTask || !li) return;
 
         const existingItem = currTask.checklist.find(item => item.id === itemId);
 
-        if (existingItem) {
-            if (inputElement.type === "checkbox") {
-                console.log()
-                const status = inputElement.checked ? "completed" : "pending";
+        //Handle checkbox toggles
+        if (target.classList.contains("checklist-checkbox")) {
+            if (existingItem) {
+                const status = target.checked ? "completed" : "pending";
                 currTask.editChecklistItem(itemId, "status", status);
-            } else {
-                currTask.editChecklistItem(itemId, "text", inputElement.value);
-            };
-        } else if (inputElement.type !== "checkbox" && inputElement.value.trim()) {
-            const newItem = currTask.addChecklistItem(inputElement.value);
-            li.dataset.id = newItem.id;
+            }
+        }
+
+        //Handle text inputs
+        if (target.classList.contains("checklist-input")) {
+            if (existingItem) {
+                currTask.editChecklistItem(itemId, "text", target.value);
+            } else if (target.value.trim()) {
+                const newItem = currTask.addChecklistItem(target.value);
+                li.dataset.id = newItem.id;
+            }
         }
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
 
-export function addDeleteChecklistItemListener(deleteItemBtn, checklistUl, currChecklistData) {
-    deleteItemBtn.addEventListener("click", () => {
-        const taskInstance = Project.findTask(checklistUl.dataset.uuid);
-        const li = deleteItemBtn.closest("li");
+export function addDeleteChecklistItemListener(checklistUl) {
+    checklistUl.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!target.classList.contains("checklist-delete")) return;
 
-        if (taskInstance) {
-            taskInstance.removeChecklistItem(currChecklistData.id);
+        const li = target.closest("li");
+        const itemId = li?.dataset.id;
+        const currTask = Project.findTask(checklistUl.dataset.uuid);
+
+        if (currTask && itemId) {
+            currTask.removeChecklistItem(itemId);
             li.remove();
             if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
         }
@@ -110,7 +120,7 @@ export function addDeleteProjListener(deleteProjBtn, projCard) {
 
 export function addEditProjListener(card) {
     card.addEventListener("change", () => {
-        const currProj = Project.getAllProjects().find((p) => p.uuid === card.id);
+        const currProj = Project.getAllProjects().find((p) => p.uuid === card.dataset.id);
         const projName = card.querySelector(".proj-title").value ?? "";
         const projColor = card.querySelector(".hidden-color-picker").value ?? "";
 
