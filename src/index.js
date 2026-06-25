@@ -5,10 +5,7 @@ import { Project } from "./project.js";
 import { addCalendarListener } from "./date.js";
 import { addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
 
-
 function Controller() {
-    const display = Display();
-
     const loadApplicationState = () => {
         StorageController.retrieveStorage();
     }
@@ -28,6 +25,8 @@ function Controller() {
     }
 
     loadApplicationState();
+
+    const display = Display();
 
     addNewProjectBtnListener(display);
     addNewTaskBtnListener(display);

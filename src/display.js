@@ -19,11 +19,16 @@ export function Display() {
 
     const setCardColor = (card) => {
         const currProj = Project.getAllProjects().find((p) => p.uuid === card.dataset.id);
-        if(!currProj || !currProj.color) {
-            card.style.backgroundColor = "inherit";
-            return;
-        } else {
+        
+        if (currProj && currProj.color) {
             card.style.backgroundColor = currProj.color;
+        } else {
+            const localPicker = card.querySelector(".hidden-color-picker");
+            if (localPicker) {
+                card.style.backgroundColor = localPicker.value;
+            } else {
+                card.style.backgroundColor = "inherit";
+            }
         }
     }
 
@@ -69,7 +74,8 @@ export function Display() {
         colorPickerIcon.src = brushIcon;
         colorPickerIcon.classList.add("brush", "icon");
 
-        const colorPalette = ["#5E3082", "#C92C71", "#9ED572"];
+        const colorPalette = ["#3E8235", "#7E5CBC", "#C6246E", "#1C2C82", "#CE350E"];
+
         const datalist = document.createElement("datalist");
         datalist.id = "presetColors" + `${uniqueID}`;
         colorPalette.forEach((color) => {
@@ -80,8 +86,9 @@ export function Display() {
 
         if (projectData) {
             colorPicker.value = projectData.color;
+        } else {
+            colorPicker.value = colorPalette[0];
         }
-        setCardColor(projCard);
 
         colorPickerLabel.appendChild(colorPickerIcon);
 
@@ -101,6 +108,7 @@ export function Display() {
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
         projForm.append(projTitle, iconDiv);
         projCard.appendChild(projForm);
+        setCardColor(projCard);
         addEditProjListener(projCard, { setCardColor });
         projContainer.appendChild(projCard);
         document.querySelectorAll("input.proj-title").forEach(input => {

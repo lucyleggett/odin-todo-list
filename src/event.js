@@ -111,6 +111,7 @@ export function addDeleteProjListener(deleteProjBtn, projCard) {
 export function addEditProjListener(card, {setCardColor}) {
     card.addEventListener("change", (event) => {
         event.preventDefault();
+        setCardColor(card);
         const target = event.target;
         let currProj = Project.findProject(card.dataset.id);
 
@@ -134,7 +135,6 @@ export function addEditProjListener(card, {setCardColor}) {
                 currProj.color = projColor
             }
         }
-        setCardColor(card);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
