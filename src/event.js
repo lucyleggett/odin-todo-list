@@ -1,31 +1,27 @@
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
-import { Display } from "./index.js";
 
-const display = Display();
-
-export function addNewTaskBtnListener() {
+export function addNewTaskBtnListener(display) {
     document.querySelector("button.new-task").addEventListener("click", (event) => {
         event.preventDefault();
         display.renderTaskCard(null, null);
     })
 }
 
-export function addNewProjectBtnListener() {
+export function addNewProjectBtnListener(display) {
     document.querySelector("button.new-project").addEventListener("click", (event) => {
         event.preventDefault();
         display.renderProjectCard(null);
     })
 }
 
-export function addEditTaskListener(card) {
+export function addEditTaskListener(card, {setCardColor}) {
     card.addEventListener("change", (event) => {
-        event.preventDefault();
         if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
 
         const targetProjName = card.querySelector(".project-label").value;
-        const targetProj = Project.findProject(targetProjName);
+        const targetProj = Project.findProjectByName(targetProjName);
         if (!targetProj) return;
         card.dataset.id = targetProj.uuid;
 
@@ -51,14 +47,13 @@ export function addEditTaskListener(card) {
                 Project.moveTask(targetUuid, currentProjOfTask, targetProj);
             }
         }
-        display.setCardColor(card);
+        setCardColor(card);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
 
 export function addEditChecklistListener(checklistUl) {
     checklistUl.addEventListener("change", (event) => {
-        event.preventDefault();
         const target = event.target;
         const li = target.closest("li");
         const itemId = li?.dataset.id;
@@ -89,7 +84,6 @@ export function addEditChecklistListener(checklistUl) {
 
 export function addDeleteChecklistItemListener(checklistUl) {
     checklistUl.addEventListener("click", (event) => {
-        event.preventDefault();
         const target = event.target;
         if (!target.classList.contains("checklist-delete")) return;
 
@@ -105,15 +99,8 @@ export function addDeleteChecklistItemListener(checklistUl) {
     });
 }
 
-export function addResizeInputListener(inputElement) {
-    inputElement.addEventListener("input", () => {
-        event.preventDefault();
-        display.resizeInput(inputElement);
-    });
-}
-
 export function addDeleteProjListener(deleteProjBtn, projCard) {
-    deleteProjBtn.addEventListener("click", () => {
+    deleteProjBtn.addEventListener("click", (event) => {
         event.preventDefault();
         Project.deleteProject(deleteProjBtn.dataset.uuid);
         projCard.remove();
@@ -121,8 +108,8 @@ export function addDeleteProjListener(deleteProjBtn, projCard) {
     });
 }
 
-export function addEditProjListener(card) {
-    card.addEventListener("change", () => {
+export function addEditProjListener(card, {setCardColor}) {
+    card.addEventListener("change", (event) => {
         event.preventDefault();
         const target = event.target;
         let currProj = Project.findProject(card.dataset.id);
@@ -147,7 +134,7 @@ export function addEditProjListener(card) {
                 currProj.color = projColor
             }
         }
-        display.setCardColor(card);
+        setCardColor(card);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }

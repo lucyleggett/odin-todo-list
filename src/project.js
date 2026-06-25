@@ -45,8 +45,13 @@ export class Project {
         }
     }
 
-    static findProject(projectName) {
-        return Project.getAllProjects().find(proj => proj.name === projectName);
+    static findProject(projectUuid) {
+        return Project.getAllProjects().find(proj => proj.uuid === projectUuid);
+    }
+
+    static findProjectByName(projectName) {
+        if (!projectName) return null;
+        return Project.getAllProjects().find(proj => proj.name === projectName.toLowerCase());
     }
 
     static findProjectOfTask(taskId) {

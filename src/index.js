@@ -14,7 +14,7 @@ import { addCalendarListener } from "./date.js";
 import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
 import { initializeTasks, initializeProjects } from "./load.js";
 
-export function Display() {
+function Display() {
     const resizeInput = (input) => {
         const charCount = input.value.length || 1;
         const estimatedCharWidth = 11 + 2;
@@ -106,11 +106,14 @@ export function Display() {
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
         projForm.append(projTitle, iconDiv);
         projCard.appendChild(projForm);
-        addEditProjListener(projCard);
+        addEditProjListener(projCard, { setCardColor });
         projContainer.appendChild(projCard);
         document.querySelectorAll("input.proj-title").forEach(input => {
             resizeInput(input);
-            addResizeInputListener(input);
+            input.addEventListener("input", (event) => {
+                event.preventDefault();
+                resizeInput(input);
+            });
         });
     }
 
@@ -246,7 +249,7 @@ export function Display() {
         taskCard.appendChild(taskForm);
         tasksContainer.appendChild(taskCard);
 
-        addEditTaskListener(taskCard);
+        addEditTaskListener(taskCard, { setCardColor });
     }
 
     const createChecklistElement = (checklistUl, currChecklistData) => {
@@ -283,13 +286,14 @@ export function Display() {
 
 function Controller() {
     loadApplicationState();
-    addNewProjectBtnListener();
-    addNewTaskBtnListener();
 
     const display = Display();
 
-    initializeTasks();
-    initializeProjects();
+    addNewProjectBtnListener(display);
+    addNewTaskBtnListener(display);
+
+    initializeTasks(display);
+    initializeProjects(display);
     
     addCalendarListener();
 }
