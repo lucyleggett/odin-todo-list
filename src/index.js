@@ -11,7 +11,8 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener, addEditChecklistListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
+import { initializeTasks, initializeProjects } from "./load.js";
 
 export function Display() {
     const resizeInput = (input) => {
@@ -269,73 +270,25 @@ export function Display() {
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";
         deleteItemBtn.classList.add("checklist-delete");
-        deleteItemBtn.addEventListener("click", () => {
-            const taskInstance = Project.findTask(checklistUl.dataset.uuid);
-            if (taskInstance) {
-                taskInstance.removeChecklistItem(currChecklistData.id);
-                li.remove();
-                if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
-            }
-        });
+        addDeleteChecklistItemListener(deleteItemBtn, checklistUl, currChecklistData);
  
         label.append(checkbox, checklistInput);
         li.append(label, deleteItemBtn);
         checklistUl.appendChild(li);
     }
 
-    const initializeTasks = () => {
-        Project.getAllProjects().forEach(proj => {
-                renderProjectCard(proj);
-            });
-    }
-
-    const initializeProjects = () => {
-        Project.getAllProjects().forEach(proj => {
-            proj.tasks.forEach(task => {
-                renderTaskCard(task, proj);
-            });
-        });
-    }
-
-    return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement, initializeTasks, initializeProjects };
+    return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement };
 }
 
 function Controller() {
     loadApplicationState();
+    addNewProjectBtnListener();
+    addNewTaskBtnListener();
 
     const display = Display();
 
-    document.querySelector("button.new-task").addEventListener("click", (event) => {
-        event.preventDefault();
-        display.renderTaskCard(null, null);
-    })
-
-    document.querySelector("button.new-project").addEventListener("click", (event) => {
-        event.preventDefault();
-        display.renderProjectCard(null);
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
-    })
-
-    display.initializeTasks();
-    display.initializeProjects();
-
-    const addBtn = document.getElementById("addBtn");
-
-    if (addBtn) {
-        addBtn.addEventListener("click", (event) => {
-            event.preventDefault();
-            addChecklistItem();
-        });
-    }
-
-    if (itemInput) {
-        itemInput.addEventListener("keypress", (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                addChecklistItem();
-            }
-        });
-    }
+    initializeTasks();
+    initializeProjects();
     
     addCalendarListener();
 }

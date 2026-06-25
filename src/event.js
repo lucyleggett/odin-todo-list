@@ -5,6 +5,20 @@ import { Display } from "./index.js";
 
 const display = Display();
 
+export function addNewTaskBtnListener() {
+    document.querySelector("button.new-task").addEventListener("click", (event) => {
+        event.preventDefault();
+        display.renderTaskCard(null, null);
+    })
+}
+
+export function addNewProjectBtnListener() {
+    document.querySelector("button.new-project").addEventListener("click", (event) => {
+        event.preventDefault();
+        display.renderProjectCard(null);
+    })
+}
+
 export function addEditTaskListener(card) {
     card.addEventListener("change", (event) => {
         if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
@@ -12,6 +26,7 @@ export function addEditTaskListener(card) {
         const targetProjName = card.querySelector(".project-label").value;
         const targetProj = Project.findProject(targetProjName);
         if (!targetProj) return;
+        card.dataset.id = targetProj.uuid;
 
         const targetUuid = card.dataset.uuid;
         let taskToEdit = targetUuid ? Project.findTask(targetUuid) : null;
@@ -66,6 +81,19 @@ export function addEditChecklistListener(checklistUl, inputElement) {
     });
 }
 
+export function addDeleteChecklistItemListener(deleteItemBtn, checklistUl, currChecklistData) {
+    deleteItemBtn.addEventListener("click", () => {
+        const taskInstance = Project.findTask(checklistUl.dataset.uuid);
+        const li = deleteItemBtn.closest("li");
+
+        if (taskInstance) {
+            taskInstance.removeChecklistItem(currChecklistData.id);
+            li.remove();
+            if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        }
+    });
+}
+
 export function addResizeInputListener(inputElement) {
     inputElement.addEventListener("input", () => {
         display.resizeInput(inputElement);
@@ -96,7 +124,7 @@ export function addEditProjListener(card) {
                     color: projColor,
                 };
                 const newProject = new Project(projObj);
-                card.id = newProject.uuid;
+                card.dataset.id = newProject.uuid;
             };
         };
         display.setCardColor(card);
