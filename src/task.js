@@ -32,7 +32,7 @@ export class Task {
     editChecklistItem(itemId, key, newValue) {
         const itemToEdit = this.checklist.find(item => item.id === itemId);
         if (itemToEdit) {
-            itemToEdit.key = newValue;
+            itemToEdit[key] = newValue;
         };
     }
 

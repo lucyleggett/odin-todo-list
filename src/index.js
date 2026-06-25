@@ -256,7 +256,8 @@ export function Display() {
         label.dataset.id = currChecklistData.id;
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.checked = currChecklistData.status === "completed";
+        if (currChecklistData.status === "completed") checkbox.checked = true;
+        addEditChecklistListener(checklistUl, checkbox)
 
         const checklistInput = document.createElement("input");
         checklistInput.type = "text";

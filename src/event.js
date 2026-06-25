@@ -19,7 +19,7 @@ export function addEditTaskListener(card) {
         const taskObj = {
             title: card.querySelector(".task-title")?.value ?? "",
             description: card.querySelector(".task-description")?.value ?? "",
-            dueDate: card.querySelector(".due-date")?.value ?? "",
+            dueDate: card.querySelector(".custom-date")?.value ?? "",
             priority: card.querySelector(".priority-input")?.value ?? "",
         };
 
@@ -48,14 +48,19 @@ export function addEditChecklistListener(checklistUl, inputElement) {
         const li = inputElement.closest("li");
         const itemId = li.dataset.id;
 
-        if (currTask) {
-            const existingItem = currTask.checklist.find(item => item.id === itemId);
-            if (existingItem) {
-                currTask.editChecklistItem(itemId, inputElement.value);
+        const existingItem = currTask.checklist.find(item => item.id === itemId);
+
+        if (existingItem) {
+            if (inputElement.type === "checkbox") {
+                console.log()
+                const status = inputElement.checked ? "completed" : "pending";
+                currTask.editChecklistItem(itemId, "status", status);
             } else {
-                const newItem = currTask.addChecklistItem(inputElement.value);
-                li.dataset.id = newItem.id;
-            }
+                currTask.editChecklistItem(itemId, "text", inputElement.value);
+            };
+        } else if (inputElement.type !== "checkbox" && inputElement.value.trim()) {
+            const newItem = currTask.addChecklistItem(inputElement.value);
+            li.dataset.id = newItem.id;
         }
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
