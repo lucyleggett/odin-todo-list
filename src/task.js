@@ -5,7 +5,7 @@ export class Task {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.checklist = checklist;
+        this.checklist = Array.isArray(checklist) ? checklist : [];
     }
 
     get details() {
@@ -29,10 +29,10 @@ export class Task {
         return checklistItem;
     }
 
-    editChecklistItem(itemId, newValue) {
+    editChecklistItem(itemId, key, newValue) {
         const itemToEdit = this.checklist.find(item => item.id === itemId);
         if (itemToEdit) {
-            itemToEdit.text = newValue
+            itemToEdit.key = newValue;
         };
     }
 

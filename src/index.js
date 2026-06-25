@@ -11,7 +11,7 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addCalendarListener } from "./date.js";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener, addEditChecklistListener } from "./event.js";
 
 export function Display() {
     const resizeInput = (input) => {
@@ -117,6 +117,10 @@ export function Display() {
         const taskCard = document.createElement("div");
         taskCard.classList.add("task-card");
 
+        if (taskData) {
+            taskCard.dataset.uuid = taskData.uuid;
+        }
+
         const taskForm = document.createElement("form");
         taskForm.method = "get";
 
@@ -178,10 +182,10 @@ export function Display() {
         }
         currChecklistUl.classList.add("checklist");
 
-        if (taskData && taskData.checklist) {
+        if (taskData && taskData.checklist && taskData.checklist.length > 0) {
             taskData.checklist.forEach(item => {
-                createChecklistElement(currChecklistUl, item);
-            })
+                createChecklistElement(currChecklistUl, item)
+            });
         } else {
             createChecklistElement(currChecklistUl, {});
         }
@@ -249,6 +253,7 @@ export function Display() {
 
         const label = document.createElement("label");
         label.classList.add("checkbox");
+        label.dataset.id = currChecklistData.id;
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = currChecklistData.status === "completed";
@@ -258,8 +263,7 @@ export function Display() {
         checklistInput.classList.add("checklist-input");
         checklistInput.placeholder = "Add to checklist...";
         checklistInput.value = currChecklistData.text || "";
-
-        //Eventlistener
+        addEditChecklistListener(checklistUl, checklistInput);
 
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";
@@ -332,22 +336,6 @@ function Controller() {
         });
     }
     
-    const createNewTask = (card) => {
-        const targetProjName = card.querySelector(".project-label").value;
-        const targetProj = Project.getAllProjects().find(proj => proj.name === targetProjName);
-        
-        if (targetProj) {
-            const taskObj = {
-                title: card.querySelector(".task-title").value,
-                description: card.querySelector(".task-description").value,
-                dueDate: card.querySelector(".due-date").value,
-                priority: card.querySelector(".priority-input").value,
-                checklist: [],
-            }
-            targetProj.addTask(new Task(taskObj));
-        };
-    }
-
     addCalendarListener();
 }
 

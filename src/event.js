@@ -7,9 +7,14 @@ const display = Display();
 
 export function addEditTaskListener(card) {
     card.addEventListener("change", (event) => {
+        if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
+
         const targetProjName = card.querySelector(".project-label").value;
         const targetProj = Project.findProject(targetProjName);
         if (!targetProj) return;
+
+        const targetUuid = card.dataset.uuid;
+        let taskToEdit = targetUuid ? Project.findTask(targetUuid) : null;
 
         const taskObj = {
             title: card.querySelector(".task-title")?.value ?? "",
@@ -17,21 +22,17 @@ export function addEditTaskListener(card) {
             dueDate: card.querySelector(".due-date")?.value ?? "",
             priority: card.querySelector(".priority-input")?.value ?? "",
         };
-        const targetUuid = card.dataset.uuid;
 
         if (!targetUuid) {
             const newTask = new Task(taskObj);
             targetProj.addTask(newTask);
             card.dataset.uuid = newTask.uuid;
-        } else {
+        } else if (taskToEdit) {
             const currentProjOfTask = Project.findProjectOfTask(targetUuid);
-            const taskToEdit = currentProjOfTask.tasks.find(t => t.uuid === targetUuid);
+            Object.assign(taskToEdit, taskObj);
 
-            if (taskToEdit) {
-                Object.assign(taskToEdit, taskObj);
-                if (currentProjOfTask !== targetProj) {
-                    Project.moveTask(targetUuid, currentProjOfTask, targetProj);
-                }
+            if (currentProjOfTask !== targetProj) {
+                Project.moveTask(targetUuid, currentProjOfTask, targetProj);
             }
         }
         display.setCardColor(card);
@@ -39,22 +40,23 @@ export function addEditTaskListener(card) {
     });
 }
 
-export function addEditChecklistListener(card, inputElement) {
+export function addEditChecklistListener(checklistUl, inputElement) {
     inputElement.addEventListener("change", () => {
-        const currTask = Project.findTask(card.uuid);
-        const liveValue = inputElement.value.trim();
-        if (!currTask || !liveValue) return;
+        const currTask = Project.findTask(checklistUl.dataset.uuid);
+        if (!currTask) return;
+        
+        const li = inputElement.closest("li");
+        const itemId = li.dataset.id;
 
-        const parentLi = inputElement.closest("li");
-        const checklistItemId = parentLi ? parentLi.dataset.id : null;
-
-        if (!checklistItemId) {
-            const newItem = currTask.addChecklistItem(liveValue);
-            if (parentLi) parentLi.dataset.id = newItem.id;
-        } else {
-            currTask.editChecklistItem(checklistItemId, liveValue);
+        if (currTask) {
+            const existingItem = currTask.checklist.find(item => item.id === itemId);
+            if (existingItem) {
+                currTask.editChecklistItem(itemId, inputElement.value);
+            } else {
+                const newItem = currTask.addChecklistItem(inputElement.value);
+                li.dataset.id = newItem.id;
+            }
         }
-
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
