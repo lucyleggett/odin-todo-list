@@ -43,6 +43,7 @@ export function Display() {
 
         const projForm = document.createElement("form");
         projForm.classList = "new-project-form";
+        projForm.addEventListener("submit", (e) => e.preventDefault());
         const projTitle = document.createElement("input");
         projTitle.type = "text";
         projTitle.placeholder = "Title";
@@ -63,7 +64,7 @@ export function Display() {
         colorPicker.id = uniqueID;
         colorPicker.name = "color";
         colorPicker.classList.add("hidden-color-picker");
-        colorPicker.setAttribute("list", "presetColors");
+        colorPicker.setAttribute("list", "presetColors" + uniqueID);
 
         const colorPickerLabel = document.createElement("label");
         colorPickerLabel.setAttribute("for", uniqueID);

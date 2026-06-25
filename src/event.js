@@ -21,6 +21,7 @@ export function addNewProjectBtnListener() {
 
 export function addEditTaskListener(card) {
     card.addEventListener("change", (event) => {
+        event.preventDefault();
         if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
 
         const targetProjName = card.querySelector(".project-label").value;
@@ -57,6 +58,7 @@ export function addEditTaskListener(card) {
 
 export function addEditChecklistListener(checklistUl) {
     checklistUl.addEventListener("change", (event) => {
+        event.preventDefault();
         const target = event.target;
         const li = target.closest("li");
         const itemId = li?.dataset.id;
@@ -66,7 +68,6 @@ export function addEditChecklistListener(checklistUl) {
 
         const existingItem = currTask.checklist.find(item => item.id === itemId);
 
-        //Handle checkbox toggles
         if (target.classList.contains("checklist-checkbox")) {
             if (existingItem) {
                 const status = target.checked ? "completed" : "pending";
@@ -74,7 +75,6 @@ export function addEditChecklistListener(checklistUl) {
             }
         }
 
-        //Handle text inputs
         if (target.classList.contains("checklist-input")) {
             if (existingItem) {
                 currTask.editChecklistItem(itemId, "text", target.value);
@@ -89,6 +89,7 @@ export function addEditChecklistListener(checklistUl) {
 
 export function addDeleteChecklistItemListener(checklistUl) {
     checklistUl.addEventListener("click", (event) => {
+        event.preventDefault();
         const target = event.target;
         if (!target.classList.contains("checklist-delete")) return;
 
@@ -106,13 +107,15 @@ export function addDeleteChecklistItemListener(checklistUl) {
 
 export function addResizeInputListener(inputElement) {
     inputElement.addEventListener("input", () => {
+        event.preventDefault();
         display.resizeInput(inputElement);
     });
 }
 
 export function addDeleteProjListener(deleteProjBtn, projCard) {
     deleteProjBtn.addEventListener("click", () => {
-        Project.deleteProject(deleteProjBtn.uuid);
+        event.preventDefault();
+        Project.deleteProject(deleteProjBtn.dataset.uuid);
         projCard.remove();
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
@@ -120,23 +123,30 @@ export function addDeleteProjListener(deleteProjBtn, projCard) {
 
 export function addEditProjListener(card) {
     card.addEventListener("change", () => {
-        const currProj = Project.getAllProjects().find((p) => p.uuid === card.dataset.id);
-        const projName = card.querySelector(".proj-title").value ?? "";
+        event.preventDefault();
+        const target = event.target;
+        let currProj = Project.findProject(card.dataset.id);
+
+        const projName = card.querySelector(".proj-title").value.trim() ?? "";
         const projColor = card.querySelector(".hidden-color-picker").value ?? "";
 
-        if (currProj) {
-            if (projName !== "") currProj.name = projName;
-            if (projColor !== "") currProj.color = projColor;
+        if (!currProj) {
+            if (projName === "") return;
+            const newProject = new Project({name: projName, color: projColor});
+            card.dataset.id = newProject.uuid;
+
+            const deleteItemBtn = card.querySelector(".delete-btn");
+            if (deleteItemBtn) deleteItemBtn.dataset.uuid = newProject.uuid;
+
+            currProj = newProject;
         } else {
-            if (projName !== "") {
-                const projObj = {
-                    name: projName,
-                    color: projColor,
-                };
-                const newProject = new Project(projObj);
-                card.dataset.id = newProject.uuid;
+            if (target.classList.contains("proj-title")) {
+                currProj.name = projName;
             };
-        };
+            if (target.classList.contains("hidden-color-picker")) {
+                currProj.color = projColor
+            }
+        }
         display.setCardColor(card);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
