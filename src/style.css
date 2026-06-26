@@ -164,6 +164,16 @@ h1 {
     margin: 0;
 }
 
+.task-status-btn {
+    background-color: transparent;
+    border: none;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    margin: 0;
+    align-self: center;
+}
+
 div.task-due {
     display: flex;
     align-items: center;
@@ -428,4 +438,8 @@ div.due-date {
     justify-content: center;
     gap: 2px;
     justify-self: right;
+}
+
+.disabled {
+    display: none;
 }

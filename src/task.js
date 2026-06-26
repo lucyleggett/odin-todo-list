@@ -1,11 +1,12 @@
 export class Task {
-    constructor({ title, uuid, description, dueDate, priority, checklist }) {
+    constructor({ title, uuid, description, dueDate, priority, checklist, status }) {
         this.uuid = uuid || crypto.randomUUID(); 
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority || "low";
         this.checklist = Array.isArray(checklist) ? checklist : [];
+        this.status = status || "pending";
     }
 
     get details() {
@@ -15,6 +16,7 @@ export class Task {
             dueDate: this.dueDate,
             priority: this.priority,
             checklist: this.checklist,
+            status: this.status,
         }
     }
 
@@ -47,7 +49,8 @@ export class Task {
             description: this.description,
             dueDate: this.dueDate,
             priority: this.priority,
-            checklist: this.checklist
+            checklist: this.checklist,
+            status: this.status,
         };
     }
 

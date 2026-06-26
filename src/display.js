@@ -1,7 +1,9 @@
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
-import binIcon from "./images/trash-svgrepo-com.svg";
+import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
+import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
+import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
 import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
@@ -139,7 +141,6 @@ export function Display() {
         priorityBtn.type = "button";
         priorityBtn.classList = "priority-btn";
         priorityBtn.innerHTML = priorityIconRaw;
-        priorityBtn.dataset.id = taskData.uuid;
         const svgElement = priorityBtn.querySelector("svg");
         if (svgElement) svgElement.classList.add("priority-icon");
         
@@ -159,12 +160,37 @@ export function Display() {
         if (taskData) {
             titleInput.value = taskData.title;
             titleInput.dataset.uuid = taskData.uuid;
+            priorityBtn.dataset.id = taskData.uuid;
             const matchedPriority = priorityColourMap.find(item => item.priority === taskData.priority);
             priorityBtn.style.color = matchedPriority ? matchedPriority.color : priorityColourMap[0].color;
         }
         addEditPriorityListener(priorityBtn, priorityColourMap);
 
-        topDiv.append(priorityBtn, titleInput);
+        const taskStatusBtn = document.createElement("button");
+        taskStatusBtn.type = "button";
+        taskStatusBtn.classList.add("task-status-btn");
+
+        const taskStatusPending = document.createElement("img");
+        taskStatusPending.src = checkboxIcon;
+        taskStatusPending.alt = "Empty checkbox";
+        taskStatusPending.classList.add("status-icon");
+
+        const taskStatusComplete = document.createElement("img");
+        taskStatusComplete.src = checkedIcon;
+        taskStatusComplete.alt = "Checked checkbox";
+        taskStatusComplete.classList.add("status-icon");
+
+        if (taskData) {
+            if (taskData.status === "pending") {
+                taskStatusComplete.classList.add("disabled");
+            } else if (taskData.status === "complete") {
+                taskStatusPending.classList.add("disabled");
+            }
+        }
+
+        taskStatusBtn.append(taskStatusPending, taskStatusComplete);
+
+        topDiv.append(priorityBtn, titleInput, taskStatusBtn);
 
         const descInput = document.createElement("textarea");
         descInput.classList.add("task-description");
@@ -175,6 +201,7 @@ export function Display() {
         if (taskData) {
             descInput.value = taskData.description;
             descInput.dataset.uuid = taskData.uuid;
+            taskStatusBtn.dataset.id = taskData.uuid;
         }
 
         const currChecklistUl = document.createElement("ul");
@@ -220,7 +247,6 @@ export function Display() {
 
         const projectInput = document.createElement("select");
         projectInput.classList.add("project-label");
-        projectInput.dataset.id = taskData.uuid;
 
         Project.getAllProjects().forEach(proj => {
             const option = document.createElement("option");
@@ -231,6 +257,7 @@ export function Display() {
 
         if (parentProject) {
             projectInput.value = parentProject.name;
+            projectInput.dataset.id = taskData.uuid;
             taskCard.dataset.id = parentProject.uuid;
             setBackgroundColor(projectInput);
         } else {
