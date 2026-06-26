@@ -70,6 +70,8 @@ export function addEditChecklistListener(checklistUl) {
                 currTask.editChecklistItem(itemId, "status", status);
                 if (target.checked) {
                     input.classList.add("checked");
+                } else {
+                    input.classList.remove("checked");
                 }
             }
         }
