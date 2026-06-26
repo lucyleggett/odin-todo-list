@@ -286,6 +286,13 @@ button.add-btn {
     display: none !important;
 }
 
+select:focus:not(:focus-visible),
+select:active,
+select:focus-within {
+    outline: none;
+    box-shadow: none;
+}
+
 select.project-label {
     -webkit-appearance: none;
     -moz-appearance: none;
