@@ -190,6 +190,10 @@ input[type="checkbox"] {
     accent-color: rgb(0, 0, 0, 0.5);
 }
 
+.checked {
+    text-decoration: line-through;
+}
+
 ul {
     display: flex;
     flex-direction: column;

@@ -270,13 +270,17 @@ export function Display() {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.classList.add("checklist-checkbox");
-        if (currChecklistData.status === "completed") checkbox.checked = true;
 
         const checklistInput = document.createElement("input");
         checklistInput.type = "text";
         checklistInput.classList.add("checklist-input");
         checklistInput.placeholder = "Add to checklist...";
         checklistInput.value = currChecklistData.text || "";
+
+        if (currChecklistData.status === "completed") {
+            checkbox.checked = true;
+            checklistInput.classList.add("checked");
+        }
 
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";

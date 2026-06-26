@@ -56,6 +56,7 @@ export function addEditChecklistListener(checklistUl) {
     checklistUl.addEventListener("change", (event) => {
         const target = event.target;
         const li = target.closest("li");
+        const input = li.querySelector(".checklist-input");
         const itemId = li?.dataset.id;
         const currTask = Project.findTask(checklistUl.dataset.uuid);
 
@@ -67,6 +68,9 @@ export function addEditChecklistListener(checklistUl) {
             if (existingItem) {
                 const status = target.checked ? "completed" : "pending";
                 currTask.editChecklistItem(itemId, "status", status);
+                if (target.checked) {
+                    input.classList.add("checked");
+                }
             }
         }
 
