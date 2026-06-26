@@ -2,6 +2,7 @@ import { Task } from "./task.js";
 import { Project } from "./project.js";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
+import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
 import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 
@@ -132,6 +133,12 @@ export function Display() {
 
         const topDiv = document.createElement("div");
         topDiv.classList.add("top-div");
+
+        const priorityBtn = document.createElement("button");
+        priorityBtn.classList = "priority-btn";
+        priorityBtn.innerHTML = priorityIconRaw;
+        const svgElement = priorityBtn.querySelector("svg");
+        if (svgElement) svgElement.classList.add("priority-icon");
         
         const titleInput = document.createElement("textarea");
         titleInput.classList.add("task-title");
@@ -139,37 +146,29 @@ export function Display() {
         titleInput.rows = 1;
         titleInput.placeholder = "Title";
         titleInput.required = true;
-        
-        const priorityInput = document.createElement("select");
-        priorityInput.classList.add("priority-input");
-        priorityInput.required = true;
-        const priorityOptions = [
+
+        const priorityColourMap = [
             {
-                level: "low",
-                emoji: "⬇",
+                priority: "low",
+                color: "#008002"
             },
             {
-                level: "medium",
-                emoji: "⚠️",
+                priority: "medium",
+                color: "#ff7300"
             },
             {
-                level: "high",
-                emoji: "🚩",
+                priority: "high",
+                color: "#ab0808"
             }
         ]
-        priorityOptions.forEach(option => {
-            const priorityOption = document.createElement("option");
-            priorityOption.value = option.level;
-            priorityOption.textContent = option.emoji;
-            priorityInput.appendChild(priorityOption);
-        })
 
         if (taskData) {
             titleInput.value = taskData.title;
             titleInput.dataset.uuid = taskData.uuid;
-            priorityInput.value = taskData.priority;
+            const matchedPriority = priorityColourMap.find(item => item.priority === taskData.priority);
+            priorityBtn.style.color = matchedPriority ? matchedPriority.color : priorityColourMap[0].color;
         }
-        topDiv.append(titleInput, priorityInput);
+        topDiv.append(priorityBtn, titleInput);
 
         const descInput = document.createElement("textarea");
         descInput.classList.add("task-description");

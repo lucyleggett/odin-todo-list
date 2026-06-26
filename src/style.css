@@ -107,11 +107,6 @@ h1 {
     margin: 20px 0;
 }
 
-.priority-icon {
-    grid-area: 1 / 2 / 2 / 3;
-    margin-left: 10px;
-}
-
 .tasks-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -128,7 +123,6 @@ h1 {
     box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
 }
 
-.task-card *,  
 .project-card * {
     color: white;
 }
@@ -139,8 +133,9 @@ h1 {
 
 .top-div {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     min-height: 30px;
+    gap: 7px;
 }
 
 .top-div > select {
@@ -150,6 +145,23 @@ h1 {
     text-align: center;
     font-size: 30px;
     width: 38px;
+}
+
+.priority-btn {
+    grid-area: 1 / 1 / 2 / 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.priority-icon {
+    height: 12px;
+    width: 12px;
+    margin: 0;
 }
 
 div.task-due {
@@ -163,11 +175,6 @@ div.task-due {
 
 div.task-due > p {
     margin-left: 5px;;
-}
-
-img.priority-icon {
-    width: 30px;
-    padding-top: 5px;
 }
 
 ::placeholder {

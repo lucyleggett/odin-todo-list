@@ -40,8 +40,18 @@ export default {
             }],
       },
       {
-      test: /\.(png|svg|jpg|jpeg|gif)$/i,
-      type: 'asset/resource',
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.svg$/,
+        resourceQuery: { not: [/raw/] },
+        type: 'asset/resource',
+      },
+            {
+        test: /\.svg$/,
+        resourceQuery: /raw/,
+        type: 'asset/source',
       },
     ],
   },
