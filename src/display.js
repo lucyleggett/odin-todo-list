@@ -8,6 +8,7 @@ import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
+import { updateDateDisplay } from "./date.js";
 
 export function Display() {
     const setCardColor = (card) => {
@@ -221,9 +222,11 @@ export function Display() {
         if (taskData) {
             dueDateInput.value = taskData.dueDate;
             dueDateInput.dataset.uuid = taskData.uuid;
-        } else {
-            dueDateInput.placeholder = "No deadline";
-        };
+        }
+        updateDateDisplay(dueDateInput);
+        dueDateInput.addEventListener("change", () => {
+            updateDateDisplay(this);
+        })
 
         const projectInput = document.createElement("select");
         projectInput.classList.add("project-label");

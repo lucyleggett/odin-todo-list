@@ -109,7 +109,7 @@ h1 {
 .project-card {
     display: flex;
     flex-direction: column;
-    padding: 10px 15px 15px 15px;
+    padding: 15px;
     border-radius: 10px;
     gap: 5px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
@@ -157,6 +157,11 @@ img.priority-icon {
     padding-top: 5px;
 }
 
+::placeholder {
+    color: white;
+    opacity: 0.6;
+}
+
 input, textarea {
     outline: none;
     border: none;
@@ -173,16 +178,16 @@ textarea.task-title {
 }
 
 textarea {
-  field-sizing: content;
-  max-width: 100%;
-  min-height: 40px;
-  max-height: 300px;
-  resize: none;
+    width: 100%;
+    min-height: 40px;
+    max-height: 120px;
+    resize: none;
 }
 
 input[type="checkbox"] {
     margin-right: 10px;
     transform: scale(1.3);
+    accent-color: rgb(0, 0, 0, 0.5);
 }
 
 ul {
@@ -190,9 +195,10 @@ ul {
     flex-direction: column;
     align-items: stretch;
     list-style-type: none;
-    margin-top: 10px;
     padding: 0;
+    padding-top: 10px;
     width: 100%;
+    border-top: 1px solid rgb(255, 255, 255, 0.3);
 }
 
 li { 
@@ -206,6 +212,12 @@ li > label {
     display: flex;
     align-items: center;
     flex: 1;
+}
+
+.checklist-input,
+button.checklist-delete,
+button.add-btn  {
+    color: rgb(255, 255, 255, 0.7);
 }
 
 button.checklist-delete,
@@ -323,14 +335,9 @@ div.due-date {
 .proj-title-mirror {
     grid-area: 1 / 1;
     background-color: transparent;
-    color: white;
     font-size: 20px;
     padding: 0;
     margin: 0;
-    font-family: var(--ff-manrope);
-    font-weight: var(--fw-bold);
-    text-transform: uppercase;
-    letter-spacing: 2px;
 }
 
 .proj-title {
@@ -358,6 +365,7 @@ div.due-date {
     align-self: end;
     font-style: italic;
     font-size: 14px;
+    opacity: 70%;
 }
 
 .color-picker-label {
@@ -378,8 +386,9 @@ div.due-date {
 }
 
 .project-card .icon {
-    width: 30px;
+    width: 25px;
     filter: brightness(0) invert(1);
+    opacity: 70%;
 }
 
 .project-card button {
