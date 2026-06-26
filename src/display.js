@@ -7,16 +7,9 @@ import calendarIcon from "./images/calendar-svgrepo-com.svg";
 import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addResizeInputListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
 
 export function Display() {
-    const resizeInput = (input) => {
-        const charCount = input.value.length || 1;
-        const estimatedCharWidth = 11 + 2;
-        const finalWidth = (charCount * estimatedCharWidth) + 8;
-        input.style.width = finalWidth + "px";
-    }
-
     const setCardColor = (card) => {
         const currProj = Project.getAllProjects().find((p) => p.uuid === card.dataset.id);
         
@@ -44,17 +37,32 @@ export function Display() {
         const projForm = document.createElement("form");
         projForm.classList = "new-project-form";
         projForm.addEventListener("submit", (e) => e.preventDefault());
+
+        const inputWrap = document.createElement("div");
+        inputWrap.classList.add("input-wrap");
+
+        const projTitleMirror = document.createElement("span")
+        projTitleMirror.classList.add("proj-title-mirror");
+
         const projTitle = document.createElement("input");
         projTitle.type = "text";
         projTitle.placeholder = "Title";
+        projTitle.size = 1;
         projTitle.classList.add("proj-title");
 
-        if (projectData) {
-            projTitle.value = projectData.name;
-        }
+        if (projectData) projTitle.value = projectData.name;
+        projTitleMirror.textContent = projTitle.value || projTitle.placeholder;
+
+        projTitle.addEventListener("input", () => {
+            projTitleMirror.textContent = projTitle.value || projTitle.placeholder;
+        })
 
         const projectIdentifier = projectData ? projectData.uuid : Math.random().toString(36).substr(2, 9);
         const uniqueID = `color-picker-${projectIdentifier}`;
+
+        const taskCount = document.createElement("p");
+        taskCount.textContent = "n tasks";
+        taskCount.classList.add("task-count");
 
         const iconDiv = document.createElement("div");
         iconDiv.classList.add("icon-container");
@@ -105,19 +113,13 @@ export function Display() {
         deleteProjBtn.appendChild(deleteIcon);
         addDeleteProjListener(deleteProjBtn, projCard);
 
+        inputWrap.append(projTitleMirror, projTitle);
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
-        projForm.append(projTitle, iconDiv);
+        projForm.append(inputWrap, taskCount, iconDiv);
         projCard.appendChild(projForm);
         setCardColor(projCard);
         addEditProjListener(projCard, { setCardColor });
         projContainer.appendChild(projCard);
-        document.querySelectorAll("input.proj-title").forEach(input => {
-            resizeInput(input);
-            input.addEventListener("input", (event) => {
-                event.preventDefault();
-                resizeInput(input);
-            });
-        });
     }
 
     const renderTaskCard = (taskData = null, parentProject = null) => {
@@ -284,5 +286,5 @@ export function Display() {
         addDeleteChecklistItemListener(checklistUl);
     }
 
-    return { setCardColor, resizeInput, renderProjectCard, renderTaskCard, createChecklistElement };
+    return { setCardColor, renderProjectCard, renderTaskCard, createChecklistElement };
 }
