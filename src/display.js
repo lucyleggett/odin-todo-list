@@ -1,10 +1,5 @@
 import { Task } from "./task.js";
 import { Project } from "./project.js";
-import highPriorityIcon from "./images/gui-high-priority-svgrepo-com.svg";
-import mediumPriorityIcon from "./images/gui-medium-priority-svgrepo-com.svg";
-import lowPriorityIcon from "./images/gui-low-priority-svgrepo-com.svg";
-import calendarIcon from "./images/calendar-svgrepo-com.svg";
-import menuIcon from "./images/align-justify-svgrepo-com.svg";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";

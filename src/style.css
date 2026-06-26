@@ -73,17 +73,30 @@ body {
     align-items: center;
 }
 
+button.menu,
 div.buttons {
     display: flex;
+    align-items: center;
     gap: 7px;
 }
 
-div.buttons > button {
+div.buttons > button,
+button.menu > img {
     width: 40px;
     height: 40px;
+}
+
+button.menu > img {
+    position: relative;
+    top: 4px;
+}
+
+div.buttons > button,
+button.menu {
     padding: 0;
     background-color: transparent;
     border: transparent;
+    cursor: pointer;
 }
 
 img.filter {
