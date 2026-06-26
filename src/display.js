@@ -7,17 +7,18 @@ import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addLis
 import { updateDateDisplay } from "./date.js";
 
 export function Display() {
-    const setCardColor = (card) => {
-        const currProj = Project.getAllProjects().find((p) => p.uuid === card.dataset.id);
+    const setBackgroundColor = (element) => {
+        const currProj = Project.findProjectOfTask(element.dataset.id);
+        console.log(`${element} is from ${currProj}.`)
         
         if (currProj && currProj.color) {
-            card.style.backgroundColor = currProj.color;
+            element.style.backgroundColor = currProj.color;
         } else {
-            const localPicker = card.querySelector(".hidden-color-picker");
+            const localPicker = element.querySelector(".hidden-color-picker");
             if (localPicker) {
-                card.style.backgroundColor = localPicker.value;
+                element.style.backgroundColor = localPicker.value;
             } else {
-                card.style.backgroundColor = "inherit";
+                element.style.backgroundColor = "inherit";
             }
         }
     }
@@ -114,8 +115,8 @@ export function Display() {
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
         projForm.append(inputWrap, taskCount, iconDiv);
         projCard.appendChild(projForm);
-        setCardColor(projCard);
-        addEditProjListener(projCard, { setCardColor });
+        setBackgroundColor(projCard);
+        addEditProjListener(projCard, { setBackgroundColor });
         projContainer.appendChild(projCard);
     }
 
@@ -224,7 +225,7 @@ export function Display() {
 
         const projectInput = document.createElement("select");
         projectInput.classList.add("project-label");
-        projectInput.required = true;
+        projectInput.dataset.id = taskData.uuid;
 
         Project.getAllProjects().forEach(proj => {
             const option = document.createElement("option");
@@ -236,12 +237,12 @@ export function Display() {
         if (parentProject) {
             projectInput.value = parentProject.name;
             taskCard.dataset.id = parentProject.uuid;
-            setCardColor(taskCard);
+            setBackgroundColor(projectInput);
         } else {
             const defaultProj = Project.getAllProjects().find(proj => proj.name === projectInput.value);
             if (defaultProj) {
                 taskCard.dataset.id = defaultProj.uuid;
-                setCardColor(taskCard);
+                setBackgroundColor(projectInput);
             }
         }
 
@@ -251,7 +252,7 @@ export function Display() {
         taskCard.appendChild(taskForm);
         tasksContainer.appendChild(taskCard);
 
-        addEditTaskListener(taskCard, { setCardColor });
+        addEditTaskListener(taskCard, { setBackgroundColor });
     }
 
     const createChecklistElement = (checklistUl, currChecklistData) => {
@@ -287,5 +288,5 @@ export function Display() {
         addDeleteChecklistItemListener(checklistUl);
     }
 
-    return { setCardColor, renderProjectCard, renderTaskCard, createChecklistElement };
+    return { setBackgroundColor, renderProjectCard, renderTaskCard, createChecklistElement };
 }

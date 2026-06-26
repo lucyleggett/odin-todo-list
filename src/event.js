@@ -16,7 +16,7 @@ export function addNewProjectBtnListener(display) {
     })
 }
 
-export function addEditTaskListener(card, {setCardColor}) {
+export function addEditTaskListener(card, { setBackgroundColor }) {
     card.addEventListener("change", (event) => {
         if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
 
@@ -47,7 +47,8 @@ export function addEditTaskListener(card, {setCardColor}) {
                 Project.moveTask(targetUuid, currentProjOfTask, targetProj);
             }
         }
-        setCardColor(card);
+        const projectInput = card.querySelector(".project-input");
+        setBackgroundColor(projectInput);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
@@ -114,10 +115,10 @@ export function addDeleteProjListener(deleteProjBtn, projCard) {
     });
 }
 
-export function addEditProjListener(card, {setCardColor}) {
+export function addEditProjListener(card, {setBackgroundColor}) {
     card.addEventListener("change", (event) => {
         event.preventDefault();
-        setCardColor(card);
+        setBackgroundColor(card);
         const target = event.target;
         let currProj = Project.findProject(card.dataset.id);
 
