@@ -3,13 +3,13 @@ import { Project } from "./project.js";
 import brushIcon from "./images/brush-tool-svgrepo-com.svg";
 import binIcon from "./images/trash-svgrepo-com.svg";
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 
 export function Display() {
     const setBackgroundColor = (element) => {
+        if (!element) return;
         const currProj = Project.findProjectOfTask(element.dataset.id);
-        console.log(`${element} is from ${currProj}.`)
         
         if (currProj && currProj.color) {
             element.style.backgroundColor = currProj.color;
@@ -136,8 +136,10 @@ export function Display() {
         topDiv.classList.add("top-div");
 
         const priorityBtn = document.createElement("button");
+        priorityBtn.type = "button";
         priorityBtn.classList = "priority-btn";
         priorityBtn.innerHTML = priorityIconRaw;
+        priorityBtn.dataset.id = taskData.uuid;
         const svgElement = priorityBtn.querySelector("svg");
         if (svgElement) svgElement.classList.add("priority-icon");
         
@@ -149,18 +151,9 @@ export function Display() {
         titleInput.required = true;
 
         const priorityColourMap = [
-            {
-                priority: "low",
-                color: "#008002"
-            },
-            {
-                priority: "medium",
-                color: "#ff7300"
-            },
-            {
-                priority: "high",
-                color: "#ab0808"
-            }
+            { priority: "low", color: "#008002" },
+            { priority: "medium", color: "#ff7300"},
+            { priority: "high", color: "#ab0808" }
         ]
 
         if (taskData) {
@@ -169,6 +162,8 @@ export function Display() {
             const matchedPriority = priorityColourMap.find(item => item.priority === taskData.priority);
             priorityBtn.style.color = matchedPriority ? matchedPriority.color : priorityColourMap[0].color;
         }
+        addEditPriorityListener(priorityBtn, priorityColourMap);
+
         topDiv.append(priorityBtn, titleInput);
 
         const descInput = document.createElement("textarea");

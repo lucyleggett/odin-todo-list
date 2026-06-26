@@ -4,7 +4,7 @@ export class Task {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
-        this.priority = priority;
+        this.priority = priority || "low";
         this.checklist = Array.isArray(checklist) ? checklist : [];
     }
 

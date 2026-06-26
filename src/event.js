@@ -19,6 +19,7 @@ export function addNewProjectBtnListener(display) {
 export function addEditTaskListener(card, { setBackgroundColor }) {
     card.addEventListener("change", (event) => {
         if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
+        if (event.target.classList.contains("priority-btn")) return;
 
         const targetProjName = card.querySelector(".project-label").value;
         const targetProj = Project.findProjectByName(targetProjName);
@@ -32,7 +33,6 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
             title: card.querySelector(".task-title")?.value ?? "",
             description: card.querySelector(".task-description")?.value ?? "",
             dueDate: card.querySelector(".custom-date")?.value ?? "",
-            priority: card.querySelector(".priority-input")?.value ?? "",
         };
 
         if (!targetUuid) {
@@ -51,6 +51,21 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
         setBackgroundColor(projectInput);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
+}
+
+export function addEditPriorityListener(priorityBtn, priorityColourMap) {
+    priorityBtn.addEventListener("click", () => {
+        const currTask = Project.findTask(priorityBtn.dataset.id);
+        if (currTask) {
+            const currOptionIndex = priorityColourMap.findIndex(option => option.priority === currTask.priority);
+            if (currOptionIndex !== -1) {
+                const newOptionIndex = (currOptionIndex + 1) % priorityColourMap.length;
+                currTask.priority = priorityColourMap[newOptionIndex].priority;
+                priorityBtn.style.color = priorityColourMap[newOptionIndex].color;
+            }
+            if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        }
+    })
 }
 
 export function addEditChecklistListener(checklistUl) {
