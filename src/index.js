@@ -4,7 +4,7 @@ import { Display } from "./display.js";
 import { Project } from "./project.js";
 import { filter } from "./filter.js";
 import { addCalendarListener } from "./date.js";
-import { addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
+import { addNewProjectBtnListener, addNewTaskBtnListener, addTextAreaGrowListener } from "./event.js";
 
 function Controller() {
     const loadApplicationState = () => {
@@ -34,7 +34,7 @@ function Controller() {
 
     initializeTasks();
     initializeProjects();
-    
+
     addCalendarListener();
 }
 

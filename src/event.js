@@ -2,6 +2,17 @@ import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
 
+export function addTextAreaGrowListener() {
+    const textareas = document.querySelectorAll("textarea");
+
+    textareas.forEach(textarea => {
+        textarea.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+            });
+    });
+}
+
 export function addNewTaskBtnListener(display) {
     document.querySelector("button.new-task").addEventListener("click", (event) => {
         event.preventDefault();

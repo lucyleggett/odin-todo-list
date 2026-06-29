@@ -5,7 +5,7 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener, addEditStatusListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
 
@@ -281,7 +281,8 @@ export function Display() {
         taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
         taskCard.appendChild(taskForm);
         tasksContainer.appendChild(taskCard);
-
+        
+        addTextAreaGrowListener();
         addEditTaskListener(taskCard, { setBackgroundColor });
     }
 
