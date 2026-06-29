@@ -2,6 +2,7 @@ import "./style.css";
 import { StorageController } from "./storage.js";
 import { Display } from "./display.js";
 import { Project } from "./project.js";
+import { filter } from "./filter.js";
 import { addCalendarListener } from "./date.js";
 import { addNewProjectBtnListener, addNewTaskBtnListener } from "./event.js";
 

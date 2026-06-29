@@ -7,6 +7,7 @@ import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
 import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener, addEditStatusListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
+import { filterTasks } from "./filter.js";
 
 export function Display() {
     const setBackgroundColor = (element) => {
@@ -24,6 +25,17 @@ export function Display() {
             }
         }
     }
+
+    const filterMenu = document.querySelector(".filter-menu");
+    const filterBtn = document.querySelector("button.filter");
+    filterBtn.addEventListener("click", () => {
+        filterMenu.classList.remove("disabled");
+    })
+
+    filterMenu.querySelector(".apply-filter-btn").addEventListener("click", () => {
+        filterTasks( {renderTaskCard} );
+        filterMenu.classList.add("disabled");
+    });
 
     const renderProjectCard = (projectData = null) => {
         const projContainer = document.querySelector(".projects-container");
