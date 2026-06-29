@@ -20,6 +20,7 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
     card.addEventListener("change", (event) => {
         if (event.target.classList.contains("checklist-input") || event.target.type === "checkbox") return;
         if (event.target.classList.contains("priority-btn")) return;
+        if (event.target.classList.contains("task-status-btn")) return;
 
         const targetProjName = card.querySelector(".project-label").value;
         const targetProj = Project.findProjectByName(targetProjName);
@@ -54,7 +55,24 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
 }
 
 export function addEditStatusListener(taskStatusBtn) {
+    taskStatusBtn.addEventListener("click", () => {
+        const currTask = Project.findTask(taskStatusBtn.dataset.id);
+        const pendingIcon = taskStatusBtn.querySelector(".pending", ".status-icon");
+        const completeIcon = taskStatusBtn.querySelector(".complete", ".status-icon");
 
+        if (currTask) {
+            if (currTask.status === "pending") {
+                currTask.status = "complete";
+                pendingIcon.classList.add("disabled");
+                completeIcon.classList.remove("disabled");
+            } else if (currTask.status === "complete") {
+                currTask.status = "pending";
+                pendingIcon.classList.remove("disabled");
+                completeIcon.classList.add("disabled");
+            }
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        }
+    })
 }
 
 export function addEditPriorityListener(priorityBtn, priorityColourMap) {

@@ -5,7 +5,7 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener, addEditStatusListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 
 export function Display() {
@@ -174,12 +174,12 @@ export function Display() {
         const taskStatusPending = document.createElement("img");
         taskStatusPending.src = checkboxIcon;
         taskStatusPending.alt = "Empty checkbox";
-        taskStatusPending.classList.add("status-icon");
+        taskStatusPending.classList.add("pending", "status-icon");
 
         const taskStatusComplete = document.createElement("img");
         taskStatusComplete.src = checkedIcon;
         taskStatusComplete.alt = "Checked checkbox";
-        taskStatusComplete.classList.add("status-icon");
+        taskStatusComplete.classList.add("complete", "status-icon");
 
         if (taskData) {
             if (taskData.status === "pending") {
@@ -190,6 +190,7 @@ export function Display() {
         }
 
         taskStatusBtn.append(taskStatusPending, taskStatusComplete);
+        addEditStatusListener(taskStatusBtn);
 
         topDiv.append(priorityBtn, titleInput, taskStatusBtn);
 
