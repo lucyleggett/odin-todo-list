@@ -141,6 +141,7 @@ export function Display() {
         priorityBtn.type = "button";
         priorityBtn.classList = "priority-btn";
         priorityBtn.innerHTML = priorityIconRaw;
+        priorityBtn.dataset.id = taskCard.dataset.uuid;
         const svgElement = priorityBtn.querySelector("svg");
         if (svgElement) svgElement.classList.add("priority-icon");
         
@@ -150,6 +151,7 @@ export function Display() {
         titleInput.rows = 1;
         titleInput.placeholder = "Title";
         titleInput.required = true;
+        titleInput.dataset.id = taskCard.dataset.uuid;
 
         const priorityColourMap = [
             { priority: "low", color: "#008002" },
@@ -159,8 +161,6 @@ export function Display() {
 
         if (taskData) {
             titleInput.value = taskData.title;
-            titleInput.dataset.uuid = taskData.uuid;
-            priorityBtn.dataset.id = taskData.uuid;
             const matchedPriority = priorityColourMap.find(item => item.priority === taskData.priority);
             priorityBtn.style.color = matchedPriority ? matchedPriority.color : priorityColourMap[0].color;
         }
@@ -169,6 +169,7 @@ export function Display() {
         const taskStatusBtn = document.createElement("button");
         taskStatusBtn.type = "button";
         taskStatusBtn.classList.add("task-status-btn");
+        taskStatusBtn.dataset.id = taskCard.dataset.uuid;
 
         const taskStatusPending = document.createElement("img");
         taskStatusPending.src = checkboxIcon;
@@ -197,17 +198,12 @@ export function Display() {
         descInput.name = "taskDesc";
         descInput.rows = 1;
         descInput.placeholder = "Description";
+        descInput.dataset.id = taskCard.dataset.uuid;
 
-        if (taskData) {
-            descInput.value = taskData.description;
-            descInput.dataset.uuid = taskData.uuid;
-            taskStatusBtn.dataset.id = taskData.uuid;
-        }
+        if (taskData) descInput.value = taskData.description;
 
         const currChecklistUl = document.createElement("ul");
-        if (taskData) {
-            currChecklistUl.dataset.uuid = taskData.uuid;
-        }
+        currChecklistUl.dataset.id = taskCard.dataset.uuid;
         currChecklistUl.classList.add("checklist");
 
         if (taskData && taskData.checklist && taskData.checklist.length > 0) {
@@ -235,11 +231,10 @@ export function Display() {
         dueDateInput.type = "date";
         dueDateInput.classList.add("custom-date");
         dueDateInput.name = "taskDueDate";
+        dueDateInput.dataset.id = taskCard.dataset.uuid;
 
-        if (taskData) {
-            dueDateInput.value = taskData.dueDate;
-            dueDateInput.dataset.uuid = taskData.uuid;
-        }
+        if (taskData) dueDateInput.value = taskData.dueDate;
+
         updateDateDisplay(dueDateInput);
         dueDateInput.addEventListener("change", () => {
             updateDateDisplay(this);
@@ -247,6 +242,7 @@ export function Display() {
 
         const projectInput = document.createElement("select");
         projectInput.classList.add("project-label");
+        projectInput.dataset.id = taskCard.dataset.uuid;
 
         Project.getAllProjects().forEach(proj => {
             const option = document.createElement("option");
@@ -257,7 +253,6 @@ export function Display() {
 
         if (parentProject) {
             projectInput.value = parentProject.name;
-            projectInput.dataset.id = taskData.uuid;
             taskCard.dataset.id = parentProject.uuid;
             setBackgroundColor(projectInput);
         } else {

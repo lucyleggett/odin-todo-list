@@ -53,6 +53,10 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
     });
 }
 
+export function addEditStatusListener(taskStatusBtn) {
+
+}
+
 export function addEditPriorityListener(priorityBtn, priorityColourMap) {
     priorityBtn.addEventListener("click", () => {
         const currTask = Project.findTask(priorityBtn.dataset.id);
@@ -74,7 +78,7 @@ export function addEditChecklistListener(checklistUl) {
         const li = target.closest("li");
         const input = li.querySelector(".checklist-input");
         const itemId = li?.dataset.id;
-        const currTask = Project.findTask(checklistUl.dataset.uuid);
+        const currTask = Project.findTask(checklistUl.dataset.id);
 
         if (!currTask || !li) return;
 
