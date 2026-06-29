@@ -29,7 +29,7 @@ export function Display() {
     const filterMenu = document.querySelector(".filter-menu");
     const filterBtn = document.querySelector("button.filter");
     filterBtn.addEventListener("click", () => {
-        filterMenu.classList.remove("disabled");
+        filterMenu.classList.toggle("disabled");
     })
 
     filterMenu.querySelector(".apply-filter-btn").addEventListener("click", () => {
