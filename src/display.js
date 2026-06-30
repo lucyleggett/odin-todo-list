@@ -37,6 +37,30 @@ export function Display() {
         filterMenu.classList.add("disabled");
     });
 
+    const renderFilterMenuOptions = () => {
+        const projectSubcat = document.querySelector(".project.filter-subcat");
+        projectSubcat.innerHTML = ""; 
+        const projectH5 = document.createElement("h5");
+        projectH5.textContent = "Project";
+        projectSubcat.appendChild(projectH5);
+
+        Project.getAllProjects().forEach(proj => {
+            const filterDiv = document.createElement("div");
+            filterDiv.classList.add("filter");
+            const filterLabel = document.createElement("label");
+            const filterCheckbox = document.createElement("input");
+            filterCheckbox.type = "checkbox";
+            filterCheckbox.name = "project";
+            filterCheckbox.value = proj.name;
+            const labelText = proj.name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+            
+            filterLabel.appendChild(filterCheckbox);
+            filterLabel.appendChild(document.createTextNode(labelText));
+            filterDiv.appendChild(filterLabel);
+            projectSubcat.appendChild(filterDiv);
+        })
+    }
+
     const renderProjectCard = (projectData = null) => {
         const projContainer = document.querySelector(".projects-container");
         const projCard = document.createElement("div");
@@ -123,15 +147,16 @@ export function Display() {
         }
         
         deleteProjBtn.appendChild(deleteIcon);
-        addDeleteProjListener(deleteProjBtn, projCard);
+        addDeleteProjListener(deleteProjBtn, projCard, {renderFilterMenuOptions} );
 
         inputWrap.append(projTitleMirror, projTitle);
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
         projForm.append(inputWrap, taskCount, iconDiv);
         projCard.appendChild(projForm);
         setBackgroundColor(projCard);
-        addEditProjListener(projCard, { setBackgroundColor });
+        addEditProjListener(projCard, { setBackgroundColor, renderFilterMenuOptions });
         projContainer.appendChild(projCard);
+        renderFilterMenuOptions();
     }
 
     const renderTaskCard = (taskData = null, parentProject = null) => {
@@ -318,5 +343,5 @@ export function Display() {
         addDeleteChecklistItemListener(checklistUl);
     }
 
-    return { setBackgroundColor, renderProjectCard, renderTaskCard, createChecklistElement };
+    return { setBackgroundColor, renderFilterMenuOptions, renderProjectCard, renderTaskCard, createChecklistElement };
 }

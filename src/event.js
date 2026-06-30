@@ -143,16 +143,17 @@ export function addDeleteChecklistItemListener(checklistUl) {
     });
 }
 
-export function addDeleteProjListener(deleteProjBtn, projCard) {
+export function addDeleteProjListener(deleteProjBtn, projCard, {renderFilterMenuOptions}) {
     deleteProjBtn.addEventListener("click", (event) => {
         event.preventDefault();
         Project.deleteProject(deleteProjBtn.dataset.uuid);
         projCard.remove();
+        renderFilterMenuOptions();
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
 
-export function addEditProjListener(card, {setBackgroundColor}) {
+export function addEditProjListener(card, {setBackgroundColor, renderFilterMenuOptions}) {
     card.addEventListener("change", (event) => {
         event.preventDefault();
         setBackgroundColor(card);
@@ -179,6 +180,7 @@ export function addEditProjListener(card, {setBackgroundColor}) {
                 currProj.color = projColor
             }
         }
+        renderFilterMenuOptions();
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
 }
