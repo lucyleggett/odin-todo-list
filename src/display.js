@@ -5,7 +5,7 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener } from "./event.js";
+import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
 
@@ -231,7 +231,7 @@ export function Display() {
         topDiv.append(priorityBtn, titleInput, taskStatusBtn);
 
         const descInput = document.createElement("textarea");
-        descInput.classList.add("task-description");
+        descInput.classList.add("task-description", "disabled");
         descInput.name = "taskDesc";
         descInput.rows = 1;
         descInput.placeholder = "Description";
@@ -241,7 +241,7 @@ export function Display() {
 
         const currChecklistUl = document.createElement("ul");
         currChecklistUl.dataset.id = taskCard.dataset.uuid;
-        currChecklistUl.classList.add("checklist");
+        currChecklistUl.classList.add("checklist", "disabled");
 
         if (taskData && taskData.checklist && taskData.checklist.length > 0) {
             taskData.checklist.forEach(item => {
@@ -255,6 +255,7 @@ export function Display() {
         addNewBtn.classList.add("add-btn");
         addNewBtn.textContent = "+";
         addNewBtn.type = "button";
+        currChecklistUl.append(addNewBtn);
 
         addNewBtn.addEventListener("click", (event) => {
             event.preventDefault();
@@ -302,11 +303,12 @@ export function Display() {
 
         dueDateDiv.append(dueDateInput, projectInput);
 
-        taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
+        taskForm.append(topDiv, descInput, currChecklistUl, dueDateDiv);
         taskCard.appendChild(taskForm);
         tasksContainer.prepend(taskCard);
         
         addEditTaskListener(taskCard, { setBackgroundColor });
+        addOpenCloseTaskCardListener(taskCard);
     }
 
     const createChecklistElement = (checklistUl, currChecklistData) => {

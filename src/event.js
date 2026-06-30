@@ -40,6 +40,23 @@ export function addTitleSwipeListener() {
     });
 }
 
+export function addOpenCloseTaskCardListener(card) {
+        const cardUl = card.querySelector("ul");
+        const cardDesc = card.querySelector(".task-description");
+    
+    document.addEventListener("click", (event) => {
+        const isClickInside = card.contains(event.target);
+
+        if (isClickInside) {
+            cardUl.classList.remove("disabled");
+            cardDesc.classList.remove("disabled");
+        } else {
+            cardUl.classList.add("disabled");
+            cardDesc.classList.add("disabled");            
+        }
+    });
+}
+
 export function addNewBtnListener(display) {
     const newBtn = document.querySelector(".new-btn");
     newBtn.addEventListener("click", (event) => {

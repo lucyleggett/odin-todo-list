@@ -4,7 +4,7 @@ import { Display } from "./display.js";
 import { Project } from "./project.js";
 import { filter } from "./filter.js";
 import { addCalendarListener } from "./date.js";
-import { addNewBtnListener, addTextAreaGrowListener, addTitleSwipeListener } from "./event.js";
+import { addNewBtnListener, addOpenCloseTaskCardListener, addTextAreaGrowListener, addTitleSwipeListener } from "./event.js";
 
 function Controller() {
     const loadApplicationState = () => {

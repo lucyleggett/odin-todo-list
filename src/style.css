@@ -352,7 +352,7 @@ button.add-btn:hover {
 
 button.add-btn {
     display: flex;
-    justify-self: right;
+    align-self: flex-end;
     font-size: 27px;
 }
 
@@ -413,8 +413,9 @@ select.project-label {
     text-align: right;
     border: none;
     color: white;
-    padding: 10px;
+    padding: 5px 10px;
     border-radius: 10px;
+    font-size: 14px;
     box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
 }
 
@@ -423,7 +424,6 @@ select.project-label,
 .proj-title-mirror {
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-weight: var(--fw-bold);
 }
 
 div.due-date {
@@ -447,6 +447,7 @@ div.due-date {
     border: transparent;
     max-width: fit-content;
     height: fit-content;
+    font-weight: var(--fw-bold);
 }
 
 .input-wrap {
