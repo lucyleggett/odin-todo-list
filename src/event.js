@@ -8,6 +8,8 @@ export function addTitleSwipeListener() {
         const swipeViewport = document.getElementById("view-swipe-viewport");
         const viewPanels = document.querySelectorAll(".view-panel");
         const newBtn = document.querySelector(".new-btn");
+        const filterBtn = document.querySelector("button.filter");
+        const filterMenu = document.querySelector(".filter-menu");
 
         const viewObserverOptions = {
             root: swipeViewport,
@@ -22,8 +24,13 @@ export function addTitleSwipeListener() {
 
                     if (activeTitleName === "Tasks") {
                         newBtn.dataset.id = "new-task";
+                        filterBtn.style.display = "flex";
                     } else if (activeTitleName === "Projects") {
                         newBtn.dataset.id = "new-project";
+                        filterBtn.style.display = "none";
+                        if (filterMenu) {
+                            filterMenu.classList.add("disabled");
+                        }
                     }
                 }
             });

@@ -89,12 +89,9 @@ body {
     scroll-snap-stop: always;
 }
 
-.projects-dashboard {
+.static {
     position: relative;
-    display: flex;
-    flex-direction: column;
     width: 100%;
-    max-width: 360px;
 }
 
 .title-bar {
@@ -142,7 +139,7 @@ h1 {
     position: absolute;
     display: flex;
     flex-direction: column;
-    right: 0;
+    right: 10px;
     top: 83.5px;
     width: 200px;
     padding: 12px;
@@ -150,6 +147,7 @@ h1 {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-radius: 10px;
     margin-bottom: 15px;
+    z-index: 2;
 }
 
 .filter-heading {
@@ -361,7 +359,7 @@ button.add-btn {
     position: relative;
     color: transparent;
     right: 8px;
-    field-sizing: content;
+    width: 130px;
     margin: 0;
     padding: 0;
 }
