@@ -60,7 +60,35 @@ body {
     margin-bottom: 20px;
 }
 
-.tasks-dashboard,
+.swipe-container {
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.swipe-container:-webkit-scrollbar {
+  display: none;
+}
+
+.swipe-track {
+    display: flex;
+    width: 720px;
+}
+
+.view-panel {
+    flex: 0 0 360px;
+    width: 360px;
+    min-height: 400px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
 .projects-dashboard {
     position: relative;
     display: flex;
@@ -143,8 +171,9 @@ h1 {
     margin: 5px 0;
 }
 
-.tasks-container {
+.tasks.view-panel {
     display: grid;
+    width: 360px;
     grid-template-columns: 1fr;
     gap: 15px;
 }
@@ -165,22 +194,22 @@ div.filter {
     margin: 1px 2px;
 }
 
+.task-card {
+    width: 100%;
+    max-width: 360px;
+}
+
 .task-card, 
 .project-card {
     display: flex;
     flex-direction: column;
     padding: 15px;
     border-radius: 10px;
-    gap: 5px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
 .project-card * {
     color: white;
-}
-
-.task-card {
-    width: 360px;
 }
 
 .top-div {
@@ -395,11 +424,12 @@ div.due-date {
     margin-top: 10px;
 }
 
-.projects-container {
+.projects.view-panel {
     max-width: 360px;
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px;
+    align-content: flex-start;
 }
 
 .project-card {
@@ -407,6 +437,7 @@ div.due-date {
     flex-grow: 1;
     border: transparent;
     max-width: fit-content;
+    height: fit-content;
 }
 
 .input-wrap {

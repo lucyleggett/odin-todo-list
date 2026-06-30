@@ -2,17 +2,43 @@ import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
 
-export function addNewTaskBtnListener(display) {
-    document.querySelector("button.new-task").addEventListener("click", (event) => {
-        event.preventDefault();
-        display.renderTaskCard(null, null);
-    })
+export function addTitleSwipeListener() {
+    document.addEventListener("DOMContentLoaded", () => {
+        const viewTitle = document.getElementById("dynamic-view-title");
+        const swipeViewport = document.getElementById("view-swipe-viewport");
+        const viewPanels = document.querySelectorAll(".view-panel");
+        const newBtn = document.querySelector(".new-btn");
+
+        const viewObserverOptions = {
+            root: swipeViewport,
+            threshold: 0.5
+        };
+
+        const viewObserverCallback = (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const activeTitleName = entry.target.getAttribute("data-title");
+                    viewTitle.textContent = activeTitleName;
+
+                    if (activeTitleName === "Tasks") {
+                        newBtn.dataset.id = "new-task";
+                    } else if (activeTitleName === "Projects") {
+                        newBtn.dataset.id = "new-project";
+                    }
+                }
+            });
+        };
+        const viewObserver = new IntersectionObserver(viewObserverCallback, viewObserverOptions);
+        viewPanels.forEach(panel => viewObserver.observe(panel));
+    });
 }
 
-export function addNewProjectBtnListener(display) {
-    document.querySelector("button.new-project").addEventListener("click", (event) => {
+export function addNewBtnListener(display) {
+    const newBtn = document.querySelector(".new-btn");
+    newBtn.addEventListener("click", (event) => {
         event.preventDefault();
-        display.renderProjectCard(null);
+        if (newBtn.dataset.id === "new-task") display.renderTaskCard(null, null);
+        if (newBtn.dataset.id === "new-project") display.renderProjectCard(null);
     })
 }
 

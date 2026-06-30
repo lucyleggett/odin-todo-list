@@ -5,11 +5,13 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewProjectBtnListener, addNewTaskBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener } from "./event.js";
+import { addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
 
 export function Display() {
+
+
     const setBackgroundColor = (element) => {
         if (!element) return;
         const currProj = Project.findProjectOfTask(element.dataset.id);
@@ -62,7 +64,7 @@ export function Display() {
     }
 
     const renderProjectCard = (projectData = null) => {
-        const projContainer = document.querySelector(".projects-container");
+        const projContainer = document.querySelector(".projects.view-panel");
         const projCard = document.createElement("div");
         projCard.classList.add("project-card");
 
@@ -160,7 +162,7 @@ export function Display() {
     }
 
     const renderTaskCard = (taskData = null, parentProject = null) => {
-        const tasksContainer = document.querySelector(".tasks-container");
+        const tasksContainer = document.querySelector(".tasks.view-panel");
         const taskCard = document.createElement("div");
         taskCard.classList.add("task-card");
 
