@@ -11,7 +11,6 @@ import { filterTasks } from "./filter.js";
 
 export function Display() {
 
-
     const setBackgroundColor = (element) => {
         if (!element) return;
         const currProj = Project.findProjectOfTask(element.dataset.id);
@@ -157,7 +156,7 @@ export function Display() {
         projCard.appendChild(projForm);
         setBackgroundColor(projCard);
         addEditProjListener(projCard, { setBackgroundColor, renderFilterMenuOptions });
-        projContainer.appendChild(projCard);
+        projContainer.prepend(projCard);
         renderFilterMenuOptions();
     }
 
@@ -220,12 +219,10 @@ export function Display() {
         taskStatusComplete.alt = "Checked checkbox";
         taskStatusComplete.classList.add("complete", "status-icon");
 
-        if (taskData) {
-            if (taskData.status === "pending") {
+        if (taskData && taskData.status === "pending") {
                 taskStatusComplete.classList.add("disabled");
-            } else if (taskData.status === "complete") {
-                taskStatusPending.classList.add("disabled");
-            }
+        } else {
+            taskStatusPending.classList.add("disabled");
         }
 
         taskStatusBtn.append(taskStatusPending, taskStatusComplete);
@@ -307,7 +304,7 @@ export function Display() {
 
         taskForm.append(topDiv, descInput, currChecklistUl, addNewBtn, dueDateDiv);
         taskCard.appendChild(taskForm);
-        tasksContainer.appendChild(taskCard);
+        tasksContainer.prepend(taskCard);
         
         addEditTaskListener(taskCard, { setBackgroundColor });
     }

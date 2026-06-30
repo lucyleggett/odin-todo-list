@@ -362,29 +362,39 @@ button.add-btn {
     width: 130px;
     margin: 0;
     padding: 0;
+    background: transparent;
 }
 
 .custom-date::before {
     position: absolute;
-    left: 10px;
+    left: 30px;
     top: 50%;
     transform: translateY(-50%);
     content: attr(data-date);
     white-space: nowrap;
     color: black;
+    background-color: white;
+    z-index: 2;
+}
+
+.custom-date::-webkit-datetime-edit-fields-wrapper,
+.custom-date::-webkit-datetime-edit-text,
+.custom-date::-webkit-datetime-edit-month-field,
+.custom-date::-webkit-datetime-edit-day-field,
+.custom-date::-webkit-datetime-edit-year-field {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .custom-date::-webkit-calendar-picker-indicator {
     position: absolute;
+    left: 0;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-}
-
-.custom-date:placeholder-shown::-webkit-datetime-edit {
-    opacity: 0 !important;
-    display: none !important;
+    background-color: white;
+    padding: 5px 7px;
 }
 
 select:focus:not(:focus-visible),
