@@ -1,7 +1,7 @@
 import { Project } from "./project.js";
 
 export function filterTasks( {renderTaskCard} ) {
-    document.querySelector(".tasks-container").replaceChildren();
+    document.querySelector(".tasks.view-panel").replaceChildren();
 
     const filterOptions = document.querySelectorAll(".filter-menu input[type=checkbox]");
 

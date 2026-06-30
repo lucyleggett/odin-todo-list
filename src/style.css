@@ -195,6 +195,7 @@ div.filter {
 .task-card {
     width: 100%;
     max-width: 340px;
+    height: fit-content;
 }
 
 .task-card, 
