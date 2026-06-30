@@ -282,7 +282,6 @@ export function Display() {
         taskCard.appendChild(taskForm);
         tasksContainer.appendChild(taskCard);
         
-        addTextAreaGrowListener();
         addEditTaskListener(taskCard, { setBackgroundColor });
     }
 
