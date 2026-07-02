@@ -20,7 +20,15 @@ export function addTitleSwipeListener() {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const activeTitleName = entry.target.getAttribute("data-title");
-                    viewTitle.textContent = activeTitleName;
+
+                    if (viewTitle.textContent !== activeTitleName) {
+                        const directionClass = activeTitleName === "Tasks" ? "slide-left" : "slide-right";
+                        viewTitle.classList.add("changing", directionClass);
+                        setTimeout(() => {
+                            viewTitle.textContent = activeTitleName;
+                            viewTitle.classList.remove("changing", "slide-left", "slide-right");
+                        }, 250);
+                    }
 
                     if (activeTitleName === "Tasks") {
                         newBtn.dataset.id = "new-task";
@@ -29,7 +37,7 @@ export function addTitleSwipeListener() {
                         newBtn.dataset.id = "new-project";
                         filterBtn.style.display = "none";
                         if (filterMenu) {
-                            filterMenu.classList.add("disabled");
+                            filterMenu.classList.add("hidden");
                         }
                     }
                 }

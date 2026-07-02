@@ -4,8 +4,8 @@ import { Display } from "./display.js";
 import { Project } from "./project.js";
 import { filter } from "./filter.js";
 import { addCalendarListener } from "./date.js";
-import { addNewBtnListener, addOpenCloseTaskCardListener, addTextAreaGrowListener, addTitleSwipeListener } from "./event.js";
-import { observer } from "./animate.js";
+import { addNewBtnListener, addOpenCloseTaskCardListener, addTextAreaGrowListener, addTitleSwipeListener, onDOMLoadListener } from "./event.js";
+import { Animate } from "./animate.js";
 
 function Controller() {
     const loadApplicationState = () => {
@@ -28,15 +28,27 @@ function Controller() {
 
     loadApplicationState();
 
+    document.addEventListener("DOMContentLoaded", () => {
+        const filterMenu = document.querySelector(".filter-menu");
+
+        if (filterMenu) {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    filterMenu.classList.remove("no-transition");
+                })
+            });
+        }
+    })
+
     const display = Display();
 
-    addTitleSwipeListener();
     addNewBtnListener(display);
 
     initializeTasks();
     initializeProjects();
 
     addCalendarListener();
+    addTitleSwipeListener();
 
     const animate = Animate();
 }

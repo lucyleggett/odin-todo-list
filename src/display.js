@@ -30,12 +30,12 @@ export function Display() {
     const filterMenu = document.querySelector(".filter-menu");
     const filterBtn = document.querySelector("button.filter");
     filterBtn.addEventListener("click", () => {
-        filterMenu.classList.toggle("disabled");
+        filterMenu.classList.toggle("hidden");
     })
 
     filterMenu.querySelector(".apply-filter-btn").addEventListener("click", () => {
         filterTasks( {renderTaskCard} );
-        filterMenu.classList.add("disabled");
+        filterMenu.classList.add("hidden");
     });
 
     const renderFilterMenuOptions = () => {

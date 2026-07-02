@@ -104,6 +104,7 @@ body {
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    padding: 0 10px;
 }
 
 button.menu,
@@ -140,6 +141,22 @@ h1 {
     margin: 20px 0;
 }
 
+#dynamic-view-title {
+    opacity: 1;
+    transform: translateX(0);
+    transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+#dynamic-view-title.changing.slide-left {
+    opacity: 0;
+    transform: translateX(-40px);
+}
+
+#dynamic-view-title.changing.slide-right {
+    opacity: 0;
+    transform: translateX(40px);
+}
+
 .filter-menu {
     position: absolute;
     display: flex;
@@ -153,6 +170,24 @@ h1 {
     border-radius: 10px;
     margin-bottom: 15px;
     z-index: 2;
+    transform: translateY(0);
+    opacity: 1;
+    transition: 
+        transform 0.5s ease, 
+        opacity 0.5s ease, 
+        display 0.5s ease allow-discrete;
+}
+
+.filter-menu.hidden {
+    transform: translateY(10px);
+    opacity: 0;
+}
+
+@starting-style {
+    .filter-menu {
+        transform: translateY(10px);
+        opacity: 0;
+    }
 }
 
 .filter-heading {
@@ -550,4 +585,8 @@ div.due-date {
 .disabled {
     display: none;
     opacity: 1;
+}
+
+.no-transition {
+    transition: none !important;
 }
