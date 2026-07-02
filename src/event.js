@@ -158,9 +158,14 @@ export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
     deleteTaskBtn.addEventListener("click", (event) => {
         event.stopPropagation
         event.preventDefault();
-        Project.removeTask(taskCard.dataset.uuid);
-        taskCard.remove();
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+
+        const parentProj = Project.findProjectOfTask(taskCard.dataset.uuid);
+        if (parentProj) {
+            parentProj.removeTask(taskCard.dataset.uuid);
+            taskCard.remove();
+
+            if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        }
     });
 }
 

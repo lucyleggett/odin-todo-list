@@ -69,8 +69,8 @@ export class Project {
         this.#tasks.push(task);
     }
 
-    removeTask(task) {
-        this.#tasks = this.#tasks.filter(t => t.uuid !== task.uuid);
+    removeTask(taskUuid) {
+        this.#tasks = this.#tasks.filter(t => t.uuid !== taskUuid);
     }
 
     toJSON() {
@@ -83,9 +83,8 @@ export class Project {
     }
 
     static moveTask(taskUUID, currProj, nextProj) {
-        const tasksList = currProj.tasks;
-        const targetTask = tasksList.find(t => t.uuid === taskUUID);
-        currProj.removeTask(targetTask);
+        const targetTask = currProj.tasks.find(t => t.uuid === taskUUID);
+        currProj.removeTask(taskUUID);
         nextProj.addTask(targetTask);
     }
 }

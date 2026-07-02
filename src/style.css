@@ -171,22 +171,27 @@ h1 {
     margin-bottom: 15px;
     z-index: 2;
     transform: translateY(0);
+    visibility: visible;
     opacity: 1;
+    pointer-events: auto;
     transition: 
         transform 0.5s ease, 
         opacity 0.5s ease, 
-        display 0.5s ease allow-discrete;
+        visibility 0.5s ease;
 }
 
 .filter-menu.hidden {
     transform: translateY(10px);
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 @starting-style {
     .filter-menu {
         transform: translateY(10px);
         opacity: 0;
+        visibility: hidden;
     }
 }
 
@@ -289,6 +294,7 @@ div.filter {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     min-height: 30px;
+    z-index: 2;
 }
 
 .top-div > select {
@@ -353,6 +359,7 @@ textarea.task-title {
     font-size: var(--fs-h3);
     font-weight: var(--fw-bold);
     margin: 0 7px;
+    field-sizing: content;
 }
 
 textarea {
