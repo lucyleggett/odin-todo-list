@@ -21,24 +21,30 @@ export function addTitleSwipeListener() {
                 if (entry.isIntersecting) {
                     const activeTitleName = entry.target.getAttribute("data-title");
 
+                    if (activeTitleName === "Tasks") {
+                        newBtn.dataset.id = "new-task";
+                    } else if (activeTitleName === "Projects") {
+                        newBtn.dataset.id = "new-project";
+                    }
+
                     if (viewTitle.textContent !== activeTitleName) {
                         const directionClass = activeTitleName === "Tasks" ? "slide-left" : "slide-right";
                         viewTitle.classList.add("changing", directionClass);
+                        filterBtn.classList.add("changing");
                         setTimeout(() => {
                             viewTitle.textContent = activeTitleName;
-                            viewTitle.classList.remove("changing", "slide-left", "slide-right");
-                        }, 250);
-                    }
 
-                    if (activeTitleName === "Tasks") {
-                        newBtn.dataset.id = "new-task";
-                        filterBtn.style.display = "flex";
-                    } else if (activeTitleName === "Projects") {
-                        newBtn.dataset.id = "new-project";
-                        filterBtn.style.display = "none";
-                        if (filterMenu) {
-                            filterMenu.classList.add("hidden");
-                        }
+                            if (activeTitleName === "Tasks") {
+                                filterBtn.classList.remove("hidden");
+                            } else if (activeTitleName === "Projects") {
+                                filterBtn.classList.add("hidden");
+                                if (filterMenu) {
+                                    filterMenu.classList.add("hidden");
+                                }
+                            }
+                            viewTitle.classList.remove("changing", "slide-left", "slide-right");
+                            filterBtn.classList.remove("changing");
+                        }, 250);
                     }
                 }
             });
@@ -50,7 +56,7 @@ export function addTitleSwipeListener() {
 
 export function addOpenCloseTaskCardListener(card) {
     card.addEventListener("click", (event) => {
-        if (event.target.closest("button, select, input, textarea")) return;
+        // if (event.target.closest("button, select, input, textarea")) return;
         
         if (card.classList.contains("expanded")) return;
         card.classList.add("expanded");
