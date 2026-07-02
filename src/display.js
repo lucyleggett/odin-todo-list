@@ -65,7 +65,7 @@ export function Display() {
     const renderProjectCard = (projectData = null) => {
         const projContainer = document.querySelector(".projects.view-panel");
         const projCard = document.createElement("div");
-        projCard.classList.add("project-card");
+        projCard.classList.add("project-card", "slide-in");
 
         if (projectData) {
             projCard.dataset.id = projectData.uuid;
@@ -96,10 +96,6 @@ export function Display() {
 
         const projectIdentifier = projectData ? projectData.uuid : Math.random().toString(36).substr(2, 9);
         const uniqueID = `color-picker-${projectIdentifier}`;
-
-        const taskCount = document.createElement("p");
-        taskCount.textContent = "n tasks";
-        taskCount.classList.add("task-count");
 
         const iconDiv = document.createElement("div");
         iconDiv.classList.add("icon-container");
@@ -152,7 +148,7 @@ export function Display() {
 
         inputWrap.append(projTitleMirror, projTitle);
         iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
-        projForm.append(inputWrap, taskCount, iconDiv);
+        projForm.append(inputWrap, iconDiv);
         projCard.appendChild(projForm);
         setBackgroundColor(projCard);
         addEditProjListener(projCard, { setBackgroundColor, renderFilterMenuOptions });

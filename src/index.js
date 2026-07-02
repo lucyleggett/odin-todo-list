@@ -5,6 +5,7 @@ import { Project } from "./project.js";
 import { filter } from "./filter.js";
 import { addCalendarListener } from "./date.js";
 import { addNewBtnListener, addOpenCloseTaskCardListener, addTextAreaGrowListener, addTitleSwipeListener } from "./event.js";
+import { observer } from "./animate.js";
 
 function Controller() {
     const loadApplicationState = () => {
@@ -36,6 +37,8 @@ function Controller() {
     initializeProjects();
 
     addCalendarListener();
+
+    const animate = Animate();
 }
 
 const controller = Controller();

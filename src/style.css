@@ -27,6 +27,11 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
+@starting-style {
+  .disabled {
+    opacity: 1;
+  }
+}
 
 * {
     --ff-manrope: "Manrope", Arial, sans-serif;
@@ -196,13 +201,23 @@ div.filter {
     width: 100%;
     max-width: 340px;
     height: fit-content;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition-delay: var(--card-delay, 0ms);
+}
+
+.task-card.slide-in {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .task-card, 
 .project-card {
     display: flex;
-    flex-direction: column;
     padding: 15px;
+    padding-bottom: 18px;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
@@ -448,6 +463,15 @@ div.due-date {
     max-width: fit-content;
     height: fit-content;
     font-weight: var(--fw-bold);
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition-delay: var(--card-delay, 0ms);
+}
+
+.project-card.slide-in {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .input-wrap {
@@ -481,19 +505,9 @@ div.due-date {
 }
 
 .project-card > form {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: 1fr 1fr;
-    flex-direction: column;
+    display: flex;
+    gap: 10px;
     width: fit-content;
-}
-
-.task-count {
-    grid-area: 2 / 1 / 3 / 2;
-    align-self: end;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 70%;
 }
 
 .color-picker-label {
@@ -528,7 +542,6 @@ div.due-date {
 
 .icon-container {
     display: flex;
-    grid-area: 2 / 2 / 3 / 3;
     justify-content: center;
     gap: 2px;
     justify-self: right;
@@ -536,4 +549,5 @@ div.due-date {
 
 .disabled {
     display: none;
+    opacity: 1;
 }
