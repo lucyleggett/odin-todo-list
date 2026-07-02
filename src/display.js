@@ -13,7 +13,11 @@ export function Display() {
 
     const setBackgroundColor = (element) => {
         if (!element) return;
-        const currProj = Project.findProjectOfTask(element.dataset.id);
+        let currProj = Project.findProjectOfTask(element.dataset.id);
+
+        if (!currProj && element.tagName === "SELECT") {
+            currProj = Project.findProjectByName(element.value);
+        }
         
         if (currProj && currProj.color) {
             element.style.backgroundColor = currProj.color;
@@ -159,7 +163,9 @@ export function Display() {
     const renderTaskCard = (taskData = null, parentProject = null) => {
         const tasksContainer = document.querySelector(".tasks.view-panel");
         const taskCard = document.createElement("div");
-        taskCard.classList.add("task-card");
+        taskCard.style.setProperty('--card-delay', '0ms');
+        taskCard.classList.add("task-card", "slide-in");
+        if (!taskData) taskCard.classList.add("expanded");
 
         if (taskData) {
             taskCard.dataset.uuid = taskData.uuid;
@@ -224,7 +230,7 @@ export function Display() {
         taskStatusComplete.alt = "Checked checkbox";
         taskStatusComplete.classList.add("complete", "status-icon");
 
-        if (taskData && taskData.status === "pending") {
+        if (!taskData || taskData && taskData.status === "pending") {
                 taskStatusComplete.classList.add("disabled");
         } else {
             taskStatusPending.classList.add("disabled");

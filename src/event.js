@@ -109,7 +109,7 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
                 Project.moveTask(targetUuid, currentProjOfTask, targetProj);
             }
         }
-        const projectInput = card.querySelector(".project-input");
+        const projectInput = card.querySelector(".project-label");
         setBackgroundColor(projectInput);
         if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
     });
