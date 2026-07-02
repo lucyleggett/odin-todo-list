@@ -227,7 +227,7 @@ export function Display() {
         topDiv.append(priorityBtn, titleInput, taskStatusBtn);
 
         const descInput = document.createElement("textarea");
-        descInput.classList.add("task-description", "disabled");
+        descInput.classList.add("task-description");
         descInput.name = "taskDesc";
         descInput.rows = 1;
         descInput.placeholder = "Description";
@@ -237,7 +237,7 @@ export function Display() {
 
         const currChecklistUl = document.createElement("ul");
         currChecklistUl.dataset.id = taskCard.dataset.uuid;
-        currChecklistUl.classList.add("checklist", "disabled");
+        currChecklistUl.classList.add("checklist");
 
         if (taskData && taskData.checklist && taskData.checklist.length > 0) {
             taskData.checklist.forEach(item => {
@@ -271,7 +271,7 @@ export function Display() {
 
         updateDateDisplay(dueDateInput);
         dueDateInput.addEventListener("change", () => {
-            updateDateDisplay(this);
+            updateDateDisplay(dueDateInput);
         })
 
         const projectInput = document.createElement("select");
@@ -299,7 +299,15 @@ export function Display() {
 
         dueDateDiv.append(dueDateInput, projectInput);
 
-        taskForm.append(topDiv, descInput, currChecklistUl, dueDateDiv);
+        const innerExpandWrapper = document.createElement("div");
+        innerExpandWrapper.classList.add("inner-expand-wrapper");
+        innerExpandWrapper.append(descInput, currChecklistUl);
+
+        const collapsibleContent = document.createElement("div");
+        collapsibleContent.classList.add("collapsible-content");
+        collapsibleContent.append(innerExpandWrapper);
+
+        taskForm.append(topDiv, collapsibleContent, dueDateDiv);
         taskCard.appendChild(taskForm);
         tasksContainer.prepend(taskCard);
         

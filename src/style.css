@@ -243,6 +243,21 @@ div.filter {
     transition-delay: var(--card-delay, 0ms);
 }
 
+.task-card .collapsible-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease;
+}
+
+.task-card .inner-expand-wrapper {
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .task-card.slide-in {
     opacity: 1;
     transform: translateX(0);
@@ -255,6 +270,15 @@ div.filter {
     padding-bottom: 18px;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.task-card.expanded .collapsible-content {
+    grid-template-rows: 1fr;
+}
+
+.task-card.expanded .inner-expand-wrapper {
+    opacity: 1;
+    padding-top: 15px;
 }
 
 .project-card * {

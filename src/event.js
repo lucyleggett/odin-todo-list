@@ -49,19 +49,23 @@ export function addTitleSwipeListener() {
 }
 
 export function addOpenCloseTaskCardListener(card) {
-        const cardUl = card.querySelector("ul");
-        const cardDesc = card.querySelector(".task-description");
-    
-    document.addEventListener("click", (event) => {
-        const isClickInside = card.contains(event.target);
+    card.addEventListener("click", (event) => {
+        if (event.target.closest("button, select, input, textarea")) return;
+        
+        if (card.classList.contains("expanded")) return;
 
-        if (isClickInside) {
-            cardUl.classList.remove("disabled");
-            cardDesc.classList.remove("disabled");
-        } else {
-            cardUl.classList.add("disabled");
-            cardDesc.classList.add("disabled");            
-        }
+        card.classList.add("expanded");
+
+        const closeOnOutsideClick = (e) => {
+            if (!card.contains(e.target)) {
+                card.classList.remove("expanded");
+                document.removeEventListener("click", closeOnOutsideClick);
+            }
+        };
+
+        setTimeout(() => {
+            document.addEventListener("click", closeOnOutsideClick);
+        }, 0);
     });
 }
 
