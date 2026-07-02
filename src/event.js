@@ -53,7 +53,6 @@ export function addOpenCloseTaskCardListener(card) {
         if (event.target.closest("button, select, input, textarea")) return;
         
         if (card.classList.contains("expanded")) return;
-
         card.classList.add("expanded");
 
         const closeOnOutsideClick = (e) => {
@@ -117,10 +116,12 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
 }
 
 export function addEditStatusListener(taskStatusBtn) {
-    taskStatusBtn.addEventListener("click", () => {
+    taskStatusBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+
         const currTask = Project.findTask(taskStatusBtn.dataset.id);
-        const pendingIcon = taskStatusBtn.querySelector(".pending", ".status-icon");
-        const completeIcon = taskStatusBtn.querySelector(".complete", ".status-icon");
+        const pendingIcon = taskStatusBtn.querySelector(".pending.status-icon");
+        const completeIcon = taskStatusBtn.querySelector(".complete.status-icon");
 
         if (currTask) {
             if (currTask.status === "pending") {
@@ -138,7 +139,8 @@ export function addEditStatusListener(taskStatusBtn) {
 }
 
 export function addEditPriorityListener(priorityBtn, priorityColourMap) {
-    priorityBtn.addEventListener("click", () => {
+    priorityBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
         const currTask = Project.findTask(priorityBtn.dataset.id);
         if (currTask) {
             const currOptionIndex = priorityColourMap.findIndex(option => option.priority === currTask.priority);
@@ -150,6 +152,16 @@ export function addEditPriorityListener(priorityBtn, priorityColourMap) {
             if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
         }
     })
+}
+
+export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
+    deleteTaskBtn.addEventListener("click", (event) => {
+        event.stopPropagation
+        event.preventDefault();
+        Project.removeTask(taskCard.dataset.uuid);
+        taskCard.remove();
+        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+    });
 }
 
 export function addEditChecklistListener(checklistUl) {

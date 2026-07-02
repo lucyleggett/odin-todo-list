@@ -287,9 +287,8 @@ div.filter {
 
 .top-div {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
     min-height: 30px;
-    gap: 7px;
 }
 
 .top-div > select {
@@ -318,7 +317,8 @@ div.filter {
     margin: 0;
 }
 
-.task-status-btn {
+.task-status-btn,
+.delete-task-btn {
     background-color: transparent;
     border: none;
     width: 30px;
@@ -352,6 +352,7 @@ input, textarea {
 textarea.task-title {
     font-size: var(--fs-h3);
     font-weight: var(--fw-bold);
+    margin: 0 7px;
 }
 
 textarea {

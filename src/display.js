@@ -5,7 +5,7 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener } from "./event.js";
+import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
 
@@ -200,6 +200,15 @@ export function Display() {
         }
         addEditPriorityListener(priorityBtn, priorityColourMap);
 
+        const deleteTaskBtn = document.createElement("button");
+        deleteTaskBtn.classList.add("delete-task-btn");
+        deleteTaskBtn.type = "button";
+        const deleteIcon = document.createElement("img");
+        deleteIcon.classList.add("delete", "icon");
+        deleteIcon.src = binIcon;
+        deleteTaskBtn.appendChild(deleteIcon);
+        addDeleteTaskListener(deleteTaskBtn, taskCard);
+
         const taskStatusBtn = document.createElement("button");
         taskStatusBtn.type = "button";
         taskStatusBtn.classList.add("task-status-btn");
@@ -224,7 +233,7 @@ export function Display() {
         taskStatusBtn.append(taskStatusPending, taskStatusComplete);
         addEditStatusListener(taskStatusBtn);
 
-        topDiv.append(priorityBtn, titleInput, taskStatusBtn);
+        topDiv.append(priorityBtn, titleInput, deleteTaskBtn, taskStatusBtn);
 
         const descInput = document.createElement("textarea");
         descInput.classList.add("task-description");
