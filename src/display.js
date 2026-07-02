@@ -87,6 +87,7 @@ export function Display() {
 
         const projTitle = document.createElement("input");
         projTitle.type = "text";
+        projTitle.maxLength = 16;
         projTitle.placeholder = "Title";
         projTitle.size = 1;
         projTitle.classList.add("proj-title");
@@ -199,11 +200,13 @@ export function Display() {
             { priority: "high", color: "#ab0808" }
         ]
 
+        priorityBtn.style.color = priorityColourMap[0].color;
+
         if (taskData) {
             titleInput.value = taskData.title;
             const matchedPriority = priorityColourMap.find(item => item.priority === taskData.priority);
             priorityBtn.style.color = matchedPriority ? matchedPriority.color : priorityColourMap[0].color;
-        }
+        } 
         addEditPriorityListener(priorityBtn, priorityColourMap);
 
         const deleteTaskBtn = document.createElement("button");

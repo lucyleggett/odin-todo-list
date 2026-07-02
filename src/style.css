@@ -591,6 +591,10 @@ div.due-date {
     display: inline-block;
 }
 
+.proj-title::placeholder {
+    color: rgb(202, 202, 202);
+}
+
 .proj-title-mirror {
     visibility: hidden;
     white-space: pre;
