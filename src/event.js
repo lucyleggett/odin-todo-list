@@ -54,6 +54,33 @@ export function addTitleSwipeListener() {
     });
 }
 
+export function addFilterMenuListeners() {
+    const filterMenu = document.querySelector(".filter-menu");
+    const filterBtn = document.querySelector("button.filter");
+
+    const closeOnOutsideClick = (e) => {
+        if ((!filterMenu.contains(e.target)) && !filterBtn.contains(e.target)) {
+            filterMenu.classList.add("hidden");
+            document.removeEventListener("click", closeOnOutsideClick);
+        }
+    };
+
+    document.querySelector("button.filter").addEventListener("click", () => {
+        const isHidden = filterMenu.classList.toggle("hidden");
+
+        if (!isHidden){
+            document.addEventListener("click", closeOnOutsideClick);
+        } else {
+            document.removeEventListener("click", closeOnOutsideClick);
+        }
+    });
+
+    filterMenu.querySelector(".apply-filter-btn").addEventListener("click", () => {
+        filterTasks( {renderTaskCard} );
+        filterMenu.classList.add("hidden");
+    });
+}
+
 export function addOpenCloseTaskCardListener(card) {
     card.addEventListener("click", (event) => {
         

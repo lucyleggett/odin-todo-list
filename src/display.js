@@ -5,7 +5,7 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener } from "./event.js";
+import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener, addFilterMenuListeners } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
 import { StorageController } from "./storage.js";
@@ -31,16 +31,6 @@ export function Display() {
             }
         }
     }
-
-    const filterMenu = document.querySelector(".filter-menu");
-    document.querySelector("button.filter").addEventListener("click", () => {
-        filterMenu.classList.toggle("hidden");
-    })
-
-    filterMenu.querySelector(".apply-filter-btn").addEventListener("click", () => {
-        filterTasks( {renderTaskCard} );
-        filterMenu.classList.add("hidden");
-    });
 
     const renderFilterMenuOptions = () => {
         const projectSubcat = document.querySelector(".project.filter-subcat");
@@ -156,6 +146,7 @@ export function Display() {
         addEditProjListener(projCard, { setBackgroundColor, renderFilterMenuOptions });
         projContainer.prepend(projCard);
         renderFilterMenuOptions();
+        addFilterMenuListeners();
     }
 
     const renderTaskCard = (taskData = null, parentProject = null) => {
@@ -163,6 +154,10 @@ export function Display() {
         const taskCard = document.createElement("div");
         taskCard.style.setProperty("--card-delay", "0ms");
         taskCard.classList.add("task-card", "slide-in");
+
+        if (taskData.title = "Swipe right to create your first project!") {
+            taskCard.classList.add("expanded");
+        }
 
         let resolvedTaskData = taskData;
 
@@ -337,8 +332,7 @@ export function Display() {
         checkbox.type = "checkbox";
         checkbox.classList.add("checklist-checkbox");
 
-        const checklistInput = document.createElement("input");
-        checklistInput.type = "text";
+        const checklistInput = document.createElement("textarea");
         checklistInput.classList.add("checklist-input");
         checklistInput.placeholder = "Add to checklist...";
         checklistInput.value = currChecklistData.text || "";

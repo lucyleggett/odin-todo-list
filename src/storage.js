@@ -28,7 +28,7 @@ export class StorageController {
 
     static retrieveStorage() {
         const rawData = localStorage.getItem("projects_list");
-        if (!rawData) return;
+        if (!rawData || rawData === "[]") return false;
 
         const parsedProjects = JSON.parse(rawData);
         Project.instances = [];
@@ -38,12 +38,14 @@ export class StorageController {
                 uuid: projData.uuid, 
                 name: projData.name, 
                 color: projData.color
-        });
+            });
             projData.tasks.forEach(taskData => {
                 const reconstructedTask = Task.fromJSON(taskData);
                 if (reconstructedTask) reconstructedProject.addTask(reconstructedTask);
             });
         });
+
+        return true;
     }
 
     static clear() {
