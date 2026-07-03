@@ -170,14 +170,17 @@ export function Display() {
             const defaultProj = Project.getAllProjects()[0];
             taskCard.classList.add("expanded");
             if (defaultProj) {
+                parentProject = defaultProj;
                 const newTask = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
                 defaultProj.addTask(newTask);
                 resolvedTaskData = newTask;
-                if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+                if (resolvedTaskData.title !== "") {
+                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+                }
             }
         }
 
-        if (resolvedTaskData) taskCard.dataset.uuid = resolvedTaskData.uuid;
+        taskCard.dataset.uuid = resolvedTaskData.uuid;
 
         const taskForm = document.createElement("form");
         taskForm.method = "get";
@@ -201,6 +204,7 @@ export function Display() {
         titleInput.placeholder = "Title";
         titleInput.required = true;
         titleInput.dataset.id = taskCard.dataset.uuid;
+        titleInput.value = resolvedTaskData.title;
 
         const priorityColourMap = [
             { priority: "low", color: "#008002" },
@@ -208,13 +212,8 @@ export function Display() {
             { priority: "high", color: "#ab0808" }
         ]
 
-        priorityBtn.style.color = priorityColourMap[0].color;
-
-        if (resolvedTaskData) {
-            titleInput.value = resolvedTaskData.title;
-            const matchedPriority = priorityColourMap.find(item => item.priority === resolvedTaskData.priority);
-            if (matchedPriority) priorityBtn.style.color = matchedPriority;
-        } 
+        const matchedPriority = priorityColourMap.find(item => item.priority === resolvedTaskData.priority);
+        if (matchedPriority) priorityBtn.style.color = matchedPriority.color;
         addEditPriorityListener(priorityBtn, priorityColourMap);
 
         const deleteTaskBtn = document.createElement("button");
@@ -241,7 +240,7 @@ export function Display() {
         taskStatusComplete.alt = "Checked checkbox";
         taskStatusComplete.classList.add("complete", "status-icon");
 
-        if (!resolvedTaskData || resolvedTaskData && resolvedTaskData.status === "pending") {
+        if (resolvedTaskData.status === "pending") {
                 taskStatusComplete.classList.add("disabled");
         } else {
             taskStatusPending.classList.add("disabled");
@@ -259,14 +258,13 @@ export function Display() {
         descInput.rows = 1;
         descInput.placeholder = "Description";
         descInput.dataset.id = taskCard.dataset.uuid;
-
-        if (resolvedTaskData) descInput.value = resolvedTaskData.description;
+        descInput.value = resolvedTaskData.description;
 
         const currChecklistUl = document.createElement("ul");
         currChecklistUl.dataset.id = taskCard.dataset.uuid;
         currChecklistUl.classList.add("checklist");
 
-        if (resolvedTaskData && resolvedTaskData.checklist && resolvedTaskData.checklist.length > 0) {
+        if (resolvedTaskData.checklist.length > 0) {
             resolvedTaskData.checklist.forEach(item => {
                 createChecklistElement(currChecklistUl, item)
             });
@@ -288,8 +286,7 @@ export function Display() {
         dueDateInput.classList.add("custom-date");
         dueDateInput.name = "taskDueDate";
         dueDateInput.dataset.id = taskCard.dataset.uuid;
-
-        if (resolvedTaskData) dueDateInput.value = resolvedTaskData.dueDate;
+        dueDateInput.value = resolvedTaskData.dueDate;
 
         updateDateDisplay(dueDateInput);
         dueDateInput.addEventListener("change", () => {
@@ -307,17 +304,9 @@ export function Display() {
             projectInput.appendChild(option);
         });
 
-        if (parentProject) {
-            projectInput.value = parentProject.name;
-            taskCard.dataset.id = parentProject.uuid;
-            setBackgroundColor(projectInput);
-        } else {
-            const defaultProj = Project.getAllProjects().find(proj => proj.name === projectInput.value);
-            if (defaultProj) {
-                taskCard.dataset.id = defaultProj.uuid;
-                setBackgroundColor(projectInput);
-            }
-        }
+        projectInput.value = parentProject.name;
+        taskCard.dataset.id = parentProject.uuid;
+        setBackgroundColor(projectInput);
 
         dueDateDiv.append(dueDateInput, projectInput);
 
