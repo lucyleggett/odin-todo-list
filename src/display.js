@@ -8,6 +8,7 @@ import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
 import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
+import { StorageController } from "./storage.js";
 
 export function Display() {
 
@@ -32,8 +33,7 @@ export function Display() {
     }
 
     const filterMenu = document.querySelector(".filter-menu");
-    const filterBtn = document.querySelector("button.filter");
-    filterBtn.addEventListener("click", () => {
+    document.querySelector("button.filter").addEventListener("click", () => {
         filterMenu.classList.toggle("hidden");
     })
 
@@ -71,9 +71,7 @@ export function Display() {
         const projCard = document.createElement("div");
         projCard.classList.add("project-card", "slide-in");
 
-        if (projectData) {
-            projCard.dataset.id = projectData.uuid;
-        }
+        if (projectData) projCard.dataset.id = projectData.uuid;
 
         const projForm = document.createElement("form");
         projForm.classList = "new-project-form";
@@ -120,7 +118,13 @@ export function Display() {
         colorPickerIcon.src = brushIcon;
         colorPickerIcon.classList.add("brush", "icon");
 
-        const colorPalette = ["#3E8235", "#7E5CBC", "#C6246E", "#1C2C82", "#CE350E"];
+        const colorPalette = [
+            "#3E8235", 
+            "#7E5CBC", 
+            "#C6246E", 
+            "#1C2C82", 
+            "#CE350E"
+        ];
 
         const datalist = document.createElement("datalist");
         datalist.id = "presetColors" + `${uniqueID}`;
@@ -130,12 +134,7 @@ export function Display() {
             datalist.appendChild(option);
         })
 
-        if (projectData) {
-            colorPicker.value = projectData.color;
-        } else {
-            colorPicker.value = colorPalette[0];
-        }
-
+        projectData ? colorPicker.value = projectData.color : colorPicker.value = colorPalette[0];
         colorPickerLabel.appendChild(colorPickerIcon);
 
         const deleteProjBtn = document.createElement("button");
@@ -144,9 +143,7 @@ export function Display() {
         deleteIcon.classList.add("delete", "icon");
         deleteIcon.src = binIcon;
 
-        if (projectData) {
-            deleteProjBtn.dataset.uuid = projectData.uuid;
-        }
+        if (projectData) deleteProjBtn.dataset.uuid = projectData.uuid;
         
         deleteProjBtn.appendChild(deleteIcon);
         addDeleteProjListener(deleteProjBtn, projCard, {renderFilterMenuOptions} );
@@ -164,13 +161,23 @@ export function Display() {
     const renderTaskCard = (taskData = null, parentProject = null) => {
         const tasksContainer = document.querySelector(".tasks.view-panel");
         const taskCard = document.createElement("div");
-        taskCard.style.setProperty('--card-delay', '0ms');
+        taskCard.style.setProperty("--card-delay", "0ms");
         taskCard.classList.add("task-card", "slide-in");
-        if (!taskData) taskCard.classList.add("expanded");
 
-        if (taskData) {
-            taskCard.dataset.uuid = taskData.uuid;
+        let resolvedTaskData = taskData;
+
+        if (!resolvedTaskData) {
+            const defaultProj = Project.getAllProjects()[0];
+            taskCard.classList.add("expanded");
+            if (defaultProj) {
+                const newTask = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
+                defaultProj.addTask(newTask);
+                resolvedTaskData = newTask;
+                if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+            }
         }
+
+        if (resolvedTaskData) taskCard.dataset.uuid = resolvedTaskData.uuid;
 
         const taskForm = document.createElement("form");
         taskForm.method = "get";
@@ -189,6 +196,7 @@ export function Display() {
         const titleInput = document.createElement("textarea");
         titleInput.classList.add("task-title");
         titleInput.name = "task-title";
+        titleInput.maxLength = 50;
         titleInput.rows = 1;
         titleInput.placeholder = "Title";
         titleInput.required = true;
@@ -202,10 +210,10 @@ export function Display() {
 
         priorityBtn.style.color = priorityColourMap[0].color;
 
-        if (taskData) {
-            titleInput.value = taskData.title;
-            const matchedPriority = priorityColourMap.find(item => item.priority === taskData.priority);
-            priorityBtn.style.color = matchedPriority ? matchedPriority.color : priorityColourMap[0].color;
+        if (resolvedTaskData) {
+            titleInput.value = resolvedTaskData.title;
+            const matchedPriority = priorityColourMap.find(item => item.priority === resolvedTaskData.priority);
+            if (matchedPriority) priorityBtn.style.color = matchedPriority;
         } 
         addEditPriorityListener(priorityBtn, priorityColourMap);
 
@@ -233,7 +241,7 @@ export function Display() {
         taskStatusComplete.alt = "Checked checkbox";
         taskStatusComplete.classList.add("complete", "status-icon");
 
-        if (!taskData || taskData && taskData.status === "pending") {
+        if (!resolvedTaskData || resolvedTaskData && resolvedTaskData.status === "pending") {
                 taskStatusComplete.classList.add("disabled");
         } else {
             taskStatusPending.classList.add("disabled");
@@ -247,18 +255,19 @@ export function Display() {
         const descInput = document.createElement("textarea");
         descInput.classList.add("task-description");
         descInput.name = "taskDesc";
+        descInput.maxLength = 200;
         descInput.rows = 1;
         descInput.placeholder = "Description";
         descInput.dataset.id = taskCard.dataset.uuid;
 
-        if (taskData) descInput.value = taskData.description;
+        if (resolvedTaskData) descInput.value = resolvedTaskData.description;
 
         const currChecklistUl = document.createElement("ul");
         currChecklistUl.dataset.id = taskCard.dataset.uuid;
         currChecklistUl.classList.add("checklist");
 
-        if (taskData && taskData.checklist && taskData.checklist.length > 0) {
-            taskData.checklist.forEach(item => {
+        if (resolvedTaskData && resolvedTaskData.checklist && resolvedTaskData.checklist.length > 0) {
+            resolvedTaskData.checklist.forEach(item => {
                 createChecklistElement(currChecklistUl, item)
             });
         } else {
@@ -270,11 +279,6 @@ export function Display() {
         addNewBtn.textContent = "+";
         addNewBtn.type = "button";
         currChecklistUl.append(addNewBtn);
-
-        addNewBtn.addEventListener("click", (event) => {
-            event.preventDefault();
-            createChecklistElement(currChecklistUl, {});
-        });
             
         const dueDateDiv = document.createElement("div");
         dueDateDiv.classList.add("due-date");
@@ -285,7 +289,7 @@ export function Display() {
         dueDateInput.name = "taskDueDate";
         dueDateInput.dataset.id = taskCard.dataset.uuid;
 
-        if (taskData) dueDateInput.value = taskData.dueDate;
+        if (resolvedTaskData) dueDateInput.value = resolvedTaskData.dueDate;
 
         updateDateDisplay(dueDateInput);
         dueDateInput.addEventListener("change", () => {
@@ -358,10 +362,33 @@ export function Display() {
         const deleteItemBtn = document.createElement("button");
         deleteItemBtn.textContent = "x";
         deleteItemBtn.classList.add("checklist-delete");
+
+        checklistInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+
+                if (checklistInput.value.trim() !== "") {
+                    createChecklistElement(checklistUl, {});
+
+                    setTimeout(() => {
+                        const inputs = checklistUl.querySelectorAll(".checklist-input");
+                        const lastInput = inputs[inputs.length - 1];
+                        if (lastInput) lastInput.focus();
+                    }, 0);
+                }
+            }
+        });
  
         label.append(checkbox, checklistInput);
         li.append(label, deleteItemBtn);
-        checklistUl.appendChild(li);
+
+        const addBtn = checklistUl.querySelector(".add-btn");
+        if (addBtn) {
+            checklistUl.insertBefore(li, addBtn);
+        } else {
+            checklistUl.appendChild(li);
+        }
+
         addEditChecklistListener(checklistUl);
         addDeleteChecklistItemListener(checklistUl);
     }

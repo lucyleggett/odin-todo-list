@@ -56,7 +56,6 @@ export function addTitleSwipeListener() {
 
 export function addOpenCloseTaskCardListener(card) {
     card.addEventListener("click", (event) => {
-        // if (event.target.closest("button, select, input, textarea")) return;
         
         if (card.classList.contains("expanded")) return;
         card.classList.add("expanded");

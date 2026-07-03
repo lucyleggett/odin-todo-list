@@ -241,9 +241,9 @@ button.filter {
 }
 
 .tasks.view-panel {
-    display: grid;
-    width: 360px;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     gap: 15px;
 }
 
@@ -412,7 +412,6 @@ ul {
     align-items: stretch;
     list-style-type: none;
     padding: 0;
-    padding-top: 10px;
     width: 100%;
     border-top: 1px solid rgb(255, 255, 255, 0.3);
 }
@@ -428,6 +427,10 @@ li > label {
     display: flex;
     align-items: center;
     flex: 1;
+}
+
+.checklist-input {
+    width: 100%;
 }
 
 .checklist-input,
