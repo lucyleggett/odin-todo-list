@@ -1,5 +1,7 @@
 *, *::before, *::after {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 *:not(dialog) {
@@ -62,7 +64,7 @@ body {
     flex-direction: column;
     align-items: center;
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -71,15 +73,14 @@ body {
     flex-direction: column;
     align-items: center;
     height: 100%;
-    width: 100%;
-    max-width: 360px;
-    margin-bottom: 20px;
+    width: clamp(380px, 100vw, 450px);
+    min-width: 100vw;
     overflow: hidden;
 }
 
 .swipe-container {
     height: 100vh;
-    width: 100%;
+    width: clamp(380px, 100vw, 450px);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
@@ -88,28 +89,27 @@ body {
     scrollbar-width: none;
 }
 
-.swipe-container:-webkit-scrollbar {
-  display: none;
-}
+.swipe-container:-webkit-scrollbar { display: none; }
 
 .swipe-track {
     display: flex;
-    width: 200%;
+    width: 100%;
 }
 
 .view-panel {
-    flex: 0 0 360px;
-    width: 360px;
+    flex: 0 0 100%;
+    align-items: center;
+    width: clamp(380px, 100vw, 450px);
     min-height: 400px;
-    padding: 5px 10px;
     box-sizing: border-box;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    padding: 5px 20px;
 }
 
 .static {
     position: relative;
-    width: 100%;
+    width: clamp(380px, 100vw, 450px);
 }
 
 .title-bar {
@@ -117,7 +117,7 @@ body {
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 20px;
 }
 
 button.menu,
@@ -236,7 +236,6 @@ button.filter {
 .tasks.view-panel {
     display: flex;
     flex-direction: column;
-    width: 100%;
     gap: 15px;
 }
 
@@ -254,7 +253,6 @@ div.filter { margin: 1px 2px; }
 
 .task-card {
     width: 100%;
-    max-width: 340px;
     height: fit-content;
     flex-direction: column;
     opacity: 0;
@@ -294,9 +292,9 @@ div.filter { margin: 1px 2px; }
 
 .task-card.expanded .collapsible-content { grid-template-rows: 1fr; }
 
-.task-card.expanded .inner-expand-wrapper {
-    opacity: 1;
-    padding-top: 15px;
+.task-card.expanded .inner-expand-wrapper { 
+    opacity: 1; 
+    padding-top: 5px;
 }
 
 .project-card * { color: var(--clr-white); }
@@ -323,7 +321,7 @@ div.filter { margin: 1px 2px; }
     background-color: transparent;
     border: none;
     margin: 0;
-    margin-top: 10px;
+    margin-top: 15px;
     padding: 0;
 }
 
@@ -341,6 +339,7 @@ div.filter { margin: 1px 2px; }
     height: 30px;
     padding: 0;
     margin: 0;
+    margin-top: 5px;
     cursor: pointer;
 }
 
@@ -362,6 +361,7 @@ div.task-due > p { margin-left: 5px; }
 input, textarea {
     outline: none;
     border: none;
+    field-sizing: content;
     overflow-wrap: break-word;
     white-space: pre-wrap;
     padding: 0;
@@ -468,7 +468,9 @@ button.add-btn:hover { background-color: color-mix(in srgb, var(--clr-black), tr
 button.add-btn {
     display: flex;
     align-self: flex-end;
-    font-size: var(--fs-h2);
+    font-size: var(--fs-h3);
+    margin-top: 0;
+    font-weight: 100;
 }
 
 .custom-date {
@@ -549,7 +551,6 @@ div.due-date {
 }
 
 .projects.view-panel {
-    max-width: 360px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;

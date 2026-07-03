@@ -155,7 +155,7 @@ export function Display() {
         taskCard.style.setProperty("--card-delay", "0ms");
         taskCard.classList.add("task-card", "slide-in");
 
-        if (taskData.title = "Swipe right to create your first project!") {
+        if (taskData && taskData.title === "Create your first task!") {
             taskCard.classList.add("expanded");
         }
 
