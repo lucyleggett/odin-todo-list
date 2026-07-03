@@ -73,14 +73,14 @@ body {
     flex-direction: column;
     align-items: center;
     height: 100%;
-    width: clamp(380px, 100vw, 450px);
+    width: clamp(360px, 100vw, 450px);
     min-width: 100vw;
     overflow: hidden;
 }
 
 .swipe-container {
     height: 100vh;
-    width: clamp(380px, 100vw, 450px);
+    width: clamp(360px, 100vw, 450px);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
@@ -99,7 +99,7 @@ body {
 .view-panel {
     flex: 0 0 100%;
     align-items: center;
-    width: clamp(380px, 100vw, 450px);
+    width: clamp(360px, 100vw, 450px);
     min-height: 400px;
     box-sizing: border-box;
     scroll-snap-align: start;
@@ -109,7 +109,7 @@ body {
 
 .static {
     position: relative;
-    width: clamp(380px, 100vw, 450px);
+    width: clamp(360px, 100vw, 450px);
 }
 
 .title-bar {
