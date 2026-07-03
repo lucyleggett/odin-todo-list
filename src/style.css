@@ -172,9 +172,9 @@ h1 { margin: 20px 0; }
     opacity: 1;
     pointer-events: auto;
     transition: 
-        transform 0.5s ease, 
-        opacity 0.5s ease, 
-        visibility 0.5s ease;
+        transform 0.3s ease, 
+        opacity 0.3s ease, 
+        visibility 0.3s ease;
 }
 
 .filter-menu.hidden,
