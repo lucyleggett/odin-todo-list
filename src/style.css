@@ -78,6 +78,7 @@ body {
 }
 
 .swipe-container {
+    height: 100%;
     width: 100%;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
