@@ -175,7 +175,7 @@ export function Display() {
                 defaultProj.addTask(newTask);
                 resolvedTaskData = newTask;
                 if (resolvedTaskData.title !== "") {
-                    if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+                    StorageController.saveIfStorageAvailable();
                 }
             }
         }
@@ -372,11 +372,7 @@ export function Display() {
         li.append(label, deleteItemBtn);
 
         const addBtn = checklistUl.querySelector(".add-btn");
-        if (addBtn) {
-            checklistUl.insertBefore(li, addBtn);
-        } else {
-            checklistUl.appendChild(li);
-        }
+        addBtn ? checklistUl.insertBefore(li, addBtn) : checklistUl.appendChild(li);
 
         addEditChecklistListener(checklistUl);
         addDeleteChecklistItemListener(checklistUl);

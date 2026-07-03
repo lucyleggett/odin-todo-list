@@ -116,7 +116,7 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
         }
         const projectInput = card.querySelector(".project-label");
         setBackgroundColor(projectInput);
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        StorageController.saveIfStorageAvailable();
     });
 }
 
@@ -138,7 +138,7 @@ export function addEditStatusListener(taskStatusBtn) {
                 pendingIcon.classList.remove("disabled");
                 completeIcon.classList.add("disabled");
             }
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        StorageController.saveIfStorageAvailable();
         }
     })
 }
@@ -154,7 +154,7 @@ export function addEditPriorityListener(priorityBtn, priorityColourMap) {
                 currTask.priority = priorityColourMap[newOptionIndex].priority;
                 priorityBtn.style.color = priorityColourMap[newOptionIndex].color;
             }
-            if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+            StorageController.saveIfStorageAvailable();
         }
     })
 }
@@ -169,7 +169,7 @@ export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
             parentProj.removeTask(taskCard.dataset.uuid);
             taskCard.remove();
 
-            if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+            StorageController.saveIfStorageAvailable();
         }
     });
 }
@@ -206,7 +206,7 @@ export function addEditChecklistListener(checklistUl) {
                 li.dataset.id = newItem.id;
             }
         }
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        StorageController.saveIfStorageAvailable();
     });
 }
 
@@ -222,7 +222,7 @@ export function addDeleteChecklistItemListener(checklistUl) {
         if (currTask && itemId) {
             currTask.removeChecklistItem(itemId);
             li.remove();
-            if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+            StorageController.saveIfStorageAvailable();
         }
     });
 }
@@ -233,7 +233,7 @@ export function addDeleteProjListener(deleteProjBtn, projCard, {renderFilterMenu
         Project.deleteProject(deleteProjBtn.dataset.uuid);
         projCard.remove();
         renderFilterMenuOptions();
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        StorageController.saveIfStorageAvailable();
     });
 }
 
@@ -265,6 +265,6 @@ export function addEditProjListener(card, {setBackgroundColor, renderFilterMenuO
             }
         }
         renderFilterMenuOptions();
-        if (StorageController.storageAvailable("localStorage")) StorageController.addToStorage("projects_list", Project.getAllProjects());
+        StorageController.saveIfStorageAvailable();
     });
 }

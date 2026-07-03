@@ -49,5 +49,11 @@ export class StorageController {
     static clear() {
         localStorage.clear();
     }
+
+    static saveIfStorageAvailable() {
+        if (StorageController.storageAvailable("localStorage")) {
+            StorageController.addToStorage("projects_list", Project.getAllProjects());
+        }
+    }
 }
 
