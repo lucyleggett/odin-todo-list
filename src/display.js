@@ -166,7 +166,6 @@ export function Display() {
         let resolvedTaskData = taskData;
 
         if (!resolvedTaskData) {
-            taskCard.classList.add("expanded");
             resolvedTaskData = resolvedTaskData = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
             parentProject = Project.getAllProjects()[0];
         }
