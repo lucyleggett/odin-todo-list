@@ -205,7 +205,6 @@ export function Display() {
 
         const matchedPriority = priorityColourMap.find(item => item.priority === resolvedTaskData.priority);
         if (matchedPriority) priorityBtn.style.color = matchedPriority.color;
-        addEditPriorityListener(priorityBtn, priorityColourMap);
 
         const deleteTaskBtn = document.createElement("button");
         deleteTaskBtn.classList.add("delete-task-btn");
@@ -316,6 +315,7 @@ export function Display() {
         taskCard.appendChild(taskForm);
         tasksContainer.prepend(taskCard);
         
+        addEditPriorityListener(priorityBtn, priorityColourMap);
         addEditTaskListener(taskCard, { setBackgroundColor });
         if (!isDummyCard) addOpenCloseTaskCardListener(taskCard);
     }

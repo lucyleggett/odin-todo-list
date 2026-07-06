@@ -58,6 +58,7 @@ export function addTitleSwipeListener() {
 export function addFilterMenuListeners( {renderTaskCard} ) {
     const filterMenu = document.querySelector(".filter-menu");
     const filterBtn = document.querySelector("button.filter");
+    if (!filterMenu || !filterBtn) return;
 
     const closeOnOutsideClick = (e) => {
         if ((!filterMenu.contains(e.target)) && !filterBtn.contains(e.target)) {
@@ -66,7 +67,7 @@ export function addFilterMenuListeners( {renderTaskCard} ) {
         }
     };
 
-    document.querySelector("button.filter").addEventListener("click", () => {
+    filterBtn.addEventListener("click", () => {
         const isHidden = filterMenu.classList.toggle("hidden");
 
         if (!isHidden){
@@ -176,9 +177,15 @@ export function addEditStatusListener(taskStatusBtn) {
 }
 
 export function addEditPriorityListener(priorityBtn, priorityColourMap) {
+    if (!priorityBtn) return;
+
     priorityBtn.addEventListener("click", (event) => {
         event.stopPropagation();
-        const currTask = Project.findTask(priorityBtn.dataset.id);
+
+        const taskCard = priorityBtn.closest(".task-card");
+        const taskUuid = taskCard.dataset.uuid;
+        const currTask = Project.findTask(taskUuid);
+        
         if (currTask) {
             const currOptionIndex = priorityColourMap.findIndex(option => option.priority === currTask.priority);
             if (currOptionIndex !== -1) {
