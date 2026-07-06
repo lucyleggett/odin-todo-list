@@ -282,6 +282,7 @@ export function Display() {
         dueDateInput.name = "taskDueDate";
         dueDateInput.dataset.id = taskCard.dataset.uuid;
         dueDateInput.value = resolvedTaskData.dueDate;
+        dueDateDiv.appendChild(dueDateInput);
 
         updateDateDisplay(dueDateInput);
         dueDateInput.addEventListener("change", () => {
@@ -303,7 +304,9 @@ export function Display() {
         taskCard.dataset.id = parentProject.uuid;
         setBackgroundColor(projectInput);
 
-        dueDateDiv.append(dueDateInput, projectInput);
+        const lowerDiv = document.createElement("div");
+        lowerDiv.classList.add("lower");
+        lowerDiv.append(dueDateDiv, projectInput);
 
         const innerExpandWrapper = document.createElement("div");
         innerExpandWrapper.classList.add("inner-expand-wrapper");
@@ -313,7 +316,7 @@ export function Display() {
         collapsibleContent.classList.add("collapsible-content");
         collapsibleContent.append(innerExpandWrapper);
 
-        taskForm.append(topDiv, collapsibleContent, dueDateDiv);
+        taskForm.append(topDiv, collapsibleContent, lowerDiv);
         taskCard.appendChild(taskForm);
         tasksContainer.prepend(taskCard);
         
