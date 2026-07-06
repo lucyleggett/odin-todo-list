@@ -476,7 +476,6 @@ button.add-btn {
 .custom-date {
     position: relative;
     color: transparent;
-    height: 26px;
     width: 110px;
     field-sizing: content;
     margin: 0;
@@ -486,19 +485,21 @@ button.add-btn {
 
 .due-date {
     display: flex;
-    max-height: 29px;;
+    max-height: 29px;
 }
 
 .custom-date::before {
-    position: relative;
+    position: absolute;
     display: inline-block;
-    top: 53%;
+    bottom: 0px;
+    padding: 2px;
     width: 90px;
     content: attr(data-date);
     white-space: nowrap;
     color: var(--clr-black);
     background-color: var(--clr-white);
     z-index: 2;
+    pointer-events: none;
 }
 
 .custom-date::-webkit-datetime-edit-fields-wrapper,
@@ -511,10 +512,12 @@ button.add-btn {
 }
 
 .custom-date::-webkit-calendar-picker-indicator {
-    position: relative;
-    bottom: 8px;
+    position: absolute;
+    right: -7px;
+    bottom: 3px;
     cursor: pointer;
     background-color: var(--clr-white);
+    width: 20px;
 }
 
 select:focus:not(:focus-visible),
@@ -550,6 +553,7 @@ div.lower {
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
+    padding: 0 2px;
 }
 
 .projects.view-panel {

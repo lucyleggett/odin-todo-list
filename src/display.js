@@ -146,7 +146,7 @@ export function Display() {
         addEditProjListener(projCard, { setBackgroundColor, renderFilterMenuOptions });
         projContainer.prepend(projCard);
         renderFilterMenuOptions();
-        addFilterMenuListeners();
+        addFilterMenuListeners( {renderTaskCard} );
     }
 
     const renderTaskCard = (taskData = null, parentProject = null) => {
@@ -168,6 +168,7 @@ export function Display() {
         if (!resolvedTaskData) {
             taskCard.classList.add("expanded");
             resolvedTaskData = resolvedTaskData = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
+            parentProject = Project.getAllProjects()[0];
         }
 
         taskCard.dataset.uuid = resolvedTaskData.uuid;
@@ -316,9 +317,7 @@ export function Display() {
         tasksContainer.prepend(taskCard);
         
         addEditTaskListener(taskCard, { setBackgroundColor });
-        if (!isDummyCard) {
-            addOpenCloseTaskCardListener(taskCard);
-        }
+        if (!isDummyCard) addOpenCloseTaskCardListener(taskCard);
     }
 
     const createChecklistElement = (checklistUl, currChecklistData) => {

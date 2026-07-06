@@ -1,6 +1,7 @@
 import { Task } from "./task.js";
 import { Project } from "./project.js";
 import { StorageController } from "./storage.js";
+import { filterTasks } from "./filter.js";
 
 export function addTitleSwipeListener() {
     document.addEventListener("DOMContentLoaded", () => {
@@ -54,7 +55,7 @@ export function addTitleSwipeListener() {
     });
 }
 
-export function addFilterMenuListeners() {
+export function addFilterMenuListeners( {renderTaskCard} ) {
     const filterMenu = document.querySelector(".filter-menu");
     const filterBtn = document.querySelector("button.filter");
 
@@ -122,19 +123,18 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
 
         const projInput = card.querySelector(".project-label");
         const targetProj = Project.findProjectByName(projInput.value);
-        if (!targetProj) return;
         card.dataset.id = targetProj.uuid;
 
         const targetUuid = card.dataset.uuid;
         let taskToEdit = targetUuid ? Project.findTask(targetUuid) : null;
 
         const taskObj = {
-            title: card.querySelector(".task-title")?.value ?? "",
-            description: card.querySelector(".task-description")?.value ?? "",
+            title: card.querySelector(".task-title")?.value.trim() ?? "",
+            description: card.querySelector(".task-description")?.value.trim() ?? "",
             dueDate: card.querySelector(".custom-date")?.value ?? "",
         };
 
-        if (!targetUuid) {
+        if (!taskToEdit) {
             const newTask = new Task(taskObj);
             targetProj.addTask(newTask);
             card.dataset.uuid = newTask.uuid;
