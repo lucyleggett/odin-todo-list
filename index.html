@@ -4,8 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
-</head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="styles.css" rel="stylesheet"></head>
 <body>
-    
+    <div class="container">
+        <div class="static">
+            <header class="title-bar">
+                <h1 id="dynamic-view-title">Tasks</h1>
+                <div class="buttons">
+                    <button class="filter"><img src="96c72a4f1decc6277a1f.svg" alt="Three horizontal lines decreasing in width"></button>
+                    <button class="new-btn" data-id="new-task"><img src="dadd624ae736de2e9fcb.svg" alt="Plus sign"></button>
+                </div>
+            </header>
+            <div class="filter-menu hidden no-transition">
+                <div class="filter-heading">
+                    <h4>Filter by:</h4>
+                    <button class="apply-filter-btn">Apply</button>
+                </div>
+                    <div class="priority filter-subcat">
+                        <h5>Priority</h5>
+                            <div class="filter"><label><input type="checkbox" name="priority" value="high">High</label></div>
+                            <div class="filter"><label><input type="checkbox" name="priority" value="medium">Medium</label></div>
+                            <div class="filter"><label><input type="checkbox" name="priority" value="low">Low</label></div>
+                    </div>
+                    <div class="project filter-subcat"></div>
+                    <div class="status filter-subcat">
+                        <h5>Status</h5>
+                            <div class="filter"><label><input type="checkbox" name="status" value="pending">Pending</label></div>
+                            <div class="filter"><label><input type="checkbox" name="status" value="complete">Complete</label></div>
+                    </div>
+            </div>
+        </div>
+        <div class="swipe-container" id="view-swipe-viewport" >
+            <div class="swipe-track">
+                <section class="view-panel tasks" data-title="Tasks" ></section>
+                <section class="view-panel projects" data-title="Projects" ></section>
+            </div>
+        </div>
+    </div>
 <script defer src="main.js"></script></body>
 </html>
