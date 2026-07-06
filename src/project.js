@@ -14,6 +14,14 @@ export class Project {
         Project.instances.push(this);
     }
 
+    removeTasksWithEmptyTitles() {
+        this.#tasks = this.#tasks.filter(task => {
+            if (!task) return false;
+            const titleValue = task.title ? String(task.title).trim() : "";
+            return titleValue !== "";
+        });
+    }
+
     static getAllProjects() {
         return Project.instances;
     }
@@ -78,7 +86,7 @@ export class Project {
             uuid: this.uuid,
             name: this.#name,
             color: this.#color,
-            tasks: this.#tasks
+            tasks: this.tasks
         };
     }
 

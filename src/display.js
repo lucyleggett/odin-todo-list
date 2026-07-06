@@ -8,7 +8,6 @@ import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
 import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener, addFilterMenuListeners } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
-import { StorageController } from "./storage.js";
 
 export function Display() {
 
@@ -79,6 +78,7 @@ export function Display() {
         projTitle.placeholder = "Title";
         projTitle.size = 1;
         projTitle.classList.add("proj-title");
+        projTitle.focus();
 
         if (projectData) projTitle.value = projectData.name;
         projTitleMirror.textContent = projTitle.value || projTitle.placeholder;
@@ -154,25 +154,20 @@ export function Display() {
         const taskCard = document.createElement("div");
         taskCard.style.setProperty("--card-delay", "0ms");
         taskCard.classList.add("task-card", "slide-in");
+        
+        const isDummyCard = taskData && taskData.title === "Create your first task!";
+        if (isDummyCard) taskCard.classList.add("expanded");
 
-        if (taskData && taskData.title === "Create your first task!") {
-            taskCard.classList.add("expanded");
+        if (!taskData) {
+            setTimeout(() => titleInput.focus(), 0);
+            setTimeout(() => taskCard.classList.add("expanded"), 150);
         }
 
         let resolvedTaskData = taskData;
 
         if (!resolvedTaskData) {
-            const defaultProj = Project.getAllProjects()[0];
             taskCard.classList.add("expanded");
-            if (defaultProj) {
-                parentProject = defaultProj;
-                const newTask = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
-                defaultProj.addTask(newTask);
-                resolvedTaskData = newTask;
-                if (resolvedTaskData.title !== "") {
-                    StorageController.saveIfStorageAvailable();
-                }
-            }
+            resolvedTaskData = resolvedTaskData = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
         }
 
         taskCard.dataset.uuid = resolvedTaskData.uuid;
@@ -321,7 +316,9 @@ export function Display() {
         tasksContainer.prepend(taskCard);
         
         addEditTaskListener(taskCard, { setBackgroundColor });
-        addOpenCloseTaskCardListener(taskCard);
+        if (!isDummyCard) {
+            addOpenCloseTaskCardListener(taskCard);
+        }
     }
 
     const createChecklistElement = (checklistUl, currChecklistData) => {

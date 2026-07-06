@@ -82,17 +82,22 @@ export function addFilterMenuListeners() {
 }
 
 export function addOpenCloseTaskCardListener(card) {
-    card.addEventListener("click", (event) => {
-        
+    const closeOnOutsideClick = (e) => {
+        if (!card.contains(e.target)) {
+            card.classList.remove("expanded");
+            document.removeEventListener("click", closeOnOutsideClick);
+        }
+    };
+
+    if (card.classList.contains("expanded")) {
+        setTimeout(() => {
+            document.addEventListener("click", closeOnOutsideClick);
+        }, 0);
+    };
+    
+    card.addEventListener("click", () => {
         if (card.classList.contains("expanded")) return;
         card.classList.add("expanded");
-
-        const closeOnOutsideClick = (e) => {
-            if (!card.contains(e.target)) {
-                card.classList.remove("expanded");
-                document.removeEventListener("click", closeOnOutsideClick);
-            }
-        };
 
         setTimeout(() => {
             document.addEventListener("click", closeOnOutsideClick);
@@ -115,8 +120,8 @@ export function addEditTaskListener(card, { setBackgroundColor }) {
         if (event.target.classList.contains("priority-btn")) return;
         if (event.target.classList.contains("task-status-btn")) return;
 
-        const targetProjName = card.querySelector(".project-label").value;
-        const targetProj = Project.findProjectByName(targetProjName);
+        const projInput = card.querySelector(".project-label");
+        const targetProj = Project.findProjectByName(projInput.value);
         if (!targetProj) return;
         card.dataset.id = targetProj.uuid;
 
@@ -165,7 +170,7 @@ export function addEditStatusListener(taskStatusBtn) {
                 pendingIcon.classList.remove("disabled");
                 completeIcon.classList.add("disabled");
             }
-        StorageController.saveIfStorageAvailable();
+            StorageController.saveIfStorageAvailable();
         }
     })
 }
@@ -188,14 +193,13 @@ export function addEditPriorityListener(priorityBtn, priorityColourMap) {
 
 export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
     deleteTaskBtn.addEventListener("click", (event) => {
-        event.stopPropagation
+        event.stopPropagation();
         event.preventDefault();
 
         const parentProj = Project.findProjectOfTask(taskCard.dataset.uuid);
         if (parentProj) {
             parentProj.removeTask(taskCard.dataset.uuid);
             taskCard.remove();
-
             StorageController.saveIfStorageAvailable();
         }
     });
