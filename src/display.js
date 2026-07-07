@@ -100,13 +100,14 @@ export function Display() {
         colorPicker.classList.add("hidden-color-picker");
         colorPicker.setAttribute("list", "presetColors" + uniqueID);
 
-        const colorPickerLabel = document.createElement("label");
-        colorPickerLabel.setAttribute("for", uniqueID);
-        colorPickerLabel.classList.add("color-picker-label");
-
         const colorPickerIcon = document.createElement("img");
         colorPickerIcon.src = brushIcon;
         colorPickerIcon.classList.add("brush", "icon");
+
+        const colorPickerLabel = document.createElement("label");
+        colorPickerLabel.setAttribute("for", uniqueID);
+        colorPickerLabel.classList.add("color-picker-label");
+        colorPickerLabel.append(colorPickerIcon, colorPicker);
 
         const colorPalette = [
             "#3E8235", 
@@ -125,7 +126,6 @@ export function Display() {
         })
 
         projectData ? colorPicker.value = projectData.color : colorPicker.value = colorPalette[0];
-        colorPickerLabel.appendChild(colorPickerIcon);
 
         const deleteProjBtn = document.createElement("button");
         deleteProjBtn.classList.add("delete-btn");
@@ -139,7 +139,7 @@ export function Display() {
         addDeleteProjListener(deleteProjBtn, projCard, {renderFilterMenuOptions} );
 
         inputWrap.append(projTitleMirror, projTitle);
-        iconDiv.append(colorPickerLabel, colorPicker, datalist, deleteProjBtn);
+        iconDiv.append(colorPickerLabel, datalist, deleteProjBtn);
         projForm.append(inputWrap, iconDiv);
         projCard.appendChild(projForm);
         setBackgroundColor(projCard);
