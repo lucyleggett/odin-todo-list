@@ -225,14 +225,14 @@ export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
 }
 
 export function addEditChecklistListener(checklistUl) {
-    checklistUl.addEventListener("change", (event) => {
+    checklistUl.addEventListener("focusout", (event) => {
         const target = event.target;
+        if (!target.classList.contains("checklist-input")) return;
+
         const li = target.closest("li");
-        const input = li.querySelector(".checklist-input");
         const itemId = li?.dataset.id;
         const currTask = Project.findTask(checklistUl.dataset.id);
-
-        if (!currTask || !li) return;
+        if (!currTask) return;
 
         const existingItem = currTask.checklist.find(item => item.id === itemId);
 

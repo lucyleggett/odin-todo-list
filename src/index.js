@@ -27,10 +27,10 @@ function Controller() {
             description: "Swipe right to create your first project 😊",
             checklist: [
                 {text: "Hit the ➕ button to add a new task"},
-                {text: "Click the coloured dot to set the task priority 🚦"},
+                {text: "Click the green dot to set the task priority 🚦"},
                 {text: "Add a deadline 🗓️"},
                 {text: "Assign the task to your new project 🗄️"},
-                {text: "Filter tasks by project, priority and/or status 🧐"}
+                {text: "Filter tasks by project, priority and status 🧐"}
             ],
             dueDate: new Date().toISOString().split('T')[0],
         })
