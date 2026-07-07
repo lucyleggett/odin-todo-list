@@ -314,7 +314,24 @@ export function addEditProjListener(card, {setBackgroundColor, renderFilterMenuO
                 currProj.color = projColor
             }
         }
-        renderFilterMenuOptions();
         StorageController.saveIfStorageAvailable();
+        renderFilterMenuOptions();
+
+        const projectInputs = document.querySelectorAll(".project-label");
+        let projectOptions = [];
+        Project.getAllProjects().forEach(proj => {
+            const option = proj.name;
+            projectOptions.push(option);
+        });
+
+        projectInputs.forEach(input => {
+            input.replaceChildren();
+            projectOptions.forEach (o => {
+                const option = document.createElement("option");
+                option.value = o;
+                option.textContent = o;
+                input.appendChild(option);
+            })
+        });                
     });
 }
