@@ -435,6 +435,7 @@ ul {
     align-items: stretch;
     list-style-type: none;
     padding: 0;
+    margin-bottom: 10px;
     width: 100%;
 }
 
@@ -537,9 +538,8 @@ button.add-btn {
 .custom-date::before {
     position: absolute;
     display: inline-block;
-    left: 27px;
-    bottom: 2px;
-    padding: 2px;
+    left: 32px;
+    padding-bottom: 5px;
     width: 90px;
     content: attr(data-date);
     white-space: nowrap;
