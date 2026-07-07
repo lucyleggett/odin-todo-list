@@ -41,8 +41,8 @@ h1, h2, h3, h4, h5, h6 {
 * {
     --ff-manrope: "Manrope", Arial, sans-serif;
 
-    --fs-body: 16px;
-    --fs-checklist: 14px;
+    --fs-body: 18px;
+    --fs-checklist: 16px;
     --fs-h1: 30px;
     --fs-h2: 27px;
     --fs-h3: 20px;
@@ -408,6 +408,10 @@ textarea {
     field-sizing: content;
 }
 
+textarea.task-description {
+    font-size: var(--fs-h4);
+}
+
 input[type="checkbox"] {
     display: block;
     align-self: flex-start;
@@ -525,6 +529,7 @@ button.add-btn {
     background-color: var(--clr-white);
     z-index: 2;
     pointer-events: none;
+    font-size: var(--fs-checklist);
 }
 
 .custom-date::-webkit-datetime-edit-fields-wrapper,
@@ -538,11 +543,11 @@ button.add-btn {
 
 .custom-date::-webkit-calendar-picker-indicator {
     position: absolute;
-    right: -7px;
-    bottom: 3px;
+    right: -10px;
+    bottom: 2px;
     cursor: pointer;
     background-color: var(--clr-white);
-    width: 20px;
+    width: 25px;
 }
 
 select:focus:not(:focus-visible),
