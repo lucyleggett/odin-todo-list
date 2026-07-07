@@ -297,6 +297,25 @@ div.filter { margin: 1px 2px; }
     padding-top: 5px;
 }
 
+.task-card.new-card {
+    animation: card-open 0.3s ease forwards;
+}
+
+@keyframes card-open {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.task-card.new-card {
+    animation: card-open 0.3s ease forwards;
+}
+
 .project-card * { color: var(--clr-white); }
 
 .top-div {

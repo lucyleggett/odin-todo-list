@@ -91,19 +91,29 @@ export function addOpenCloseTaskCardListener(card) {
         }
     };
 
-    if (card.classList.contains("expanded")) {
+    const attachCloseListener = () => {
         setTimeout(() => {
             document.addEventListener("click", closeOnOutsideClick);
         }, 0);
     };
-    
+
+    if (card.classList.contains("expanded")) {
+        attachCloseListener();
+    }
+
+    const observer = new MutationObserver(() => {
+        if (card.classList.contains("expanded")) {
+            attachCloseListener();
+            observer.disconnect();
+        }
+    });
+
+    observer.observe(card, { attributeFilter: ["class"] });
+
     card.addEventListener("click", () => {
         if (card.classList.contains("expanded")) return;
         card.classList.add("expanded");
-
-        setTimeout(() => {
-            document.addEventListener("click", closeOnOutsideClick);
-        }, 0);
+        attachCloseListener();
     });
 }
 
@@ -208,6 +218,8 @@ export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
             parentProj.removeTask(taskCard.dataset.uuid);
             taskCard.remove();
             StorageController.saveIfStorageAvailable();
+        } else {
+            taskCard.remove();
         }
     });
 }

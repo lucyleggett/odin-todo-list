@@ -158,14 +158,22 @@ export function Display() {
         const isDummyCard = taskData && taskData.title === "Create your first task!";
         if (isDummyCard) taskCard.classList.add("expanded");
 
-        if (!taskData) {
-            setTimeout(() => titleInput.focus(), 0);
-            setTimeout(() => taskCard.classList.add("expanded"), 150);
-        }
-
         let resolvedTaskData = taskData;
 
         if (!resolvedTaskData) {
+            setTimeout(() => titleInput.focus(), 0);
+            taskCard.classList.add("new-card");
+            
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    taskCard.classList.add("expanded");
+                });
+            });
+
+            taskCard.addEventListener("animationend", () => {
+                taskCard.classList.remove("new-card");
+            }, { once: true });
+
             resolvedTaskData = resolvedTaskData = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
             parentProject = Project.getAllProjects()[0];
         }
