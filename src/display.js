@@ -268,12 +268,6 @@ export function Display() {
         } else {
             createChecklistElement(currChecklistUl, {});
         }
-
-        const addNewBtn = document.createElement("button");
-        addNewBtn.classList.add("add-btn");
-        addNewBtn.textContent = "+";
-        addNewBtn.type = "button";
-        currChecklistUl.append(addNewBtn);
             
         const dueDateDiv = document.createElement("div");
         dueDateDiv.classList.add("due-date");
@@ -370,9 +364,7 @@ export function Display() {
  
         label.append(checkbox, checklistInput);
         li.append(label, deleteItemBtn);
-
-        const addBtn = checklistUl.querySelector(".add-btn");
-        addBtn ? checklistUl.insertBefore(li, addBtn) : checklistUl.appendChild(li);
+        checklistUl.appendChild(li);
 
         addEditChecklistListener(checklistUl);
         addDeleteChecklistItemListener(checklistUl);
