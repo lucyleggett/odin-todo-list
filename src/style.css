@@ -537,6 +537,7 @@ button.add-btn {
     position: absolute;
     display: inline-block;
     left: 32px;
+    bottom: -1px;
     padding-bottom: 5px;
     width: 90px;
     content: attr(data-date);
