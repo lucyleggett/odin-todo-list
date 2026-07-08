@@ -25,15 +25,21 @@ function Controller() {
         const dummyTask = new Task({
             title: "Create your first task!",
             description: "Swipe right to create your first project 😊",
-            checklist: [
-                {text: "Hit the ➕ button to add a new task"},
-                {text: "Click the green dot to set its priority 🚦"},
-                {text: "Add a deadline 🗓️"},
-                {text: "Assign the task to your new project 🗄️"},
-                {text: "Filter tasks by project, priority or status 🧐"}
-            ],
+            checklist: [],
             dueDate: new Date().toISOString().split('T')[0],
         })
+
+        const checklistItems = [
+            "Hit the ➕ button to add a new task",
+            "Click the green dot to set its priority 🚦",
+            "Add a deadline 🗓️",
+            "Assign the task to your new project 🗄️",
+            "Filter tasks by project, priority or status 🧐",
+        ]
+
+        for (const item of checklistItems) {
+            dummyTask.addChecklistItem(item);
+        }
 
         defaultProject.addTask(dummyTask);
         StorageController.saveIfStorageAvailable();

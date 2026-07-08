@@ -5,7 +5,7 @@ import checkboxIcon from "./images/checkbox-svgrepo-com.svg";
 import checkedIcon from "./images/checked-checkbox-svgrepo-com.svg"
 import binIcon from "./images/trash-svgrepo-com.svg"
 import priorityIconRaw from "./images/circle-svgrepo-com (1).svg?raw";
-import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addDeleteChecklistItemListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener, addFilterMenuListeners } from "./event.js";
+import { addOpenCloseTaskCardListener, addDeleteProjListener, addEditTaskListener, addEditProjListener, addListener, addEditChecklistListener, addNewBtnListener, addEditPriorityListener, addEditStatusListener, addTextAreaGrowListener, addDeleteTaskListener, addFilterMenuListeners } from "./event.js";
 import { updateDateDisplay } from "./date.js";
 import { filterTasks } from "./filter.js";
 
@@ -46,7 +46,7 @@ export function Display() {
             filterCheckbox.type = "checkbox";
             filterCheckbox.name = "project";
             filterCheckbox.value = proj.name;
-            const labelText = proj.name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+            const labelText = proj.name;
             
             filterLabel.appendChild(filterCheckbox);
             filterLabel.appendChild(document.createTextNode(labelText));
@@ -176,6 +176,10 @@ export function Display() {
 
             resolvedTaskData = resolvedTaskData = new Task({ title: "", description: "", dueDate: "", priority: "low", checklist: [] });
             parentProject = Project.getAllProjects()[0];
+
+            if (parentProject && typeof parentProject.addTask === "function") {
+                parentProject.addTask(resolvedTaskData);
+            }
         }
 
         taskCard.dataset.uuid = resolvedTaskData.uuid;
@@ -200,7 +204,6 @@ export function Display() {
         titleInput.maxLength = 50;
         titleInput.rows = 1;
         titleInput.placeholder = "Title";
-        titleInput.required = true;
         titleInput.dataset.id = taskCard.dataset.uuid;
         titleInput.value = resolvedTaskData.title;
 
@@ -260,6 +263,7 @@ export function Display() {
         const currChecklistUl = document.createElement("ul");
         currChecklistUl.dataset.id = taskCard.dataset.uuid;
         currChecklistUl.classList.add("checklist");
+        addEditChecklistListener(currChecklistUl, { createChecklistElement });
 
         if (resolvedTaskData.checklist.length > 0) {
             resolvedTaskData.checklist.forEach(item => {
@@ -322,8 +326,15 @@ export function Display() {
     }
 
     const createChecklistElement = (checklistUl, currChecklistData) => {
+        const task = Project.findTask(checklistUl.dataset.id);
         const li = document.createElement("li");
-        if (currChecklistData.id) li.dataset.id = currChecklistData.id;
+
+        if (currChecklistData.id) {
+            li.dataset.id = currChecklistData.id;
+        } else {
+            const newItem = task.addChecklistItem("");
+            li.dataset.id = newItem.id;
+        }
 
         const label = document.createElement("label");
         label.classList.add("checkbox");
@@ -365,9 +376,6 @@ export function Display() {
         label.append(checkbox, checklistInput);
         li.append(label, deleteItemBtn);
         checklistUl.appendChild(li);
-
-        addEditChecklistListener(checklistUl);
-        addDeleteChecklistItemListener(checklistUl);
     }
 
     return { setBackgroundColor, renderFilterMenuOptions, renderProjectCard, renderTaskCard, createChecklistElement };

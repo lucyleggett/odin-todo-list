@@ -67,7 +67,8 @@ export function addFilterMenuListeners( {renderTaskCard} ) {
         }
     };
 
-    filterBtn.addEventListener("click", () => {
+    filterBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const isHidden = filterMenu.classList.toggle("hidden");
 
         if (!isHidden){
@@ -224,10 +225,10 @@ export function addDeleteTaskListener(deleteTaskBtn, taskCard) {
     });
 }
 
-export function addEditChecklistListener(checklistUl) {
-    checklistUl.addEventListener("focusout", (event) => {
+export function addEditChecklistListener(checklistUl, { createChecklistElement }) {
+    checklistUl.addEventListener("change", (event) => {
         const target = event.target;
-        if (!target.classList.contains("checklist-input")) return;
+        if (!target.classList.contains("checklist-checkbox")) return;
 
         const li = target.closest("li");
         const itemId = li?.dataset.id;
@@ -235,45 +236,56 @@ export function addEditChecklistListener(checklistUl) {
         if (!currTask) return;
 
         const existingItem = currTask.checklist.find(item => item.id === itemId);
+        if (!existingItem) return;
 
-        if (target.classList.contains("checklist-checkbox")) {
-            if (existingItem) {
-                const status = target.checked ? "completed" : "pending";
-                currTask.editChecklistItem(itemId, "status", status);
-                if (target.checked) {
-                    input.classList.add("checked");
-                } else {
-                    input.classList.remove("checked");
-                }
-            }
-        }
-
-        if (target.classList.contains("checklist-input")) {
-            if (existingItem) {
-                currTask.editChecklistItem(itemId, "text", target.value);
-            } else if (target.value.trim()) {
-                const newItem = currTask.addChecklistItem(target.value);
-                li.dataset.id = newItem.id;
-            }
-        }
+        const input = li.querySelector(".checklist-input");
+        const status = target.checked ? "completed" : "pending";
+        currTask.editChecklistItem(itemId, "status", status);
+        input?.classList.toggle("checked", target.checked);
         StorageController.saveIfStorageAvailable();
     });
-}
 
-export function addDeleteChecklistItemListener(checklistUl) {
+    checklistUl.addEventListener("input", (event) => {
+        const target = event.target;
+        if (!target.classList.contains("checklist-input")) return;
+
+        const li = target.closest("li");
+        const itemId = li?.dataset.id;
+        const currTask = Project.findTask(checklistUl.dataset.id);
+        
+        if (!currTask || !itemId) return; 
+        currTask.editChecklistItem(itemId, "text", target.value);
+        StorageController.saveIfStorageAvailable();
+    });
+
     checklistUl.addEventListener("click", (event) => {
         const target = event.target;
         if (!target.classList.contains("checklist-delete")) return;
 
-        const li = target.closest("li");
-        const itemId = li?.dataset.id;
-        const currTask = Project.findTask(checklistUl.dataset.uuid);
+        event.preventDefault();
+        event.stopPropagation();
 
-        if (currTask && itemId) {
+        const li = target.closest("li");
+        const input = li?.querySelector("textarea");
+        const itemId = li?.dataset.id;
+        const currTask = Project.findTask(checklistUl.dataset.id);
+
+        if (!currTask) return;
+
+        if (currTask && itemId && input) {
+            if (input.value.trim() === "") return;
+
             currTask.removeChecklistItem(itemId);
             li.remove();
-            StorageController.saveIfStorageAvailable();
+            
+            const isListItem = checklistUl.querySelector("li");
+            if (!isListItem) {
+                setTimeout(() => {
+                    createChecklistElement(checklistUl, {});
+                }, 0);
+            }
         }
+        StorageController.saveIfStorageAvailable();
     });
 }
 

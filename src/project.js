@@ -7,19 +7,11 @@ export class Project {
     constructor({uuid, name, color}){
         this.uuid = uuid || crypto.randomUUID(); 
         const finalName = name || "";
-        this.#name = finalName.toLowerCase();
+        this.#name = Project.toTrueTitleCase(finalName);
         this.#color = color;
         this.#tasks = [];
 
         Project.instances.push(this);
-    }
-
-    removeTasksWithEmptyTitles() {
-        this.#tasks = this.#tasks.filter(task => {
-            if (!task) return false;
-            const titleValue = task.title ? String(task.title).trim() : "";
-            return titleValue !== "";
-        });
     }
 
     static getAllProjects() {
@@ -31,7 +23,7 @@ export class Project {
     }
 
     set name(newName) {
-        this.#name = newName;
+        this.#name = Project.toTrueTitleCase(newName || "");
     }
 
     get color() {
@@ -59,7 +51,7 @@ export class Project {
 
     static findProjectByName(projectName) {
         if (!projectName) return null;
-        return Project.getAllProjects().find(proj => proj.name === projectName.toLowerCase());
+        return Project.getAllProjects().find(proj => proj.name === Project.toTrueTitleCase(projectName));
     }
 
     static findProjectOfTask(taskId) {
@@ -94,5 +86,21 @@ export class Project {
         const targetTask = currProj.tasks.find(t => t.uuid === taskUUID);
         currProj.removeTask(taskUUID);
         nextProj.addTask(targetTask);
+    }
+
+    static toTrueTitleCase(str) {
+    const exceptions = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'in', 'at', 'to', 'by', 'of'];
+    
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map((word, index) => {
+
+        if (index > 0 && exceptions.includes(word)) {
+            return word;
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(' ');
     }
 }
