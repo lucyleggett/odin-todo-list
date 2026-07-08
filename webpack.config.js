@@ -1,6 +1,6 @@
 import path from "node:path";
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 export default {
   mode: "development",
@@ -18,8 +18,8 @@ export default {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-      inject: 'body',
-      scriptLoading: 'defer',
+      inject: "body",
+      scriptLoading: "defer",
     }),
     new MiniCssExtractPlugin({
       filename: "styles.css",
@@ -33,30 +33,32 @@ export default {
       },
       {
         test: /\.html$/i,
-        use: [{
-                loader: "html-loader",
-                options: {
-                    sources: {
-                        urlFilter: (attribute, value) => {
-                            return !value.startsWith("http");
-                        }
-                    }
-                }
-            }],
+        use: [
+          {
+            loader: "html-loader",
+            options: {
+              sources: {
+                urlFilter: (attribute, value) => {
+                  return !value.startsWith("http");
+                },
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
       },
       {
         test: /\.svg$/,
         resourceQuery: { not: [/raw/] },
-        type: 'asset/resource',
+        type: "asset/resource",
       },
       {
         test: /\.svg$/,
         resourceQuery: /raw/,
-        type: 'asset/source',
+        type: "asset/source",
       },
     ],
   },
