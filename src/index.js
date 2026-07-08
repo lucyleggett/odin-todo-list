@@ -36,11 +36,11 @@ function Controller() {
     });
 
     const checklistItems = [
-      "Hit the ➕ button to add a new task",
+      "Return here and hit the ➕ button to add a new task",
+      "Assign the task to your new project in the bottom corner 🗄️",
       "Click the green dot to set its priority 🚦",
       "Add a deadline 🗓️",
-      "Assign the task to your new project 🗄️",
-      "Filter tasks by project, priority or status 🧐",
+      "Filter tasks by project, priority or status at the top of the screen 🧐",
     ];
 
     for (const item of checklistItems) {
